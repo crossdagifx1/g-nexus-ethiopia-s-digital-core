@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sparkles } from "lucide-react";
 
 const navLinks = [
   { label: "Services", href: "#services" },
   { label: "Team", href: "#team" },
-  { label: "G-Nexus", href: "#gnexus" },
+  { label: "Platform", href: "#gnexus" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -24,32 +24,38 @@ export const Navbar = () => {
   return (
     <nav 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? "bg-background/80 backdrop-blur-xl border-b border-border/50" : "bg-transparent"
+        isScrolled ? "bg-background/80 backdrop-blur-xl border-b border-border/50 py-2" : "bg-transparent py-4"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <a href="#" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gold to-gold-glow flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+          <div className="relative w-11 h-11 rounded-xl bg-gradient-to-br from-gold to-gold-glow flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg group-hover:shadow-[0_0_30px_hsl(38,70%,50%,0.5)]">
             <span className="text-background font-display font-bold text-xl">G</span>
+            <Sparkles className="absolute -top-1 -right-1 w-4 h-4 text-cyan animate-pulse-glow" />
           </div>
-          <span className="font-display font-bold text-xl text-foreground">
-            G-Squad
-          </span>
+          <div className="flex flex-col">
+            <span className="font-display font-bold text-xl text-foreground group-hover:text-gold transition-colors duration-300">
+              G-Nexus
+            </span>
+            <span className="text-xs text-muted-foreground -mt-1">by G-Squad</span>
+          </div>
         </a>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
+          {navLinks.map((link, index) => (
             <a
               key={link.label}
               href={link.href}
-              className="text-muted-foreground hover:text-gold transition-colors duration-300 font-medium"
+              className="relative text-muted-foreground hover:text-gold transition-colors duration-300 font-medium group"
+              style={{ animationDelay: `${index * 100}ms` }}
             >
               {link.label}
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-gold to-cyan group-hover:w-full transition-all duration-300" />
             </a>
           ))}
-          <Button variant="gold" size="sm">
+          <Button variant="gold" size="sm" className="animate-pulse-glow">
             Get Started
           </Button>
         </div>
@@ -57,32 +63,31 @@ export const Navbar = () => {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center text-foreground"
+          className="md:hidden w-11 h-11 rounded-xl bg-muted/50 flex items-center justify-center text-foreground hover:bg-gold/20 hover:text-gold transition-all duration-300"
         >
           {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
       {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-20 left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-border/50 p-6 animate-fade-in">
-          <div className="flex flex-col gap-4">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-foreground hover:text-gold transition-colors duration-300 font-medium py-2"
-              >
-                {link.label}
-              </a>
-            ))}
-            <Button variant="gold" className="mt-4">
-              Get Started
-            </Button>
-          </div>
+      <div className={`md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-border/50 overflow-hidden transition-all duration-500 ${isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}>
+        <div className="p-6 flex flex-col gap-4">
+          {navLinks.map((link, index) => (
+            <a
+              key={link.label}
+              href={link.href}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-foreground hover:text-gold transition-colors duration-300 font-medium py-3 border-b border-border/30 last:border-0"
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
+              {link.label}
+            </a>
+          ))}
+          <Button variant="gold" className="mt-4">
+            Get Started
+          </Button>
         </div>
-      )}
+      </div>
     </nav>
   );
 };
