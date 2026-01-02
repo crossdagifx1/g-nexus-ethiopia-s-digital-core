@@ -14,30 +14,102 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_log: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          id: string
+          target_id: string | null
+          target_type: string | null
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_type?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_type?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      admin_settings: {
+        Row: {
+          description: string | null
+          id: string
+          key: string
+          updated_at: string
+          updated_by: string | null
+          value: Json
+        }
+        Insert: {
+          description?: string | null
+          id?: string
+          key: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          key?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
       chat_conversations: {
         Row: {
           created_at: string
           id: string
+          last_message_at: string | null
+          resolved_at: string | null
+          resolved_by: string | null
           session_id: string
           status: string | null
           updated_at: string
           user_email: string | null
+          user_name: string | null
         }
         Insert: {
           created_at?: string
           id?: string
+          last_message_at?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
           session_id: string
           status?: string | null
           updated_at?: string
           user_email?: string | null
+          user_name?: string | null
         }
         Update: {
           created_at?: string
           id?: string
+          last_message_at?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
           session_id?: string
           status?: string | null
           updated_at?: string
           user_email?: string | null
+          user_name?: string | null
         }
         Relationships: []
       }
@@ -47,6 +119,7 @@ export type Database = {
           conversation_id: string
           created_at: string
           id: string
+          is_read: boolean | null
           role: string
         }
         Insert: {
@@ -54,6 +127,7 @@ export type Database = {
           conversation_id: string
           created_at?: string
           id?: string
+          is_read?: boolean | null
           role: string
         }
         Update: {
@@ -61,11 +135,44 @@ export type Database = {
           conversation_id?: string
           created_at?: string
           id?: string
+          is_read?: boolean | null
           role?: string
         }
         Relationships: [
           {
             foreignKeyName: "chat_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "chat_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_ratings: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          feedback_text: string | null
+          id: string
+          rating: number
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          feedback_text?: string | null
+          id?: string
+          rating: number
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          feedback_text?: string | null
+          id?: string
+          rating?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_ratings_conversation_id_fkey"
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "chat_conversations"

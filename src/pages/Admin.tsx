@@ -4,7 +4,8 @@ import { motion } from 'framer-motion';
 import { 
   LayoutDashboard, MessageSquare, FolderOpen, Settings, 
   Users, LogOut, Menu, X, ChevronRight, BarChart3,
-  Bot, Eye, Trash2, Edit2, Plus, Loader2, Shield, User as UserIcon
+  Bot, Eye, Trash2, Edit2, Plus, Loader2, Shield, User as UserIcon,
+  TrendingUp, Clock, Star
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -22,16 +23,12 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ProjectFormDialog } from '@/components/admin/ProjectFormDialog';
 import { UserRolesManager } from '@/components/admin/UserRolesManager';
+import { EnhancedChatView } from '@/components/admin/EnhancedChatView';
+import { AdminAnalytics } from '@/components/admin/AdminAnalytics';
+import { AdminSettings } from '@/components/admin/AdminSettings';
+import { ActivityLog } from '@/components/admin/ActivityLog';
 import type { User } from '@supabase/supabase-js';
-
-interface Conversation {
-  id: string;
-  session_id: string;
-  user_email: string | null;
-  created_at: string;
-  status: string;
-  message_count?: number;
-}
+import { formatDistanceToNow } from 'date-fns';
 
 interface Project {
   id: string;
@@ -46,11 +43,22 @@ interface Project {
   project_url: string | null;
 }
 
-interface ChatMessage {
+interface DashboardStats {
+  totalChats: number;
+  totalProjects: number;
+  activeConversations: number;
+  avgRating: number;
+  todayChats: number;
+}
+
+interface RecentConversation {
   id: string;
-  role: string;
-  content: string;
+  session_id: string;
+  user_email: string | null;
   created_at: string;
+  status: string;
+  message_count: number;
+  last_message_preview: string;
 }
 
 const Admin = () => {
@@ -58,17 +66,18 @@ const Admin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [projectDialogOpen, setProjectDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<DashboardStats>({
     totalChats: 0,
     totalProjects: 0,
     activeConversations: 0,
+    avgRating: 0,
+    todayChats: 0,
   });
+  const [recentConversations, setRecentConversations] = useState<RecentConversation[]>([]);
+  const [newChatCount, setNewChatCount] = useState(0);
   
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -94,15 +103,39 @@ const Admin = () => {
     return () => subscription.unsubscribe();
   }, [navigate]);
 
+  // Real-time subscription for new chats notification
+  useEffect(() => {
+    const channel = supabase
+      .channel('new-chats-notification')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'chat_conversations' },
+        () => {
+          setNewChatCount(prev => prev + 1);
+          fetchData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // Clear notification when switching to chats tab
+  useEffect(() => {
+    if (activeTab === 'chats') {
+      setNewChatCount(0);
+    }
+  }, [activeTab]);
+
   const fetchData = async () => {
     try {
-      // Fetch conversations
+      // Fetch conversations with message counts
       const { data: convData } = await supabase
         .from('chat_conversations')
         .select('*')
         .order('created_at', { ascending: false });
-      
-      setConversations(convData || []);
       
       // Fetch projects
       const { data: projData } = await supabase
@@ -112,26 +145,56 @@ const Admin = () => {
       
       setProjects(projData || []);
 
+      // Fetch ratings for average
+      const { data: ratingsData } = await supabase
+        .from('chat_ratings')
+        .select('rating');
+
+      const avgRating = ratingsData && ratingsData.length > 0
+        ? ratingsData.reduce((a, b) => a + b.rating, 0) / ratingsData.length
+        : 0;
+
+      // Calculate today's chats
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayChats = convData?.filter(c => new Date(c.created_at) >= today).length || 0;
+
+      // Get recent conversations with message counts
+      const recentConvs = await Promise.all(
+        (convData || []).slice(0, 5).map(async (conv) => {
+          const { data: messages } = await supabase
+            .from('chat_messages')
+            .select('content')
+            .eq('conversation_id', conv.id)
+            .order('created_at', { ascending: false })
+            .limit(1);
+
+          const { count } = await supabase
+            .from('chat_messages')
+            .select('*', { count: 'exact', head: true })
+            .eq('conversation_id', conv.id);
+
+          return {
+            ...conv,
+            message_count: count || 0,
+            last_message_preview: messages?.[0]?.content?.slice(0, 40) || '',
+          };
+        })
+      );
+
+      setRecentConversations(recentConvs);
+
       // Calculate stats
       setStats({
         totalChats: convData?.length || 0,
         totalProjects: projData?.length || 0,
         activeConversations: convData?.filter(c => c.status === 'active').length || 0,
+        avgRating: Math.round(avgRating * 10) / 10,
+        todayChats,
       });
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-  };
-
-  const fetchChatMessages = async (conversationId: string) => {
-    const { data } = await supabase
-      .from('chat_messages')
-      .select('*')
-      .eq('conversation_id', conversationId)
-      .order('created_at', { ascending: true });
-    
-    setChatMessages(data || []);
-    setSelectedConversation(conversationId);
   };
 
   const handleDeleteProject = async (projectId: string) => {
@@ -142,6 +205,15 @@ const Admin = () => {
         .eq('id', projectId);
 
       if (error) throw error;
+      
+      // Log activity
+      await supabase.from('activity_log').insert({
+        user_id: user?.id,
+        user_email: user?.email,
+        action: 'Deleted project',
+        target_type: 'portfolio_project',
+        target_id: projectId,
+      });
       
       toast({ title: 'Project deleted successfully' });
       fetchData();
@@ -171,7 +243,7 @@ const Admin = () => {
 
   const navItems = [
     { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { id: 'chats', icon: MessageSquare, label: 'AI Chats' },
+    { id: 'chats', icon: MessageSquare, label: 'AI Chats', badge: newChatCount },
     { id: 'projects', icon: FolderOpen, label: 'Portfolio' },
     { id: 'users', icon: Shield, label: 'User Roles' },
     { id: 'analytics', icon: BarChart3, label: 'Analytics' },
@@ -214,14 +286,21 @@ const Admin = () => {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-colors ${
                   activeTab === item.id
                     ? 'bg-primary text-primary-foreground'
                     : 'hover:bg-muted text-muted-foreground hover:text-foreground'
                 }`}
               >
-                <item.icon className="w-5 h-5" />
-                <span className="font-medium">{item.label}</span>
+                <div className="flex items-center gap-3">
+                  <item.icon className="w-5 h-5" />
+                  <span className="font-medium">{item.label}</span>
+                </div>
+                {item.badge && item.badge > 0 && (
+                  <Badge variant="destructive" className="h-5 w-5 p-0 flex items-center justify-center text-xs">
+                    {item.badge}
+                  </Badge>
+                )}
               </button>
             ))}
           </nav>
@@ -272,214 +351,140 @@ const Admin = () => {
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
               {/* Stats Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="p-6 bg-card border border-border rounded-2xl"
+                  className="p-5 bg-card border border-border rounded-2xl"
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <MessageSquare className="w-8 h-8 text-primary" />
-                    <Badge variant="secondary">Today</Badge>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="p-2 bg-primary/10 rounded-xl">
+                      <MessageSquare className="w-5 h-5 text-primary" />
+                    </div>
+                    <Badge variant="secondary" className="text-xs">Today: {stats.todayChats}</Badge>
                   </div>
-                  <h3 className="text-3xl font-bold">{stats.totalChats}</h3>
-                  <p className="text-muted-foreground">Total Conversations</p>
+                  <h3 className="text-2xl font-bold">{stats.totalChats}</h3>
+                  <p className="text-sm text-muted-foreground">Total Conversations</p>
                 </motion.div>
 
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
-                  className="p-6 bg-card border border-border rounded-2xl"
+                  className="p-5 bg-card border border-border rounded-2xl"
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <FolderOpen className="w-8 h-8 text-primary" />
-                    <Badge variant="secondary">All Time</Badge>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="p-2 bg-green-500/10 rounded-xl">
+                      <Bot className="w-5 h-5 text-green-500" />
+                    </div>
+                    <Badge className="bg-green-500/10 text-green-500 text-xs">Live</Badge>
                   </div>
-                  <h3 className="text-3xl font-bold">{stats.totalProjects}</h3>
-                  <p className="text-muted-foreground">Portfolio Projects</p>
+                  <h3 className="text-2xl font-bold">{stats.activeConversations}</h3>
+                  <p className="text-sm text-muted-foreground">Active Chats</p>
                 </motion.div>
 
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="p-6 bg-card border border-border rounded-2xl"
+                  className="p-5 bg-card border border-border rounded-2xl"
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <Bot className="w-8 h-8 text-green-500" />
-                    <Badge className="bg-green-500/10 text-green-500">Live</Badge>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="p-2 bg-purple-500/10 rounded-xl">
+                      <FolderOpen className="w-5 h-5 text-purple-500" />
+                    </div>
+                    <Badge variant="secondary" className="text-xs">Portfolio</Badge>
                   </div>
-                  <h3 className="text-3xl font-bold">{stats.activeConversations}</h3>
-                  <p className="text-muted-foreground">Active Chats</p>
+                  <h3 className="text-2xl font-bold">{stats.totalProjects}</h3>
+                  <p className="text-sm text-muted-foreground">Projects</p>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="p-5 bg-card border border-border rounded-2xl"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="p-2 bg-yellow-500/10 rounded-xl">
+                      <Star className="w-5 h-5 text-yellow-500" />
+                    </div>
+                    <Badge variant="secondary" className="text-xs">Rating</Badge>
+                  </div>
+                  <h3 className="text-2xl font-bold">
+                    {stats.avgRating > 0 ? `${stats.avgRating}/5` : 'N/A'}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">Satisfaction</p>
                 </motion.div>
               </div>
 
-              {/* Recent Activity */}
-              <div className="bg-card border border-border rounded-2xl p-6">
-                <h3 className="text-lg font-semibold mb-4">Recent Conversations</h3>
-                <div className="space-y-3">
-                  {conversations.slice(0, 5).map((conv) => (
-                    <div key={conv.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-xl">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                          <MessageSquare className="w-5 h-5 text-primary" />
+              {/* Two Column Layout */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Recent Conversations */}
+                <div className="bg-card border border-border rounded-2xl p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold">Recent Conversations</h3>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => setActiveTab('chats')}
+                    >
+                      View All
+                      <ChevronRight className="w-4 h-4 ml-1" />
+                    </Button>
+                  </div>
+                  <div className="space-y-3">
+                    {recentConversations.map((conv) => (
+                      <div 
+                        key={conv.id} 
+                        className="flex items-center justify-between p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors cursor-pointer"
+                        onClick={() => setActiveTab('chats')}
+                      >
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                            <MessageSquare className="w-5 h-5 text-primary" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium text-sm">#{conv.session_id.slice(-8)}</p>
+                              <Badge variant="outline" className="text-xs">
+                                {conv.message_count} msgs
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground truncate">
+                              {conv.last_message_preview || 'No messages yet'}...
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium text-sm">{conv.session_id.slice(0, 20)}...</p>
-                          <p className="text-xs text-muted-foreground">
-                            {new Date(conv.created_at).toLocaleString()}
-                          </p>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <div className={`w-2 h-2 rounded-full ${
+                            conv.status === 'active' ? 'bg-green-500' : 'bg-muted-foreground'
+                          }`} />
+                          <span className="text-xs text-muted-foreground">
+                            {formatDistanceToNow(new Date(conv.created_at), { addSuffix: true })}
+                          </span>
                         </div>
                       </div>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => {
-                          setActiveTab('chats');
-                          fetchChatMessages(conv.id);
-                        }}
-                      >
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  ))}
+                    ))}
+                    {recentConversations.length === 0 && (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <MessageSquare className="w-10 h-10 mx-auto mb-2 opacity-20" />
+                        <p>No conversations yet</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Activity Log */}
+                <div className="bg-card border border-border rounded-2xl p-5">
+                  <ActivityLog />
                 </div>
               </div>
             </div>
           )}
 
           {activeTab === 'chats' && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Conversations List */}
-              <div className="lg:col-span-1 bg-card border border-border rounded-2xl p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold">All Conversations</h3>
-                  <Badge variant="secondary">{conversations.length}</Badge>
-                </div>
-                <ScrollArea className="h-[600px]">
-                  <div className="space-y-2">
-                    {conversations.map((conv) => (
-                      <button
-                        key={conv.id}
-                        onClick={() => fetchChatMessages(conv.id)}
-                        className={`w-full p-3 rounded-xl text-left transition-colors ${
-                          selectedConversation === conv.id 
-                            ? 'bg-primary text-primary-foreground' 
-                            : 'hover:bg-muted'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <div className={`w-2 h-2 rounded-full ${conv.status === 'active' ? 'bg-green-500' : 'bg-muted-foreground'}`} />
-                            <span className="text-sm font-medium truncate">
-                              Session #{conv.session_id.slice(-8)}
-                            </span>
-                          </div>
-                          <ChevronRight className="w-4 h-4 flex-shrink-0" />
-                        </div>
-                        <div className={`flex items-center justify-between mt-1 ${
-                          selectedConversation === conv.id 
-                            ? 'text-primary-foreground/70' 
-                            : 'text-muted-foreground'
-                        }`}>
-                          <p className="text-xs">
-                            {new Date(conv.created_at).toLocaleDateString()}
-                          </p>
-                          <p className="text-xs">
-                            {new Date(conv.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          </p>
-                        </div>
-                        {conv.user_email && (
-                          <p className={`text-xs mt-1 truncate ${
-                            selectedConversation === conv.id 
-                              ? 'text-primary-foreground/70' 
-                              : 'text-muted-foreground'
-                          }`}>
-                            {conv.user_email}
-                          </p>
-                        )}
-                      </button>
-                    ))}
-                    {conversations.length === 0 && (
-                      <div className="text-center py-8 text-muted-foreground">
-                        No conversations yet
-                      </div>
-                    )}
-                  </div>
-                </ScrollArea>
-              </div>
-
-              {/* Chat View */}
-              <div className="lg:col-span-2 bg-card border border-border rounded-2xl overflow-hidden">
-                <div className="p-4 border-b border-border bg-muted/30">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold">Chat History</h3>
-                      {selectedConversation && (
-                        <p className="text-xs text-muted-foreground">
-                          {chatMessages.length} messages in this conversation
-                        </p>
-                      )}
-                    </div>
-                    {selectedConversation && (
-                      <Badge variant="outline">
-                        {conversations.find(c => c.id === selectedConversation)?.status || 'Unknown'}
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-                {selectedConversation ? (
-                  <ScrollArea className="h-[560px] p-4">
-                    <div className="space-y-4">
-                      {chatMessages.map((msg) => (
-                        <div
-                          key={msg.id}
-                          className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
-                        >
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                            msg.role === 'user' 
-                              ? 'bg-primary text-primary-foreground' 
-                              : 'bg-muted'
-                          }`}>
-                            {msg.role === 'user' ? (
-                              <UserIcon className="w-4 h-4" />
-                            ) : (
-                              <Bot className="w-4 h-4" />
-                            )}
-                          </div>
-                          <div className={`max-w-[75%] p-3 rounded-2xl ${
-                            msg.role === 'user'
-                              ? 'bg-primary text-primary-foreground rounded-br-md'
-                              : 'bg-muted rounded-bl-md'
-                          }`}>
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className={`text-xs font-medium ${
-                                msg.role === 'user' ? 'text-primary-foreground/80' : 'text-foreground'
-                              }`}>
-                                {msg.role === 'user' ? 'Customer' : 'Tsion (AI)'}
-                              </span>
-                            </div>
-                            <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                            <p className={`text-[10px] mt-2 ${
-                              msg.role === 'user' ? 'text-primary-foreground/60' : 'text-muted-foreground'
-                            }`}>
-                              {new Date(msg.created_at).toLocaleString()}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                ) : (
-                  <div className="h-[560px] flex flex-col items-center justify-center text-muted-foreground">
-                    <MessageSquare className="w-12 h-12 mb-4 opacity-20" />
-                    <p>Select a conversation to view full chat history</p>
-                    <p className="text-sm mt-1">All messages are stored and accessible here</p>
-                  </div>
-                )}
-              </div>
-            </div>
+            <EnhancedChatView />
           )}
 
           {activeTab === 'projects' && (
@@ -580,19 +585,13 @@ const Admin = () => {
 
           {activeTab === 'analytics' && (
             <div className="bg-card border border-border rounded-2xl p-6">
-              <h3 className="text-lg font-semibold mb-4">Analytics</h3>
-              <p className="text-muted-foreground">
-                Analytics dashboard coming soon. Track visitor engagement, chat metrics, and conversion rates.
-              </p>
+              <AdminAnalytics />
             </div>
           )}
 
           {activeTab === 'settings' && (
             <div className="bg-card border border-border rounded-2xl p-6">
-              <h3 className="text-lg font-semibold mb-4">Settings</h3>
-              <p className="text-muted-foreground">
-                Site settings and configuration options coming soon.
-              </p>
+              <AdminSettings />
             </div>
           )}
         </div>
