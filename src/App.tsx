@@ -3,6 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { PageTransition } from "@/components/PageTransition";
+import AIChatWidget from "@/components/AIChatWidget";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import WebDevelopment from "./pages/WebDevelopment";
@@ -17,6 +19,9 @@ import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
 import Documentation from "./pages/Documentation";
 import Status from "./pages/Status";
+import Portfolio from "./pages/Portfolio";
+import Auth from "./pages/Auth";
+import Admin from "./pages/Admin";
 
 const queryClient = new QueryClient();
 
@@ -26,22 +31,28 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/web-development" element={<WebDevelopment />} />
-          <Route path="/3d-architecture" element={<ThreeDArchitecture />} />
-          <Route path="/ai-automation" element={<AIAutomation />} />
-          <Route path="/gnexus" element={<GNexusPlatform />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/team" element={<Team />} />
-          <Route path="/careers" element={<Careers />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/documentation" element={<Documentation />} />
-          <Route path="/status" element={<Status />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <PageTransition>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/web-development" element={<WebDevelopment />} />
+            <Route path="/3d-architecture" element={<ThreeDArchitecture />} />
+            <Route path="/ai-automation" element={<AIAutomation />} />
+            <Route path="/gnexus" element={<GNexusPlatform />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/team" element={<Team />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/documentation" element={<Documentation />} />
+            <Route path="/status" element={<Status />} />
+            <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </PageTransition>
+        <AIChatWidget />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
