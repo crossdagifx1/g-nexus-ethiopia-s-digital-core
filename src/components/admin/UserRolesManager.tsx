@@ -8,12 +8,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Plus, Trash2, Shield, ShieldCheck, User } from 'lucide-react';
+import { Loader2, Plus, Trash2, Shield, ShieldCheck, ShieldAlert, User } from 'lucide-react';
 
 interface UserRole {
   id: string;
   user_id: string;
-  role: 'admin' | 'moderator' | 'user';
+  role: 'super_admin' | 'admin' | 'moderator' | 'user';
   created_at: string;
   email?: string;
 }
@@ -30,7 +30,7 @@ export const UserRolesManager = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newUserEmail, setNewUserEmail] = useState('');
-  const [newUserRole, setNewUserRole] = useState<'admin' | 'moderator' | 'user'>('user');
+  const [newUserRole, setNewUserRole] = useState<'super_admin' | 'admin' | 'moderator' | 'user'>('user');
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
 
@@ -155,7 +155,7 @@ export const UserRolesManager = () => {
     }
   };
 
-  const handleUpdateRole = async (roleId: string, newRole: 'admin' | 'moderator' | 'user') => {
+  const handleUpdateRole = async (roleId: string, newRole: 'super_admin' | 'admin' | 'moderator' | 'user') => {
     try {
       const { error } = await supabase
         .from('user_roles')
@@ -170,6 +170,7 @@ export const UserRolesManager = () => {
       console.error('Error updating role:', error);
       toast({ 
         title: 'Error updating role', 
+        description: 'You may not have permission to change this role.',
         variant: 'destructive' 
       });
     }
@@ -177,6 +178,8 @@ export const UserRolesManager = () => {
 
   const getRoleIcon = (role: string) => {
     switch (role) {
+      case 'super_admin':
+        return <ShieldAlert className="w-4 h-4" />;
       case 'admin':
         return <ShieldCheck className="w-4 h-4" />;
       case 'moderator':
@@ -188,6 +191,8 @@ export const UserRolesManager = () => {
 
   const getRoleBadgeVariant = (role: string) => {
     switch (role) {
+      case 'super_admin':
+        return 'destructive';
       case 'admin':
         return 'default';
       case 'moderator':
@@ -196,6 +201,8 @@ export const UserRolesManager = () => {
         return 'outline';
     }
   };
+
+  const isSuperAdmin = (role: string) => role === 'super_admin';
 
   if (isLoading) {
     return (
@@ -280,52 +287,68 @@ export const UserRolesManager = () => {
           <TableBody>
             {userRoles.map((userRole) => (
               <TableRow key={userRole.id}>
-                <TableCell className="font-medium">{userRole.email}</TableCell>
+                <TableCell className="font-medium">
+                  <div className="flex items-center gap-2">
+                    {userRole.email}
+                    {isSuperAdmin(userRole.role) && (
+                      <Badge variant="destructive" className="text-xs">Protected</Badge>
+                    )}
+                  </div>
+                </TableCell>
                 <TableCell>
-                  <Select 
-                    value={userRole.role} 
-                    onValueChange={(v) => handleUpdateRole(userRole.id, v as typeof userRole.role)}
-                  >
-                    <SelectTrigger className="w-[140px]">
-                      <div className="flex items-center gap-2">
-                        {getRoleIcon(userRole.role)}
-                        <span className="capitalize">{userRole.role}</span>
-                      </div>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="admin">
+                  {isSuperAdmin(userRole.role) ? (
+                    <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-destructive/10 border border-destructive/20">
+                      <ShieldAlert className="w-4 h-4 text-destructive" />
+                      <span className="text-destructive font-medium">Super Admin</span>
+                    </div>
+                  ) : (
+                    <Select 
+                      value={userRole.role} 
+                      onValueChange={(v) => handleUpdateRole(userRole.id, v as typeof userRole.role)}
+                    >
+                      <SelectTrigger className="w-[140px]">
                         <div className="flex items-center gap-2">
-                          <ShieldCheck className="w-4 h-4" />
-                          Admin
+                          {getRoleIcon(userRole.role)}
+                          <span className="capitalize">{userRole.role.replace('_', ' ')}</span>
                         </div>
-                      </SelectItem>
-                      <SelectItem value="moderator">
-                        <div className="flex items-center gap-2">
-                          <Shield className="w-4 h-4" />
-                          Moderator
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="user">
-                        <div className="flex items-center gap-2">
-                          <User className="w-4 h-4" />
-                          User
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="admin">
+                          <div className="flex items-center gap-2">
+                            <ShieldCheck className="w-4 h-4" />
+                            Admin
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="moderator">
+                          <div className="flex items-center gap-2">
+                            <Shield className="w-4 h-4" />
+                            Moderator
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="user">
+                          <div className="flex items-center gap-2">
+                            <User className="w-4 h-4" />
+                            User
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
                 </TableCell>
                 <TableCell className="text-muted-foreground">
                   {new Date(userRole.created_at).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-destructive hover:text-destructive"
-                    onClick={() => handleDeleteRole(userRole.id)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                  {!isSuperAdmin(userRole.role) && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-destructive hover:text-destructive"
+                      onClick={() => handleDeleteRole(userRole.id)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
