@@ -1,9 +1,25 @@
 import { Sparkles, Github, Linkedin, Twitter, Instagram } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const footerLinks = {
-  Services: ["Web Development", "3D & Architecture", "AI Automation", "G-Nexus Platform"],
-  Company: ["About Us", "Our Team", "Careers", "Blog"],
-  Support: ["Contact", "FAQ", "Documentation", "Status"],
+  Services: [
+    { label: "Web Development", href: "/web-development" },
+    { label: "3D & Architecture", href: "/3d-architecture" },
+    { label: "AI Automation", href: "/ai-automation" },
+    { label: "G-Nexus Platform", href: "/gnexus" },
+  ],
+  Company: [
+    { label: "About Us", href: "/about" },
+    { label: "Our Team", href: "/team" },
+    { label: "Careers", href: "/careers" },
+    { label: "Blog", href: "/blog" },
+  ],
+  Support: [
+    { label: "Contact", href: "/contact" },
+    { label: "FAQ", href: "/faq" },
+    { label: "Documentation", href: "/documentation" },
+    { label: "Status", href: "/status" },
+  ],
 };
 
 const socialLinks = [
@@ -60,14 +76,14 @@ export const Footer = () => {
               <h4 className="font-display font-bold text-foreground mb-6">{category}</h4>
               <ul className="space-y-4">
                 {links.map((link) => (
-                  <li key={link}>
-                    <a 
-                      href="#" 
+                  <li key={link.label}>
+                    <Link 
+                      to={link.href} 
                       className="text-muted-foreground hover:text-gold transition-colors duration-300 text-sm inline-flex items-center gap-2 group"
                     >
                       <span className="w-0 h-0.5 bg-gold group-hover:w-3 transition-all duration-300" />
-                      {link}
-                    </a>
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
