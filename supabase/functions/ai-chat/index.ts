@@ -126,7 +126,7 @@ serve(async (req) => {
           'X-Title': 'G-Squad Support'
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.0-flash-exp:free',
+          model: 'xiaomi/mimo-v2-flash:free',
           messages: messages,
           temperature: 0.7,
           max_tokens: 1024,
