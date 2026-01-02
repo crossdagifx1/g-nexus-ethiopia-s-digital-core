@@ -18,6 +18,7 @@ const navLinks = [
       { label: "AI Automation", href: "/ai-automation" },
     ]
   },
+  { label: "Portfolio", href: "/portfolio" },
   { label: "Team", href: "/team" },
   { label: "Platform", href: "/gnexus" },
   { label: "Contact", href: "/contact" },
