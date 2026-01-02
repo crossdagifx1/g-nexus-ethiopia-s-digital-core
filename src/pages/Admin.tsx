@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { 
   LayoutDashboard, MessageSquare, FolderOpen, Settings, 
   Users, LogOut, Menu, X, ChevronRight, BarChart3,
-  Bot, Eye, Trash2, Edit2, Plus, Loader2, Shield
+  Bot, Eye, Trash2, Edit2, Plus, Loader2, Shield, User as UserIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -353,7 +353,10 @@ const Admin = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Conversations List */}
               <div className="lg:col-span-1 bg-card border border-border rounded-2xl p-4">
-                <h3 className="font-semibold mb-4">Conversations</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold">All Conversations</h3>
+                  <Badge variant="secondary">{conversations.length}</Badge>
+                </div>
                 <ScrollArea className="h-[600px]">
                   <div className="space-y-2">
                     {conversations.map((conv) => (
@@ -367,45 +370,101 @@ const Admin = () => {
                         }`}
                       >
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium truncate">
-                            {conv.session_id.slice(0, 15)}...
-                          </span>
-                          <ChevronRight className="w-4 h-4" />
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${conv.status === 'active' ? 'bg-green-500' : 'bg-muted-foreground'}`} />
+                            <span className="text-sm font-medium truncate">
+                              Session #{conv.session_id.slice(-8)}
+                            </span>
+                          </div>
+                          <ChevronRight className="w-4 h-4 flex-shrink-0" />
                         </div>
-                        <p className={`text-xs mt-1 ${
+                        <div className={`flex items-center justify-between mt-1 ${
                           selectedConversation === conv.id 
                             ? 'text-primary-foreground/70' 
                             : 'text-muted-foreground'
                         }`}>
-                          {new Date(conv.created_at).toLocaleDateString()}
-                        </p>
+                          <p className="text-xs">
+                            {new Date(conv.created_at).toLocaleDateString()}
+                          </p>
+                          <p className="text-xs">
+                            {new Date(conv.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        </div>
+                        {conv.user_email && (
+                          <p className={`text-xs mt-1 truncate ${
+                            selectedConversation === conv.id 
+                              ? 'text-primary-foreground/70' 
+                              : 'text-muted-foreground'
+                          }`}>
+                            {conv.user_email}
+                          </p>
+                        )}
                       </button>
                     ))}
+                    {conversations.length === 0 && (
+                      <div className="text-center py-8 text-muted-foreground">
+                        No conversations yet
+                      </div>
+                    )}
                   </div>
                 </ScrollArea>
               </div>
 
               {/* Chat View */}
-              <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-4">
-                <h3 className="font-semibold mb-4">Chat Messages</h3>
+              <div className="lg:col-span-2 bg-card border border-border rounded-2xl overflow-hidden">
+                <div className="p-4 border-b border-border bg-muted/30">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold">Chat History</h3>
+                      {selectedConversation && (
+                        <p className="text-xs text-muted-foreground">
+                          {chatMessages.length} messages in this conversation
+                        </p>
+                      )}
+                    </div>
+                    {selectedConversation && (
+                      <Badge variant="outline">
+                        {conversations.find(c => c.id === selectedConversation)?.status || 'Unknown'}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
                 {selectedConversation ? (
-                  <ScrollArea className="h-[600px]">
+                  <ScrollArea className="h-[560px] p-4">
                     <div className="space-y-4">
                       {chatMessages.map((msg) => (
                         <div
                           key={msg.id}
-                          className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                          className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
                         >
-                          <div className={`max-w-[80%] p-4 rounded-2xl ${
-                            msg.role === 'user'
-                              ? 'bg-primary text-primary-foreground'
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                            msg.role === 'user' 
+                              ? 'bg-primary text-primary-foreground' 
                               : 'bg-muted'
                           }`}>
+                            {msg.role === 'user' ? (
+                              <UserIcon className="w-4 h-4" />
+                            ) : (
+                              <Bot className="w-4 h-4" />
+                            )}
+                          </div>
+                          <div className={`max-w-[75%] p-3 rounded-2xl ${
+                            msg.role === 'user'
+                              ? 'bg-primary text-primary-foreground rounded-br-md'
+                              : 'bg-muted rounded-bl-md'
+                          }`}>
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className={`text-xs font-medium ${
+                                msg.role === 'user' ? 'text-primary-foreground/80' : 'text-foreground'
+                              }`}>
+                                {msg.role === 'user' ? 'Customer' : 'Tsion (AI)'}
+                              </span>
+                            </div>
                             <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                            <p className={`text-xs mt-2 ${
-                              msg.role === 'user' ? 'text-primary-foreground/70' : 'text-muted-foreground'
+                            <p className={`text-[10px] mt-2 ${
+                              msg.role === 'user' ? 'text-primary-foreground/60' : 'text-muted-foreground'
                             }`}>
-                              {new Date(msg.created_at).toLocaleTimeString()}
+                              {new Date(msg.created_at).toLocaleString()}
                             </p>
                           </div>
                         </div>
@@ -413,8 +472,10 @@ const Admin = () => {
                     </div>
                   </ScrollArea>
                 ) : (
-                  <div className="h-[600px] flex items-center justify-center text-muted-foreground">
-                    Select a conversation to view messages
+                  <div className="h-[560px] flex flex-col items-center justify-center text-muted-foreground">
+                    <MessageSquare className="w-12 h-12 mb-4 opacity-20" />
+                    <p>Select a conversation to view full chat history</p>
+                    <p className="text-sm mt-1">All messages are stored and accessible here</p>
                   </div>
                 )}
               </div>
