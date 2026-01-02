@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { 
   LayoutDashboard, MessageSquare, FolderOpen, Settings, 
   Users, LogOut, Menu, X, ChevronRight, BarChart3,
-  Bot, Eye, Trash2, Edit2, Plus, Loader2
+  Bot, Eye, Trash2, Edit2, Plus, Loader2, Shield
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,8 +13,15 @@ import {
   Table, TableBody, TableCell, TableHead, 
   TableHeader, TableRow 
 } from '@/components/ui/table';
+import { 
+  AlertDialog, AlertDialogAction, AlertDialogCancel, 
+  AlertDialogContent, AlertDialogDescription, AlertDialogFooter, 
+  AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger 
+} from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { ProjectFormDialog } from '@/components/admin/ProjectFormDialog';
+import { UserRolesManager } from '@/components/admin/UserRolesManager';
 import type { User } from '@supabase/supabase-js';
 
 interface Conversation {
@@ -29,10 +36,14 @@ interface Conversation {
 interface Project {
   id: string;
   title: string;
+  description: string | null;
   category: string;
-  client: string;
-  featured: boolean;
+  client: string | null;
+  featured: boolean | null;
   created_at: string;
+  image_url: string | null;
+  technologies: string[] | null;
+  project_url: string | null;
 }
 
 interface ChatMessage {
@@ -51,6 +62,8 @@ const Admin = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [projectDialogOpen, setProjectDialogOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [stats, setStats] = useState({
     totalChats: 0,
     totalProjects: 0,
@@ -121,6 +134,36 @@ const Admin = () => {
     setSelectedConversation(conversationId);
   };
 
+  const handleDeleteProject = async (projectId: string) => {
+    try {
+      const { error } = await supabase
+        .from('portfolio_projects')
+        .delete()
+        .eq('id', projectId);
+
+      if (error) throw error;
+      
+      toast({ title: 'Project deleted successfully' });
+      fetchData();
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      toast({ 
+        title: 'Error deleting project', 
+        variant: 'destructive' 
+      });
+    }
+  };
+
+  const handleEditProject = (project: Project) => {
+    setEditingProject(project);
+    setProjectDialogOpen(true);
+  };
+
+  const handleAddProject = () => {
+    setEditingProject(null);
+    setProjectDialogOpen(true);
+  };
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     navigate('/');
@@ -130,6 +173,7 @@ const Admin = () => {
     { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { id: 'chats', icon: MessageSquare, label: 'AI Chats' },
     { id: 'projects', icon: FolderOpen, label: 'Portfolio' },
+    { id: 'users', icon: Shield, label: 'User Roles' },
     { id: 'analytics', icon: BarChart3, label: 'Analytics' },
     { id: 'settings', icon: Settings, label: 'Settings' },
   ];
@@ -214,7 +258,7 @@ const Admin = () => {
                 {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
               <div>
-                <h1 className="text-xl font-bold capitalize">{activeTab}</h1>
+                <h1 className="text-xl font-bold capitalize">{activeTab === 'users' ? 'User Roles' : activeTab}</h1>
                 <p className="text-sm text-muted-foreground">
                   {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                 </p>
@@ -381,7 +425,7 @@ const Admin = () => {
             <div className="bg-card border border-border rounded-2xl">
               <div className="p-4 border-b border-border flex items-center justify-between">
                 <h3 className="font-semibold">Portfolio Projects</h3>
-                <Button size="sm">
+                <Button size="sm" onClick={handleAddProject}>
                   <Plus className="w-4 h-4 mr-2" />
                   Add Project
                 </Button>
@@ -389,6 +433,7 @@ const Admin = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>Image</TableHead>
                     <TableHead>Title</TableHead>
                     <TableHead>Category</TableHead>
                     <TableHead>Client</TableHead>
@@ -399,11 +444,24 @@ const Admin = () => {
                 <TableBody>
                   {projects.map((project) => (
                     <TableRow key={project.id}>
+                      <TableCell>
+                        {project.image_url ? (
+                          <img 
+                            src={project.image_url} 
+                            alt={project.title}
+                            className="w-12 h-12 rounded-lg object-cover"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center">
+                            <FolderOpen className="w-5 h-5 text-muted-foreground" />
+                          </div>
+                        )}
+                      </TableCell>
                       <TableCell className="font-medium">{project.title}</TableCell>
                       <TableCell>
                         <Badge variant="outline">{project.category}</Badge>
                       </TableCell>
-                      <TableCell>{project.client}</TableCell>
+                      <TableCell>{project.client || '-'}</TableCell>
                       <TableCell>
                         {project.featured ? (
                           <Badge className="bg-primary">Featured</Badge>
@@ -413,18 +471,49 @@ const Admin = () => {
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-2">
-                          <Button variant="ghost" size="icon">
+                          <Button 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => handleEditProject(project)}
+                          >
                             <Edit2 className="w-4 h-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="text-destructive">
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="icon" className="text-destructive">
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Project?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone. This will permanently delete the project "{project.title}".
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction 
+                                  onClick={() => handleDeleteProject(project.id)}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </div>
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
+            </div>
+          )}
+
+          {activeTab === 'users' && (
+            <div className="bg-card border border-border rounded-2xl p-6">
+              <UserRolesManager />
             </div>
           )}
 
@@ -447,6 +536,14 @@ const Admin = () => {
           )}
         </div>
       </main>
+
+      {/* Project Form Dialog */}
+      <ProjectFormDialog
+        open={projectDialogOpen}
+        onOpenChange={setProjectDialogOpen}
+        project={editingProject}
+        onSuccess={fetchData}
+      />
     </div>
   );
 };
