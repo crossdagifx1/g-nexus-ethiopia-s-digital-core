@@ -1,4 +1,10 @@
+import { useEffect, useRef } from "react";
 import { Code, Palette, Brain, LayoutGrid, ArrowRight, Sparkles } from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Link } from "react-router-dom";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface ServiceCardProps {
   icon: React.ReactNode;
@@ -6,12 +12,13 @@ interface ServiceCardProps {
   description: string;
   features: string[];
   index: number;
+  link: string;
 }
 
-const ServiceCard = ({ icon, title, description, features, index }: ServiceCardProps) => (
-  <div 
-    className="group relative p-8 rounded-2xl glass border-glow opacity-0 animate-fade-in hover:scale-[1.02] transition-all duration-500"
-    style={{ animationDelay: `${index * 100 + 200}ms` }}
+const ServiceCard = ({ icon, title, description, features, index, link }: ServiceCardProps) => (
+  <Link 
+    to={link}
+    className="service-card group relative p-8 rounded-2xl glass border-glow hover:scale-[1.02] transition-all duration-500 block"
   >
     {/* Hover Gradient */}
     <div className="absolute inset-0 bg-gradient-to-br from-gold/10 via-transparent to-cyan/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -48,7 +55,7 @@ const ServiceCard = ({ icon, title, description, features, index }: ServiceCardP
         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
       </div>
     </div>
-  </div>
+  </Link>
 );
 
 const services = [
@@ -57,55 +64,146 @@ const services = [
     title: "Web Development",
     description: "Custom SaaS platforms, landing pages, and e-commerce solutions with native Telebirr integration.",
     features: ["React & Next.js", "Telebirr & Chapa", "Responsive Design"],
+    link: "/web-development",
   },
   {
     icon: <Palette className="w-7 h-7" />,
     title: "3D & Architecture",
     description: "Photorealistic ArchViz, product rendering, and immersive virtual tours that bring vision to life.",
     features: ["High-Fidelity Renders", "Virtual Tours", "Product Visualization"],
+    link: "/3d-architecture",
   },
   {
     icon: <Brain className="w-7 h-7" />,
     title: "AI Automation",
     description: "Intelligent Telegram bots, AI coding agents, and business process automation powered by cutting-edge tech.",
     features: ["Custom AI Agents", "Process Automation", "Smart Integrations"],
+    link: "/ai-automation",
   },
   {
     icon: <LayoutGrid className="w-7 h-7" />,
     title: "G-Nexus Platform",
     description: "All-in-one business management SaaS designed specifically for Ethiopian SMEs to thrive digitally.",
     features: ["ERP & CRM", "Website Builder", "AI Assistant"],
+    link: "/gnexus",
   },
 ];
 
 export const ServicesSection = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // Header animations
+      const headerElements = headerRef.current?.querySelectorAll(".header-anim");
+      if (headerElements) {
+        gsap.fromTo(
+          headerElements,
+          { opacity: 0, y: 60, filter: "blur(10px)" },
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 1,
+            stagger: 0.15,
+            ease: "expo.out",
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: "top 80%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      }
+
+      // Cards wave animation
+      const cards = cardsRef.current?.querySelectorAll(".service-card");
+      if (cards) {
+        cards.forEach((card, index) => {
+          const row = Math.floor(index / 2);
+          const col = index % 2;
+          const delay = (row + col) * 0.1;
+
+          gsap.fromTo(
+            card,
+            { opacity: 0, y: 80, scale: 0.9, rotateY: 15 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              rotateY: 0,
+              duration: 0.8,
+              delay,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: cardsRef.current,
+                start: "top 85%",
+                toggleActions: "play none none none",
+              },
+            }
+          );
+        });
+      }
+
+      // Parallax orbs
+      gsap.to(".service-orb-1", {
+        yPercent: 30,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 2,
+        },
+      });
+
+      gsap.to(".service-orb-2", {
+        yPercent: -20,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 2,
+        },
+      });
+
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="relative py-32 px-6 overflow-hidden">
+    <section ref={sectionRef} className="relative py-32 px-6 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/30 to-background" />
       
-      {/* Animated Orbs */}
-      <div className="absolute top-1/4 right-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl animate-float" />
-      <div className="absolute bottom-1/4 left-0 w-96 h-96 bg-cyan/5 rounded-full blur-3xl animate-float animation-delay-300" />
+      {/* Animated Orbs with Parallax */}
+      <div className="service-orb-1 absolute top-1/4 right-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl will-change-transform" />
+      <div className="service-orb-2 absolute bottom-1/4 left-0 w-96 h-96 bg-cyan/5 rounded-full blur-3xl will-change-transform" />
       
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Header */}
-        <div className="text-center mb-20">
-          <span className="inline-block px-4 py-2 rounded-full bg-gold/10 text-gold text-sm font-medium mb-6 opacity-0 animate-fade-in animate-pulse-glow">
+        <div ref={headerRef} className="text-center mb-20">
+          <span className="header-anim inline-block px-4 py-2 rounded-full bg-gold/10 text-gold text-sm font-medium mb-6">
             Our Services
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6 opacity-0 animate-fade-in animation-delay-100">
+          <h2 className="header-anim text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6">
             Building Ethiopia's{" "}
             <span className="text-gradient-gold">Digital Future</span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto opacity-0 animate-fade-in animation-delay-200">
+          <p className="header-anim text-xl text-muted-foreground max-w-2xl mx-auto">
             From web development to AI automation, we deliver premium digital solutions 
             that blend ancient wisdom with futuristic technology.
           </p>
         </div>
 
         {/* Services Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div ref={cardsRef} className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service, index) => (
             <ServiceCard key={service.title} {...service} index={index} />
           ))}
