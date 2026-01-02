@@ -111,30 +111,55 @@ serve(async (req) => {
       messages.push({ role: 'user', content: message });
     }
 
-    // Call OpenRouter API with Gemini
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://g-squad.dev',
-        'X-Title': 'G-Squad Support'
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.0-flash-exp:free',
-        messages: messages,
-        temperature: 0.7,
-        max_tokens: 1024,
-      }),
-    });
+    // Call OpenRouter API with Gemini (with retry for rate limits)
+    let response;
+    let retryCount = 0;
+    const maxRetries = 2;
+    
+    while (retryCount <= maxRetries) {
+      response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://g-squad.dev',
+          'X-Title': 'G-Squad Support'
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.0-flash-exp:free',
+          messages: messages,
+          temperature: 0.7,
+          max_tokens: 1024,
+        }),
+      });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('OpenRouter API error:', errorText);
-      throw new Error(`OpenRouter API error: ${response.status}`);
+      if (response.status === 429 && retryCount < maxRetries) {
+        console.log(`Rate limited, retrying in ${(retryCount + 1) * 2} seconds...`);
+        await new Promise(resolve => setTimeout(resolve, (retryCount + 1) * 2000));
+        retryCount++;
+        continue;
+      }
+      break;
     }
 
-    const data = await response.json();
+    if (!response!.ok) {
+      const errorText = await response!.text();
+      console.error('OpenRouter API error:', errorText);
+      
+      // If still rate limited after retries, return friendly message
+      if (response!.status === 429) {
+        return new Response(
+          JSON.stringify({ 
+            response: "I'm experiencing high demand right now. Please wait a moment and try again, or contact us at hello@g-squad.dev for immediate assistance.",
+            conversationId: convId 
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      throw new Error(`OpenRouter API error: ${response!.status}`);
+    }
+
+    const data = await response!.json();
     const assistantMessage = data.choices[0]?.message?.content || 'Sorry, I could not process your request.';
 
     console.log('AI Response:', assistantMessage.substring(0, 100));
