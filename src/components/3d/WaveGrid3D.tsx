@@ -1,43 +1,97 @@
-import { useRef, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { useRef, useMemo, useCallback } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Sparkles as DreiSparkles } from '@react-three/drei';
 import * as THREE from 'three';
 
 const WavePlane = () => {
   const meshRef = useRef<THREE.Mesh>(null!);
   const geometryRef = useRef<THREE.PlaneGeometry>(null!);
-
-  const { width, height } = useMemo(() => ({ width: 40, height: 40 }), []);
+  const { pointer } = useThree();
 
   useFrame((state) => {
     const geo = geometryRef.current;
     if (!geo) return;
     const pos = geo.attributes.position;
     const time = state.clock.elapsedTime;
+    const mx = pointer.x * 3;
+    const my = pointer.y * 3;
 
     for (let i = 0; i < pos.count; i++) {
       const x = pos.getX(i);
       const y = pos.getY(i);
-      const z = Math.sin(x * 0.4 + time) * 0.5 +
-                Math.sin(y * 0.3 + time * 0.8) * 0.5 +
-                Math.cos(x * 0.2 + y * 0.2 + time * 0.5) * 0.3;
+      // Multi-layered waves + mouse influence
+      const distToMouse = Math.sqrt((x - mx * 10) ** 2 + (y - my * 10) ** 2);
+      const mouseWave = Math.sin(distToMouse * 0.3 - time * 3) * Math.max(0, 1 - distToMouse * 0.05) * 1.5;
+      const z = Math.sin(x * 0.4 + time * 0.8) * 0.6 +
+                Math.sin(y * 0.3 + time * 0.6) * 0.6 +
+                Math.cos(x * 0.15 + y * 0.15 + time * 0.4) * 0.4 +
+                Math.sin(x * 0.8 + y * 0.5 + time * 1.2) * 0.2 +
+                mouseWave;
       pos.setZ(i, z);
     }
     pos.needsUpdate = true;
     geo.computeVertexNormals();
+
+    // Slow camera drift
+    meshRef.current.rotation.z = Math.sin(time * 0.1) * 0.05;
   });
 
   return (
     <mesh ref={meshRef} rotation={[-Math.PI / 2.5, 0, 0]} position={[0, -2, 0]}>
-      <planeGeometry ref={geometryRef} args={[width, height, 80, 80]} />
+      <planeGeometry ref={geometryRef} args={[50, 50, 120, 120]} />
       <meshStandardMaterial
         color="#c9922a"
         wireframe
         transparent
-        opacity={0.3}
+        opacity={0.25}
         emissive="#c9922a"
-        emissiveIntensity={0.2}
+        emissiveIntensity={0.3}
       />
     </mesh>
+  );
+};
+
+const RisingColumns = () => {
+  const groupRef = useRef<THREE.Group>(null!);
+  
+  const columns = useMemo(() => 
+    Array.from({ length: 30 }, (_, i) => ({
+      x: (Math.random() - 0.5) * 30,
+      z: (Math.random() - 0.5) * 20 - 5,
+      height: 0.5 + Math.random() * 3,
+      speed: 0.5 + Math.random() * 1.5,
+      phase: Math.random() * Math.PI * 2,
+      color: Math.random() > 0.6 ? '#00d4ff' : '#c9922a',
+    })),
+  []);
+
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    const children = groupRef.current.children;
+    columns.forEach((col, i) => {
+      if (children[i]) {
+        const scale = 0.5 + Math.sin(t * col.speed + col.phase) * 0.5;
+        (children[i] as THREE.Mesh).scale.y = scale * col.height;
+        (children[i] as THREE.Mesh).position.y = -2 + scale * col.height * 0.5;
+      }
+    });
+  });
+
+  return (
+    <group ref={groupRef}>
+      {columns.map((col, i) => (
+        <mesh key={i} position={[col.x, -2, col.z]}>
+          <boxGeometry args={[0.15, 1, 0.15]} />
+          <meshStandardMaterial
+            color={col.color}
+            emissive={col.color}
+            emissiveIntensity={0.6}
+            transparent
+            opacity={0.5}
+          />
+        </mesh>
+      ))}
+    </group>
   );
 };
 
@@ -45,19 +99,32 @@ const GlowingOrbs = () => {
   const groupRef = useRef<THREE.Group>(null!);
   
   const orbs = useMemo(() => 
-    Array.from({ length: 8 }, (_, i) => ({
+    Array.from({ length: 15 }, (_, i) => ({
       position: [
-        Math.sin(i * Math.PI / 4) * 5,
-        Math.cos(i * Math.PI / 4) * 2 + 1,
-        Math.sin(i * Math.PI / 3) * 3,
+        Math.sin(i * Math.PI / 7.5) * (3 + Math.random() * 4),
+        Math.cos(i * Math.PI / 5) * 2 + 1 + Math.random(),
+        Math.sin(i * Math.PI / 3) * 3 - 2,
       ] as [number, number, number],
-      color: i % 2 === 0 ? '#c9922a' : '#00d4ff',
-      scale: 0.08 + Math.random() * 0.12,
+      color: i % 3 === 0 ? '#00d4ff' : i % 3 === 1 ? '#c9922a' : '#ff6b35',
+      scale: 0.06 + Math.random() * 0.14,
+      speed: 0.3 + Math.random() * 0.8,
+      offset: Math.random() * Math.PI * 2,
     })),
   []);
 
   useFrame((state) => {
-    groupRef.current.rotation.y = state.clock.elapsedTime * 0.1;
+    const t = state.clock.elapsedTime;
+    groupRef.current.rotation.y = t * 0.08;
+    const children = groupRef.current.children;
+    orbs.forEach((orb, i) => {
+      if (children[i]) {
+        const mesh = children[i] as THREE.Mesh;
+        mesh.position.y = orb.position[1] + Math.sin(t * orb.speed + orb.offset) * 0.8;
+        // Pulsing scale
+        const pulse = orb.scale * (1 + Math.sin(t * 2 + orb.offset) * 0.3);
+        mesh.scale.setScalar(pulse / orb.scale);
+      }
+    });
   });
 
   return (
@@ -68,7 +135,7 @@ const GlowingOrbs = () => {
           <meshStandardMaterial
             color={orb.color}
             emissive={orb.color}
-            emissiveIntensity={2}
+            emissiveIntensity={3}
           />
         </mesh>
       ))}
@@ -89,20 +156,22 @@ export const WaveGrid3D = () => {
         </h2>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
           We navigate the ever-changing technology landscape to deliver solutions that 
-          stay ahead of the curve. Our expertise spans across web, mobile, AI, and 3D ecosystems.
+          stay ahead of the curve. Move your mouse to interact with the digital terrain.
         </p>
       </div>
-      <div className="relative h-[400px] rounded-3xl overflow-hidden max-w-6xl mx-auto">
-        <Canvas camera={{ position: [0, 5, 12], fov: 60 }}>
-          <ambientLight intensity={0.2} />
+      <div className="relative h-[450px] rounded-3xl overflow-hidden max-w-6xl mx-auto border border-border/20">
+        <Canvas camera={{ position: [0, 6, 14], fov: 55 }}>
+          <ambientLight intensity={0.15} />
           <directionalLight position={[10, 10, 5]} intensity={0.8} color="#c9922a" />
-          <pointLight position={[-5, 3, -5]} intensity={0.6} color="#00d4ff" />
+          <pointLight position={[-5, 5, -5]} intensity={0.6} color="#00d4ff" />
+          <pointLight position={[5, 2, 5]} intensity={0.4} color="#ff6b35" />
           <WavePlane />
+          <RisingColumns />
           <GlowingOrbs />
-          <fog attach="fog" args={['#0f0d0a', 8, 25]} />
+          <DreiSparkles count={40} size={1.5} scale={15} color="#00d4ff" speed={0.3} />
+          <fog attach="fog" args={['#0f0d0a', 10, 30]} />
         </Canvas>
       </div>
-      {/* Feature cards below */}
       <div className="relative z-10 max-w-5xl mx-auto grid md:grid-cols-3 gap-6 mt-16">
         {[
           { title: 'Adaptive Systems', desc: 'AI-driven solutions that learn and evolve with your business needs', icon: '🧠' },
