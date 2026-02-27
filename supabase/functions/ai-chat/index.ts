@@ -4,10 +4,10 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-const OPENROUTER_API_KEY = Deno.env.get('OPENROUTER_API_KEY');
+const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
@@ -55,7 +55,6 @@ serve(async (req) => {
 
     console.log('Received message:', message, 'Session:', sessionId);
 
-    // Initialize Supabase client
     const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
 
     // Get or create conversation
@@ -104,54 +103,27 @@ serve(async (req) => {
       messages.push({ role: 'user', content: message });
     }
 
-    // Call OpenRouter API with Gemini (with retry for rate limits)
-    let response;
-    let retryCount = 0;
-    const maxRetries = 2;
-    
-    while (retryCount <= maxRetries) {
-      response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://g-squad.dev',
-          'X-Title': 'G-Squad Support'
-        },
-        body: JSON.stringify({
-          model: 'thudm/glm-z1-32b:free',
-          messages: messages,
-          temperature: 0.7,
-        }),
-      });
+    // Call Lovable AI API
+    const response = await fetch('https://api.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: messages,
+        temperature: 0.7,
+      }),
+    });
 
-      if (response.status === 429 && retryCount < maxRetries) {
-        console.log(`Rate limited, retrying in ${(retryCount + 1) * 2} seconds...`);
-        await new Promise(resolve => setTimeout(resolve, (retryCount + 1) * 2000));
-        retryCount++;
-        continue;
-      }
-      break;
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Lovable AI API error:', errorText);
+      throw new Error(`Lovable AI API error: ${response.status}`);
     }
 
-    if (!response!.ok) {
-      const errorText = await response!.text();
-      console.error('OpenRouter API error:', errorText);
-      
-      // If still rate limited after retries, return friendly message
-      if (response!.status === 429) {
-        return new Response(
-          JSON.stringify({ 
-            response: "I'm experiencing high demand right now. Please wait a moment and try again, or contact us at hello@g-squad.dev for immediate assistance.",
-            conversationId: convId 
-          }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-      throw new Error(`OpenRouter API error: ${response!.status}`);
-    }
-
-    const data = await response!.json();
+    const data = await response.json();
     const assistantMessage = data.choices[0]?.message?.content || 'Sorry, I could not process your request.';
 
     console.log('AI Response:', assistantMessage.substring(0, 100));
