@@ -7,9 +7,12 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+const OPENROUTER_API_KEY = Deno.env.get('OPENROUTER_API_KEY');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+
+const PRIMARY_MODEL = 'arcee-ai/trinity-large-preview:free';
+const FALLBACK_MODEL = 'arcee-ai/trinity-mini:free';
 
 const systemPrompt = `You are Tsion, a friendly and professional customer support agent at G-Squad, a digital agency in Addis Ababa, Ethiopia.
 
@@ -40,6 +43,25 @@ SALES FOCUS:
 - Show how we can help
 - Create urgency: "Want me to set up a free consultation?"
 - Contact: hello@g-squad.dev`;
+
+async function callOpenRouter(messages: any[], model: string) {
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': 'https://g-squad.dev',
+      'X-Title': 'G-Squad Support'
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      temperature: 0.7,
+    }),
+  });
+
+  return response;
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -103,24 +125,32 @@ serve(async (req) => {
       messages.push({ role: 'user', content: message });
     }
 
-    // Call Lovable AI API
-    const response = await fetch('https://api.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: messages,
-        temperature: 0.7,
-      }),
-    });
+    // Try primary model, fall back to mini
+    let response = await callOpenRouter(messages, PRIMARY_MODEL);
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Lovable AI API error:', errorText);
-      throw new Error(`Lovable AI API error: ${response.status}`);
+      console.error(`Primary model (${PRIMARY_MODEL}) failed:`, response.status, errorText);
+      
+      // Try fallback model
+      console.log(`Trying fallback model: ${FALLBACK_MODEL}`);
+      response = await callOpenRouter(messages, FALLBACK_MODEL);
+    }
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Fallback model (${FALLBACK_MODEL}) also failed:`, response.status, errorText);
+      
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ 
+            response: "I'm experiencing high demand right now. Please wait a moment and try again, or contact us at hello@g-squad.dev for immediate assistance.",
+            conversationId: convId 
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      throw new Error(`OpenRouter API error: ${response.status}`);
     }
 
     const data = await response.json();
