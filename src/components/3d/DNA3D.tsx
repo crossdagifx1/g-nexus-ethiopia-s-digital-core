@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment, Trail, Sparkles as DreiSparkles } from '@react-three/drei';
 import * as THREE from 'three';
@@ -141,13 +141,15 @@ export const DNA3D = () => {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="h-[550px] rounded-3xl overflow-hidden order-2 lg:order-1 border border-border/20">
             <Canvas camera={{ position: [0, 0, 9], fov: 50 }}>
-              <ambientLight intensity={0.2} />
-              <directionalLight position={[5, 5, 5]} intensity={1} color="#c9922a" />
-              <pointLight position={[-5, -5, 5]} intensity={0.6} color="#00d4ff" />
-              <pointLight position={[0, 0, 3]} intensity={0.3} color="#c9922a" />
-              <DNAHelix />
-              <DreiSparkles count={50} size={1.5} scale={8} color="#c9922a" speed={0.4} />
-              <Environment preset="night" />
+              <Suspense fallback={null}>
+                <ambientLight intensity={0.2} />
+                <directionalLight position={[5, 5, 5]} intensity={1} color="#c9922a" />
+                <pointLight position={[-5, -5, 5]} intensity={0.6} color="#00d4ff" />
+                <pointLight position={[0, 0, 3]} intensity={0.3} color="#c9922a" />
+                <DNAHelix />
+                <DreiSparkles count={50} size={1.5} scale={8} color="#c9922a" speed={0.4} />
+                <Environment preset="night" />
+              </Suspense>
             </Canvas>
           </div>
           <div className="order-1 lg:order-2">

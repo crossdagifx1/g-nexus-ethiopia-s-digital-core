@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, forwardRef, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float, Environment, Trail, Sparkles as DreiSparkles } from '@react-three/drei';
 import * as THREE from 'three';
@@ -80,24 +80,35 @@ const CrystalCluster = () => {
   );
 };
 
-const EnergyOrbit = ({ radius, speed, color }: { radius: number; speed: number; color: string }) => {
-  const ref = useRef<THREE.Mesh>(null!);
+const EnergyOrbitMesh = forwardRef<THREE.Mesh, { radius: number; speed: number; color: string }>(
+  ({ radius, speed, color }, ref) => {
+    const innerRef = useRef<THREE.Mesh>(null!);
+    const meshRef = (ref as React.MutableRefObject<THREE.Mesh>) || innerRef;
 
-  useFrame((state) => {
-    const t = state.clock.elapsedTime * speed;
-    ref.current.position.set(
-      Math.cos(t) * radius,
-      Math.sin(t * 1.3) * radius * 0.5,
-      Math.sin(t) * radius
-    );
-  });
+    useFrame((state) => {
+      const t = state.clock.elapsedTime * speed;
+      if (meshRef.current) {
+        meshRef.current.position.set(
+          Math.cos(t) * radius,
+          Math.sin(t * 1.3) * radius * 0.5,
+          Math.sin(t) * radius
+        );
+      }
+    });
 
-  return (
-    <Trail width={0.15} length={10} color={color} attenuation={(w) => w * w}>
-      <mesh ref={ref}>
+    return (
+      <mesh ref={meshRef}>
         <sphereGeometry args={[0.04, 8, 8]} />
         <meshStandardMaterial color={color} emissive={color} emissiveIntensity={5} />
       </mesh>
+    );
+  }
+);
+
+const EnergyOrbit = ({ radius, speed, color }: { radius: number; speed: number; color: string }) => {
+  return (
+    <Trail width={0.15} length={10} color={color} attenuation={(w) => w * w}>
+      <EnergyOrbitMesh radius={radius} speed={speed} color={color} />
     </Trail>
   );
 };
@@ -143,13 +154,15 @@ export const CrystalShowcase3D = () => {
           </div>
           <div className="h-[550px] rounded-3xl overflow-hidden border border-border/20">
             <Canvas camera={{ position: [0, 0, 5.5], fov: 50 }}>
-              <ambientLight intensity={0.3} />
-              <directionalLight position={[5, 5, 5]} intensity={1.2} color="#c9922a" />
-              <pointLight position={[-5, -3, 3]} intensity={0.8} color="#00d4ff" />
-              <spotLight position={[0, 8, 0]} intensity={0.5} angle={0.6} penumbra={1} color="#c9922a" />
-              <CrystalCluster />
-              <DreiSparkles count={80} size={2} scale={6} color="#c9922a" speed={0.4} />
-              <Environment preset="studio" />
+              <Suspense fallback={null}>
+                <ambientLight intensity={0.3} />
+                <directionalLight position={[5, 5, 5]} intensity={1.2} color="#c9922a" />
+                <pointLight position={[-5, -3, 3]} intensity={0.8} color="#00d4ff" />
+                <spotLight position={[0, 8, 0]} intensity={0.5} angle={0.6} penumbra={1} color="#c9922a" />
+                <CrystalCluster />
+                <DreiSparkles count={80} size={2} scale={6} color="#c9922a" speed={0.4} />
+                <Environment preset="studio" />
+              </Suspense>
             </Canvas>
           </div>
         </div>
