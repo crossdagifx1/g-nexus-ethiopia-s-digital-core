@@ -15,11 +15,13 @@ import About from "./pages/About";
 import Team from "./pages/Team";
 import Careers from "./pages/Careers";
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
 import Documentation from "./pages/Documentation";
 import Status from "./pages/Status";
 import Portfolio from "./pages/Portfolio";
+import Support from "./pages/Support";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 
@@ -42,11 +44,13 @@ const App = () => (
             <Route path="/team" element={<Team />} />
             <Route path="/careers" element={<Careers />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:id" element={<BlogPost />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/documentation" element={<Documentation />} />
             <Route path="/status" element={<Status />} />
             <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="/support" element={<Support />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<NotFound />} />
