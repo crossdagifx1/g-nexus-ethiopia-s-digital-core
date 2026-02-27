@@ -1,6 +1,6 @@
 import { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Environment, Trail, Sparkles as DreiSparkles } from '@react-three/drei';
+import { Environment, Sparkles as DreiSparkles } from '@react-three/drei';
 import * as THREE from 'three';
 
 const DNAHelix = () => {
@@ -124,12 +124,10 @@ const ElectronOrbit = ({ radius, speed, color, yRange }: { radius: number; speed
   });
 
   return (
-    <Trail width={0.2} length={12} color={color} attenuation={(w) => w * w}>
-      <mesh ref={ref}>
-        <sphereGeometry args={[0.05, 8, 8]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={4} />
-      </mesh>
-    </Trail>
+    <mesh ref={ref}>
+      <sphereGeometry args={[0.05, 8, 8]} />
+      <meshStandardMaterial color={color} emissive={color} emissiveIntensity={4} />
+    </mesh>
   );
 };
 
