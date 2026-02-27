@@ -1,6 +1,6 @@
 import { useRef, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Environment, Trail, Sparkles as DreiSparkles } from '@react-three/drei';
+import { Environment, Sparkles as DreiSparkles, Text, Center } from '@react-three/drei';
 import * as THREE from 'three';
 
 const LiquidGlobe = () => {
@@ -138,159 +138,6 @@ const LiquidGlobe = () => {
   );
 };
 
-const ExternalOrbitLine = ({ radius, tilt, speed, color, opacity }: { radius: number; tilt: number; speed: number; color: string; opacity: number }) => {
-  const ref = useRef<THREE.Line>(null!);
-
-  const lineObj = useMemo(() => {
-    const curve = new THREE.EllipseCurve(0, 0, radius, radius, 0, Math.PI * 2, false, 0);
-    const points2D = curve.getPoints(120);
-    const points3D = points2D.map(p => new THREE.Vector3(p.x, 0, p.y));
-    const geometry = new THREE.BufferGeometry().setFromPoints(points3D);
-    const material = new THREE.LineBasicMaterial({ color, transparent: true, opacity });
-    return new THREE.Line(geometry, material);
-  }, [radius, color, opacity]);
-
-  useFrame((state) => {
-    if (ref.current) {
-      ref.current.rotation.y = state.clock.elapsedTime * speed;
-    }
-  });
-
-  return (
-    <group rotation={[tilt, 0, tilt * 0.5]}>
-      <primitive ref={ref} object={lineObj} />
-    </group>
-  );
-};
-
-const latLonToVec3 = (lat: number, lon: number, r: number) => {
-  const phi = (90 - lat) * (Math.PI / 180);
-  const theta = (lon + 180) * (Math.PI / 180);
-  return new THREE.Vector3(
-    -r * Math.sin(phi) * Math.cos(theta),
-    r * Math.cos(phi),
-    r * Math.sin(phi) * Math.sin(theta)
-  );
-};
-
-const ArcConnection = ({ start, end, color }: { start: THREE.Vector3; end: THREE.Vector3; color: string }) => {
-  const lineRef = useRef<any>(null!);
-
-  const curve = useMemo(() => {
-    const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
-    mid.normalize().multiplyScalar(3.5);
-    return new THREE.QuadraticBezierCurve3(start, mid, end);
-  }, [start, end]);
-
-  const lineObj = useMemo(() => {
-    const points = curve.getPoints(50);
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    const material = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.4 });
-    return new THREE.Line(geometry, material);
-  }, [curve, color]);
-
-  useFrame((state) => {
-    if (lineRef.current) {
-      const mat = lineRef.current.material as THREE.LineBasicMaterial;
-      mat.opacity = 0.3 + Math.sin(state.clock.elapsedTime * 2) * 0.15;
-    }
-  });
-
-  return <primitive ref={lineRef} object={lineObj} />;
-};
-
-const TravelingPulse = ({ start, end, color, speed }: { start: THREE.Vector3; end: THREE.Vector3; color: string; speed: number }) => {
-  const ref = useRef<THREE.Mesh>(null!);
-  const curve = useMemo(() => {
-    const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5);
-    mid.normalize().multiplyScalar(3.5);
-    return new THREE.QuadraticBezierCurve3(start, mid, end);
-  }, [start, end]);
-
-  useFrame((state) => {
-    const t = (state.clock.elapsedTime * speed) % 1;
-    const pos = curve.getPoint(t);
-    ref.current.position.copy(pos);
-  });
-
-  return (
-    <Trail width={0.15} length={6} color={color} attenuation={(w) => w * w}>
-      <mesh ref={ref}>
-        <sphereGeometry args={[0.04, 8, 8]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={4} />
-      </mesh>
-    </Trail>
-  );
-};
-
-const ConnectionNetwork = () => {
-  const groupRef = useRef<THREE.Group>(null!);
-  const { pointer } = useThree();
-
-  const cities = useMemo(() => [
-    { name: 'Addis Ababa', lat: 9.02, lon: 38.75, isHome: true },
-    { name: 'London', lat: 51.5, lon: -0.1 },
-    { name: 'New York', lat: 40.7, lon: -74 },
-    { name: 'Dubai', lat: 25.2, lon: 55.3 },
-    { name: 'Tokyo', lat: 35.7, lon: 139.7 },
-    { name: 'Cape Town', lat: -33.9, lon: 18.4 },
-    { name: 'Singapore', lat: 1.3, lon: 103.8 },
-    { name: 'Berlin', lat: 52.5, lon: 13.4 },
-    { name: 'Sydney', lat: -33.9, lon: 151.2 },
-  ], []);
-
-  const connections = useMemo(() => {
-    const homePos = latLonToVec3(cities[0].lat, cities[0].lon, 2.15);
-    return cities.slice(1).map((city, i) => ({
-      start: homePos,
-      end: latLonToVec3(city.lat, city.lon, 2.15),
-      color: i % 2 === 0 ? '#c9922a' : '#00d4ff',
-      speed: 0.2 + Math.random() * 0.3,
-    }));
-  }, [cities]);
-
-  useFrame((state) => {
-    const t = state.clock.elapsedTime;
-    groupRef.current.rotation.y = t * 0.12 + pointer.x * 0.2;
-    groupRef.current.rotation.x = pointer.y * 0.1;
-  });
-
-  return (
-    <group ref={groupRef}>
-      {/* City markers */}
-      {cities.map((city, i) => {
-        const pos = latLonToVec3(city.lat, city.lon, 2.15);
-        return (
-          <group key={city.name}>
-            <mesh position={pos}>
-              <sphereGeometry args={[city.isHome ? 0.08 : 0.04, 16, 16]} />
-              <meshStandardMaterial
-                color={city.isHome ? '#c9922a' : '#00d4ff'}
-                emissive={city.isHome ? '#c9922a' : '#00d4ff'}
-                emissiveIntensity={city.isHome ? 3 : 1.5}
-              />
-            </mesh>
-            {/* Marker ring for home city */}
-            {city.isHome && (
-              <mesh position={pos}>
-                <ringGeometry args={[0.12, 0.15, 32]} />
-                <meshStandardMaterial
-                  color="#c9922a"
-                  emissive="#c9922a"
-                  emissiveIntensity={1}
-                  transparent
-                  opacity={0.5}
-                  side={THREE.DoubleSide}
-                />
-              </mesh>
-            )}
-          </group>
-        );
-      })}
-      {/* City markers only - no satellite lines */}
-    </group>
-  );
-};
 
 export const GlobeNetwork3D = () => {
   return (
@@ -313,11 +160,25 @@ export const GlobeNetwork3D = () => {
             <directionalLight position={[5, 3, 5]} intensity={0.8} color="#c9922a" />
             <pointLight position={[-3, -3, 5]} intensity={0.5} color="#00d4ff" />
             <LiquidGlobe />
-            <ConnectionNetwork />
-            <ExternalOrbitLine radius={3.0} tilt={0.4} speed={0.15} color="#c9922a" opacity={0.25} />
-            <ExternalOrbitLine radius={3.3} tilt={-0.6} speed={-0.1} color="#00d4ff" opacity={0.15} />
-            <ExternalOrbitLine radius={3.6} tilt={0.8} speed={0.08} color="#c9922a" opacity={0.1} />
-            <ExternalOrbitLine radius={2.8} tilt={-0.3} speed={-0.2} color="#00d4ff" opacity={0.2} />
+            <Center position={[0, 0, 2.5]}>
+              <Text
+                fontSize={1.8}
+                letterSpacing={0.15}
+                font="https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiA.woff2"
+                anchorX="center"
+                anchorY="middle"
+              >
+                AI
+                <meshStandardMaterial
+                  color="#00d4ff"
+                  emissive="#00d4ff"
+                  emissiveIntensity={2}
+                  transparent
+                  opacity={0.2}
+                  side={THREE.DoubleSide}
+                />
+              </Text>
+            </Center>
             <DreiSparkles count={30} size={1} scale={6} color="#c9922a" speed={0.3} />
             <Environment preset="night" />
           </Canvas>
