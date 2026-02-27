@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
-import { Sparkles, Github, Linkedin, Twitter, Instagram } from "lucide-react";
+import { Github, Linkedin, Twitter, Instagram } from "lucide-react";
 import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import gNexusLogo from "@/assets/g-nexus-logo.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -141,10 +142,7 @@ export const Footer = () => {
           {/* Brand */}
           <div ref={brandRef} className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-6 group">
-              <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-gold to-gold-glow flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                <span className="text-background font-display font-bold text-xl">G</span>
-                <Sparkles className="absolute -top-1 -right-1 w-4 h-4 text-cyan" />
-              </div>
+              <img src={gNexusLogo} alt="G-Nexus Logo" className="w-12 h-12 rounded-xl object-contain shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300" />
               <div>
                 <span className="font-display font-bold text-2xl text-foreground">G-Nexus</span>
                 <p className="text-xs text-muted-foreground">by G-Squad</p>
