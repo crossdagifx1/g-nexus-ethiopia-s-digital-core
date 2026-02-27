@@ -149,10 +149,10 @@ export const WaveGrid3D = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-background to-card/30" />
       <div className="relative z-10 max-w-7xl mx-auto text-center mb-16">
         <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan/10 text-cyan text-sm font-medium mb-6">
-          ◈ Digital Landscape
+          ◈ GNEXUS AI
         </span>
         <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6">
-          Riding the <span className="text-gradient-cyber">Digital Wave</span>
+          Powered by <span className="text-gradient-cyber">GNEXUS AI</span>
         </h2>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
           We navigate the ever-changing technology landscape to deliver solutions that 
@@ -165,9 +165,7 @@ export const WaveGrid3D = () => {
           <directionalLight position={[10, 10, 5]} intensity={0.8} color="#c9922a" />
           <pointLight position={[-5, 5, -5]} intensity={0.6} color="#00d4ff" />
           <pointLight position={[5, 2, 5]} intensity={0.4} color="#ff6b35" />
-          <WavePlane />
-          <RisingColumns />
-          <GlowingOrbs />
+        <WavePlane />
           <DreiSparkles count={40} size={1.5} scale={15} color="#00d4ff" speed={0.3} />
           <fog attach="fog" args={['#0f0d0a', 10, 30]} />
         </Canvas>
