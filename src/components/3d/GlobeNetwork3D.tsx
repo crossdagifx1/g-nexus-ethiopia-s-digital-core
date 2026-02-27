@@ -191,13 +191,7 @@ const ConnectionNetwork = () => {
           </group>
         );
       })}
-      {/* Arc connections */}
-      {connections.map((conn, i) => (
-        <group key={i}>
-          <ArcConnection start={conn.start} end={conn.end} color={conn.color} />
-          <TravelingPulse start={conn.start} end={conn.end} color={conn.color} speed={conn.speed} />
-        </group>
-      ))}
+      {/* City markers only - no satellite lines */}
     </group>
   );
 };
