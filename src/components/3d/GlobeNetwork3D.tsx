@@ -31,16 +31,6 @@ const Globe = () => {
           clearcoat={0.3}
           clearcoatRoughness={0.2}
         />
-        {/* Wireframe overlay */}
-        <mesh>
-          <sphereGeometry args={[2.01, 48, 48]} />
-          <meshStandardMaterial
-            color="#c9922a"
-            wireframe
-            transparent
-            opacity={0.12}
-          />
-        </mesh>
         {/* Inner glow */}
         <mesh>
           <sphereGeometry args={[1.98, 32, 32]} />
