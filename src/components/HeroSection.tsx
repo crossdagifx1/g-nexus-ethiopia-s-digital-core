@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Zap, Shield, Globe } from "lucide-react";
 import { gsap } from "gsap";
@@ -14,6 +14,14 @@ const floatingFeatures = [
   { icon: <Globe className="w-5 h-5" />, label: "Global Ready", delay: "400ms" },
 ];
 
+const typewriterPhrases = [
+  "Digital Excellence",
+  "AI Innovation", 
+  "Web Solutions",
+  "3D Architecture",
+  "Future Technology",
+];
+
 export const HeroSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headlineRef = useRef<HTMLHeadingElement>(null);
@@ -22,6 +30,29 @@ export const HeroSection = () => {
   const featuresRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
+  const [currentPhrase, setCurrentPhrase] = useState("");
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Typewriter effect
+  useEffect(() => {
+    const phrase = typewriterPhrases[phraseIndex];
+    const timeout = setTimeout(() => {
+      if (!isDeleting) {
+        setCurrentPhrase(phrase.slice(0, currentPhrase.length + 1));
+        if (currentPhrase.length === phrase.length) {
+          setTimeout(() => setIsDeleting(true), 1500);
+        }
+      } else {
+        setCurrentPhrase(phrase.slice(0, currentPhrase.length - 1));
+        if (currentPhrase.length === 0) {
+          setIsDeleting(false);
+          setPhraseIndex((phraseIndex + 1) % typewriterPhrases.length);
+        }
+      }
+    }, isDeleting ? 40 : 80);
+    return () => clearTimeout(timeout);
+  }, [currentPhrase, isDeleting, phraseIndex]);
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -203,11 +234,16 @@ export const HeroSection = () => {
         {/* Subheadline */}
         <p 
           ref={subheadlineRef}
-          className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-12 opacity-0 leading-relaxed"
+          className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-4 opacity-0 leading-relaxed"
         >
           We are <span className="text-gold font-semibold">G-Nexus</span> — Ethiopia's premier digital platform 
           building the future through web, 3D, and AI innovation.
         </p>
+
+        {/* Typewriter tagline */}
+        <div className="text-2xl md:text-3xl font-display font-bold text-gold mb-12 h-10">
+          {currentPhrase}<span className="animate-pulse">|</span>
+        </div>
 
         {/* Floating Feature Pills */}
         <div ref={featuresRef} className="flex flex-wrap justify-center gap-4 mb-12">

@@ -4,6 +4,7 @@ import { CheckCircle, Zap, Shield, TrendingUp, ArrowRight, Sparkles, BarChart3, 
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Link } from "react-router-dom";
+import gNexusLogo from "@/assets/g-nexus-logo.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -236,9 +237,7 @@ export const GNexusSection = () => {
               <div className="absolute inset-4 rounded-3xl glass border-glow p-8 flex flex-col justify-between hover:scale-[1.02] transition-transform duration-500">
                 <div>
                   <div className="flex items-center gap-3 mb-8">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gold to-gold-glow flex items-center justify-center shadow-lg">
-                      <span className="text-background font-bold text-xl">G</span>
-                    </div>
+                    <img src={gNexusLogo} alt="G-Nexus" className="w-12 h-12 rounded-xl object-contain shadow-lg" />
                     <div>
                       <span className="font-display font-bold text-xl text-foreground">G-Nexus</span>
                       <p className="text-xs text-muted-foreground">Dashboard v2.0</p>

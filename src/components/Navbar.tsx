@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Sparkles, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import gNexusLogo from "@/assets/g-nexus-logo.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -85,10 +86,11 @@ export const Navbar = () => {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo - Links to Home */}
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="relative w-11 h-11 rounded-xl bg-gradient-to-br from-gold to-gold-glow flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg group-hover:shadow-[0_0_30px_hsl(38,70%,50%,0.5)]">
-            <span className="text-background font-display font-bold text-xl">G</span>
-            <Sparkles className="absolute -top-1 -right-1 w-4 h-4 text-cyan animate-pulse-glow" />
-          </div>
+          <img 
+            src={gNexusLogo} 
+            alt="G-Nexus Logo" 
+            className="w-11 h-11 rounded-xl object-contain transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg group-hover:shadow-[0_0_30px_hsl(38,70%,50%,0.5)]"
+          />
           <div className="flex flex-col">
             <span className="font-display font-bold text-xl text-foreground group-hover:text-gold transition-colors duration-300">
               G-Nexus

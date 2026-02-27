@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { Code, Palette, Brain, LayoutGrid, ArrowRight, Sparkles } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -15,10 +15,34 @@ interface ServiceCardProps {
   link: string;
 }
 
-const ServiceCard = ({ icon, title, description, features, index, link }: ServiceCardProps) => (
+const ServiceCard = ({ icon, title, description, features, index, link }: ServiceCardProps) => {
+  const cardRef = useRef<HTMLAnchorElement>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = (y - centerY) / 15;
+    const rotateY = (centerX - x) / 15;
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    if (cardRef.current) cardRef.current.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+  }, []);
+
+  return (
   <Link 
+    ref={cardRef}
     to={link}
-    className="service-card group relative p-8 rounded-2xl glass border-glow hover:scale-[1.02] transition-all duration-500 block"
+    className="service-card group relative p-8 rounded-2xl glass border-glow transition-all duration-200 block"
+    style={{ transformStyle: 'preserve-3d' }}
+    onMouseMove={handleMouseMove}
+    onMouseLeave={handleMouseLeave}
   >
     {/* Hover Gradient */}
     <div className="absolute inset-0 bg-gradient-to-br from-gold/10 via-transparent to-cyan/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -56,7 +80,8 @@ const ServiceCard = ({ icon, title, description, features, index, link }: Servic
       </div>
     </div>
   </Link>
-);
+  );
+};
 
 const services = [
   {
