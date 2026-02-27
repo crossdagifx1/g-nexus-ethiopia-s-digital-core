@@ -119,7 +119,7 @@ serve(async (req) => {
           'X-Title': 'G-Squad Support'
         },
         body: JSON.stringify({
-          model: 'meta-llama/llama-4-scout:free',
+          model: 'thudm/glm-z1-32b:free',
           messages: messages,
           temperature: 0.7,
         }),
