@@ -12,7 +12,7 @@ import { FloatingLogo3D } from "@/components/3d/FloatingLogo3D";
 import { WaveGrid3D } from "@/components/3d/WaveGrid3D";
 import { DNA3D } from "@/components/3d/DNA3D";
 import { GlobeNetwork3D } from "@/components/3d/GlobeNetwork3D";
-import { CrystalShowcase3D } from "@/components/3d/CrystalShowcase3D";
+import { NebulaVortex3D } from "@/components/3d/NebulaVortex3D";
 import { ProcessSection } from "@/components/ProcessSection";
 import { TestimonialsShowcase } from "@/components/TestimonialsShowcase";
 import { CTASection } from "@/components/CTASection";
@@ -67,8 +67,8 @@ const Index = () => {
         </div>
         <SectionDivider variant="peak" />
 
-        {/* 3D Section 5: Crystal Quality */}
-        <CrystalShowcase3D />
+        {/* 3D Section 5: Nebula Vortex */}
+        <NebulaVortex3D />
 
         <SectionDivider variant="wave" flip />
 
