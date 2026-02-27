@@ -1,4 +1,4 @@
-import { useRef, useMemo, useState } from 'react';
+import { useRef, useMemo, useState, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float, MeshDistortMaterial, Environment, Trail, Sparkles as DreiSparkles } from '@react-three/drei';
 import * as THREE from 'three';
@@ -201,17 +201,19 @@ export const FloatingLogo3D = () => {
           </div>
           <div className="h-[550px] rounded-3xl overflow-hidden border border-border/20">
             <Canvas camera={{ position: [0, 0, 7], fov: 50 }}>
-              <ambientLight intensity={0.2} />
-              <directionalLight position={[5, 5, 5]} intensity={1.2} color="#c9922a" />
-              <pointLight position={[-5, -5, 5]} intensity={0.6} color="#00d4ff" />
-              <spotLight position={[0, 10, 0]} intensity={0.4} angle={0.5} penumbra={1} color="#c9922a" />
-              <MouseTracker>
-                <GoldSphere />
-                <OrbitRings />
-              </MouseTracker>
-              <FloatingParticles3D />
-              <DreiSparkles count={60} size={2} scale={8} color="#c9922a" speed={0.5} />
-              <Environment preset="night" />
+              <Suspense fallback={null}>
+                <ambientLight intensity={0.2} />
+                <directionalLight position={[5, 5, 5]} intensity={1.2} color="#c9922a" />
+                <pointLight position={[-5, -5, 5]} intensity={0.6} color="#00d4ff" />
+                <spotLight position={[0, 10, 0]} intensity={0.4} angle={0.5} penumbra={1} color="#c9922a" />
+                <MouseTracker>
+                  <GoldSphere />
+                  <OrbitRings />
+                </MouseTracker>
+                <FloatingParticles3D />
+                <DreiSparkles count={60} size={2} scale={8} color="#c9922a" speed={0.5} />
+                <Environment preset="night" />
+              </Suspense>
             </Canvas>
           </div>
         </div>
