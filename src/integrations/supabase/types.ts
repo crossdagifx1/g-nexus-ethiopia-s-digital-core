@@ -74,6 +74,102 @@ export type Database = {
         }
         Relationships: []
       }
+      ads: {
+        Row: {
+          clicks: number | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          image_url: string | null
+          impressions: number | null
+          link_url: string | null
+          placement: string
+          start_date: string | null
+          status: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          clicks?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_url?: string | null
+          impressions?: number | null
+          link_url?: string | null
+          placement?: string
+          start_date?: string | null
+          status?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          clicks?: number | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_url?: string | null
+          impressions?: number | null
+          link_url?: string | null
+          placement?: string
+          start_date?: string | null
+          status?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      blog_posts: {
+        Row: {
+          author_id: string | null
+          author_name: string | null
+          category: string | null
+          content: string | null
+          created_at: string | null
+          excerpt: string | null
+          id: string
+          image_url: string | null
+          published_at: string | null
+          status: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          author_id?: string | null
+          author_name?: string | null
+          category?: string | null
+          content?: string | null
+          created_at?: string | null
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          published_at?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          author_id?: string | null
+          author_name?: string | null
+          category?: string | null
+          content?: string | null
+          created_at?: string | null
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          published_at?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       chat_conversations: {
         Row: {
           created_at: string
@@ -273,6 +369,42 @@ export type Database = {
           updated_at?: string
           updated_by?: string | null
           value?: Json | null
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          author_company: string | null
+          author_name: string
+          author_role: string | null
+          avatar_url: string | null
+          created_at: string | null
+          featured: boolean | null
+          id: string
+          quote: string
+          rating: number | null
+        }
+        Insert: {
+          author_company?: string | null
+          author_name: string
+          author_role?: string | null
+          avatar_url?: string | null
+          created_at?: string | null
+          featured?: boolean | null
+          id?: string
+          quote: string
+          rating?: number | null
+        }
+        Update: {
+          author_company?: string | null
+          author_name?: string
+          author_role?: string | null
+          avatar_url?: string | null
+          created_at?: string | null
+          featured?: boolean | null
+          id?: string
+          quote?: string
+          rating?: number | null
         }
         Relationships: []
       }
