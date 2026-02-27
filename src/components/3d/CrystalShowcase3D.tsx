@@ -1,6 +1,6 @@
 import { useRef, useMemo, forwardRef, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, Environment, Trail, Sparkles as DreiSparkles } from '@react-three/drei';
+import { Float, Environment, Sparkles as DreiSparkles } from '@react-three/drei';
 import * as THREE from 'three';
 
 const CrystalCluster = () => {
@@ -107,9 +107,7 @@ const EnergyOrbitMesh = forwardRef<THREE.Mesh, { radius: number; speed: number; 
 
 const EnergyOrbit = ({ radius, speed, color }: { radius: number; speed: number; color: string }) => {
   return (
-    <Trail width={0.15} length={10} color={color} attenuation={(w) => w * w}>
-      <EnergyOrbitMesh radius={radius} speed={speed} color={color} />
-    </Trail>
+    <EnergyOrbitMesh radius={radius} speed={speed} color={color} />
   );
 };
 

@@ -1,6 +1,6 @@
 import { useRef, useMemo, useState, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, MeshDistortMaterial, Environment, Trail, Sparkles as DreiSparkles } from '@react-three/drei';
+import { Float, MeshDistortMaterial, Environment, Sparkles as DreiSparkles } from '@react-three/drei';
 import * as THREE from 'three';
 
 const MouseTracker = ({ children }: { children: React.ReactNode }) => {
@@ -117,12 +117,10 @@ const OrbitingSphere = ({ radius, speed, offset, color, tilt }: { radius: number
   });
 
   return (
-    <Trail width={0.3} length={8} color={color} attenuation={(w) => w * w}>
-      <mesh ref={meshRef}>
-        <sphereGeometry args={[0.06, 12, 12]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={3} />
-      </mesh>
-    </Trail>
+    <mesh ref={meshRef}>
+      <sphereGeometry args={[0.06, 12, 12]} />
+      <meshStandardMaterial color={color} emissive={color} emissiveIntensity={3} />
+    </mesh>
   );
 };
 
