@@ -145,35 +145,76 @@ const EnergyCore = () => {
   );
 };
 
+// Letter stroke definitions for GNEXUS - each letter defined as line segments [x1,y1,x2,y2]
+const getLetterStrokes = (letter: string): number[][] => {
+  const h = 1; // height
+  const w = 0.6; // width
+  switch (letter) {
+    case 'G': return [
+      [w,h, 0,h], [0,h, 0,0], [0,0, w,0], [w,0, w,h*0.5], [w,h*0.5, w*0.5,h*0.5]
+    ];
+    case 'N': return [
+      [0,0, 0,h], [0,h, w,0], [w,0, w,h]
+    ];
+    case 'E': return [
+      [w,h, 0,h], [0,h, 0,0], [0,0, w,0], [0,h*0.5, w*0.7,h*0.5]
+    ];
+    case 'X': return [
+      [0,h, w,0], [w,h, 0,0]
+    ];
+    case 'U': return [
+      [0,h, 0,0], [0,0, w,0], [w,0, w,h]
+    ];
+    case 'S': return [
+      [w,h, 0,h], [0,h, 0,h*0.5], [0,h*0.5, w,h*0.5], [w,h*0.5, w,0], [w,0, 0,0]
+    ];
+    default: return [];
+  }
+};
+
 // Particle text "GNEXUS"
 const ParticleText = () => {
   const points = useRef<THREE.Points>(null!);
-  const count = 2000;
+  const count = 3000;
 
   const [positions, colors] = useMemo(() => {
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
     const gold = new THREE.Color('#c9922a');
     const cyan = new THREE.Color('#00d4ff');
+    const white = new THREE.Color('#ffe8b0');
 
-    // Create particles arranged to spell GNEXUS using mathematical positioning
     const letters = 'GNEXUS';
-    const letterWidth = 1.2;
-    const totalWidth = letters.length * letterWidth;
-    const startX = -totalWidth / 2 + letterWidth / 2;
+    const letterSpacing = 1.0;
+    const totalWidth = letters.length * letterSpacing;
+    const startX = -totalWidth / 2 + letterSpacing * 0.3;
 
+    // Collect all stroke segments with their letter offset
+    const allSegments: { x1: number; y1: number; x2: number; y2: number }[] = [];
+    for (let li = 0; li < letters.length; li++) {
+      const strokes = getLetterStrokes(letters[li]);
+      const offsetX = startX + li * letterSpacing;
+      for (const s of strokes) {
+        allSegments.push({
+          x1: s[0] + offsetX, y1: s[1] - 0.5,
+          x2: s[2] + offsetX, y2: s[3] - 0.5
+        });
+      }
+    }
+
+    // Distribute particles along segments
     for (let i = 0; i < count; i++) {
-      const letterIdx = Math.floor(Math.random() * letters.length);
-      const baseX = startX + letterIdx * letterWidth;
-      // Distribute particles in letter-shaped regions
-      const angle = Math.random() * Math.PI * 2;
-      const r = Math.random() * 0.4;
-      pos[i * 3] = baseX + Math.cos(angle) * r * 0.8;
-      pos[i * 3 + 1] = Math.sin(angle) * r + (Math.random() - 0.5) * 0.3;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
-
+      const seg = allSegments[i % allSegments.length];
       const t = Math.random();
-      const c = t > 0.3 ? gold : cyan;
+      const px = seg.x1 + (seg.x2 - seg.x1) * t + (Math.random() - 0.5) * 0.06;
+      const py = seg.y1 + (seg.y2 - seg.y1) * t + (Math.random() - 0.5) * 0.06;
+      const pz = (Math.random() - 0.5) * 0.15;
+      pos[i * 3] = px;
+      pos[i * 3 + 1] = py;
+      pos[i * 3 + 2] = pz;
+
+      const r = Math.random();
+      const c = r > 0.6 ? gold : r > 0.2 ? white : cyan;
       col[i * 3] = c.r;
       col[i * 3 + 1] = c.g;
       col[i * 3 + 2] = c.b;
@@ -187,12 +228,11 @@ const ParticleText = () => {
     const t = state.clock.elapsedTime;
     const arr = points.current.geometry.attributes.position.array as Float32Array;
     for (let i = 0; i < count; i++) {
-      arr[i * 3] = basePositions[i * 3] + Math.sin(t * 1.5 + i * 0.01) * 0.02;
-      arr[i * 3 + 1] = basePositions[i * 3 + 1] + Math.sin(t * 2 + i * 0.01) * 0.03;
-      arr[i * 3 + 2] = basePositions[i * 3 + 2] + Math.cos(t * 1.5 + i * 0.02) * 0.015;
+      arr[i * 3] = basePositions[i * 3] + Math.sin(t * 1.5 + i * 0.01) * 0.015;
+      arr[i * 3 + 1] = basePositions[i * 3 + 1] + Math.sin(t * 2 + i * 0.01) * 0.02;
+      arr[i * 3 + 2] = basePositions[i * 3 + 2] + Math.cos(t * 1.5 + i * 0.02) * 0.01;
     }
     points.current.geometry.attributes.position.needsUpdate = true;
-    points.current.rotation.y = Math.sin(t * 0.1) * 0.05;
   });
 
   return (
@@ -201,7 +241,7 @@ const ParticleText = () => {
         <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
         <bufferAttribute attach="attributes-color" count={count} array={colors} itemSize={3} />
       </bufferGeometry>
-      <pointsMaterial size={0.04} vertexColors transparent opacity={0.9} sizeAttenuation blending={THREE.AdditiveBlending} depthWrite={false} />
+      <pointsMaterial size={0.035} vertexColors transparent opacity={0.95} sizeAttenuation blending={THREE.AdditiveBlending} depthWrite={false} />
     </points>
   );
 };
