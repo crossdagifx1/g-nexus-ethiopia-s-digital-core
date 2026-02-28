@@ -183,9 +183,9 @@ const EnergyCore = () => {
 // ── Morphing Particle Text ──
 const WORDS = ['GNEXUS', 'CREATE', 'INNOVATE', 'BUILD'];
 const PARTICLE_COUNT = 5000;
-const LETTER_W = 1.2;
-const LETTER_H = 1.6;
-const LETTER_SPACING = 0.15;
+const LETTER_W = 1.8;
+const LETTER_H = 2.4;
+const LETTER_SPACING = 0.25;
 const HOLD_TIME = 4;
 const MORPH_TIME = 2;
 
@@ -353,7 +353,7 @@ export const NebulaVortex3D = () => {
           </p>
         </div>
         <div className="h-[600px] rounded-3xl overflow-hidden border border-border/20 mx-auto max-w-4xl">
-          <Canvas camera={{ position: [0, 0, 6], fov: 55 }} dpr={[1, 2]}>
+          <Canvas camera={{ position: [0, 0, 8], fov: 55 }} dpr={[1, 2]}>
             <Suspense fallback={null}>
               <color attach="background" args={['#0d0b09']} />
               <fog attach="fog" args={['#0d0b09', 6, 18]} />
