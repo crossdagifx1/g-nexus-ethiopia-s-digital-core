@@ -1,4 +1,4 @@
-import { useRef, useMemo, useCallback } from 'react';
+import { useRef, useMemo, useCallback, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Sparkles as DreiSparkles } from '@react-three/drei';
 import * as THREE from 'three';
@@ -161,13 +161,15 @@ export const WaveGrid3D = () => {
       </div>
       <div className="relative h-[450px] rounded-3xl overflow-hidden max-w-6xl mx-auto border border-border/20">
         <Canvas camera={{ position: [0, 6, 14], fov: 55 }}>
-          <ambientLight intensity={0.15} />
-          <directionalLight position={[10, 10, 5]} intensity={0.8} color="#c9922a" />
-          <pointLight position={[-5, 5, -5]} intensity={0.6} color="#00d4ff" />
-          <pointLight position={[5, 2, 5]} intensity={0.4} color="#ff6b35" />
-        <WavePlane />
-          <DreiSparkles count={40} size={1.5} scale={15} color="#00d4ff" speed={0.3} />
-          <fog attach="fog" args={['#0f0d0a', 10, 30]} />
+          <Suspense fallback={null}>
+            <ambientLight intensity={0.15} />
+            <directionalLight position={[10, 10, 5]} intensity={0.8} color="#c9922a" />
+            <pointLight position={[-5, 5, -5]} intensity={0.6} color="#00d4ff" />
+            <pointLight position={[5, 2, 5]} intensity={0.4} color="#ff6b35" />
+            <WavePlane />
+            <DreiSparkles count={40} size={1.5} scale={15} color="#00d4ff" speed={0.3} />
+            <fog attach="fog" args={['#0f0d0a', 10, 30]} />
+          </Suspense>
         </Canvas>
       </div>
       <div className="relative z-10 max-w-5xl mx-auto grid md:grid-cols-3 gap-6 mt-16">

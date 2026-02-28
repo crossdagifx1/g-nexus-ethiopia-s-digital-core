@@ -1,6 +1,6 @@
 import { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Environment, Sparkles as DreiSparkles, Text, Center } from '@react-three/drei';
+import { Environment, Sparkles as DreiSparkles } from '@react-three/drei';
 import * as THREE from 'three';
 
 const LiquidGlobe = () => {
@@ -161,25 +161,6 @@ export const GlobeNetwork3D = () => {
               <directionalLight position={[5, 3, 5]} intensity={0.8} color="#c9922a" />
               <pointLight position={[-3, -3, 5]} intensity={0.5} color="#00d4ff" />
               <LiquidGlobe />
-              <Center position={[0, 0, 2.5]}>
-                <Text
-                  fontSize={1.8}
-                  letterSpacing={0.15}
-                  font="https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiA.woff2"
-                  anchorX="center"
-                  anchorY="middle"
-                >
-                  AI
-                  <meshStandardMaterial
-                    color="#00d4ff"
-                    emissive="#00d4ff"
-                    emissiveIntensity={2}
-                    transparent
-                    opacity={0.2}
-                    side={THREE.DoubleSide}
-                  />
-                </Text>
-              </Center>
               <DreiSparkles count={30} size={1} scale={6} color="#c9922a" speed={0.3} />
               <Environment preset="night" />
             </Suspense>

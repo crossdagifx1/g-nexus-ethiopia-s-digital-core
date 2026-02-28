@@ -73,63 +73,12 @@ const DNAHelix = () => {
               roughness={0.1}
             />
           </mesh>
-          {/* Connecting bars with glow */}
-          {i % 3 === 0 && (
-            <ConnectingBar index={i} data={data} />
-          )}
         </group>
       ))}
-      {/* Electron particles orbiting */}
-      <ElectronOrbit radius={2.5} speed={1.5} color="#c9922a" yRange={5} />
-      <ElectronOrbit radius={2.2} speed={-1.2} color="#00d4ff" yRange={4} />
     </group>
   );
 };
 
-const ConnectingBar = ({ index, data }: { index: number; data: { t: number; y: number } }) => {
-  const ref = useRef<THREE.Mesh>(null!);
-
-  useFrame((state) => {
-    const time = state.clock.elapsedTime;
-    const opacity = 0.1 + Math.sin(time * 2 + index * 0.5) * 0.1;
-    if (ref.current) {
-      (ref.current.material as THREE.MeshStandardMaterial).opacity = opacity;
-    }
-  });
-
-  return (
-    <mesh ref={ref} position={[0, data.y, 0]}>
-      <cylinderGeometry args={[0.015, 0.015, 3, 8]} />
-      <meshStandardMaterial
-        color="#ffffff"
-        emissive="#c9922a"
-        emissiveIntensity={0.3}
-        transparent
-        opacity={0.15}
-      />
-    </mesh>
-  );
-};
-
-const ElectronOrbit = ({ radius, speed, color, yRange }: { radius: number; speed: number; color: string; yRange: number }) => {
-  const ref = useRef<THREE.Mesh>(null!);
-
-  useFrame((state) => {
-    const t = state.clock.elapsedTime * speed;
-    ref.current.position.set(
-      Math.cos(t) * radius,
-      Math.sin(t * 0.7) * yRange,
-      Math.sin(t) * radius
-    );
-  });
-
-  return (
-    <mesh ref={ref}>
-      <sphereGeometry args={[0.05, 8, 8]} />
-      <meshStandardMaterial color={color} emissive={color} emissiveIntensity={4} />
-    </mesh>
-  );
-};
 
 export const DNA3D = () => {
   return (
