@@ -3,49 +3,122 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float, Environment, Sparkles as DreiSparkles } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Swirling particle vortex
+// ── Polygon definitions for each letter ──
+// Each letter is an array of polygons (for letters with holes, multiple polys).
+// Coordinates are normalized to roughly [0..1] width, [0..1] height.
+const LETTER_POLYS: Record<string, number[][][]> = {
+  G: [[[0,0],[1,0],[1,0.2],[0.2,0.2],[0.2,0.8],[1,0.8],[1,0.45],[0.5,0.45],[0.5,0.55],[1,0.55],[1,1],[0,1]]],
+  N: [[[0,0],[0.25,0],[0.25,0.55],[0.75,0],[1,0],[1,1],[0.75,1],[0.75,0.45],[0.25,1],[0,1]]],
+  E: [[[0,0],[1,0],[1,0.2],[0.25,0.2],[0.25,0.42],[0.8,0.42],[0.8,0.58],[0.25,0.58],[0.25,0.8],[1,0.8],[1,1],[0,1]]],
+  X: [[[0,0],[0.3,0],[0.5,0.38],[0.7,0],[1,0],[0.62,0.5],[1,1],[0.7,1],[0.5,0.62],[0.3,1],[0,1],[0.38,0.5]]],
+  U: [[[0,1],[0,0.2],[0.1,0],[0.9,0],[1,0.2],[1,1],[0.75,1],[0.75,0.25],[0.25,0.25],[0.25,1]]],
+  S: [[[0,0],[1,0],[1,0.55],[0.25,0.55],[0.25,0.45],[0.75,0.45],[0.75,0.2],[0,0.2],[0,0],[1,0],[1,0.55],[0.25,0.55],[0.25,0.8],[1,0.8],[1,1],[0,1],[0,0.45],[0.75,0.45],[0.75,0.55],[0,0.55]]],
+  C: [[[0,0],[1,0],[1,0.25],[0.25,0.25],[0.25,0.75],[1,0.75],[1,1],[0,1]]],
+  R: [[[0,0],[1,0],[1,0.55],[0.7,0.55],[1,1],[0.7,1],[0.45,0.6],[0.25,0.6],[0.25,1],[0,1],[0,0],[0.25,0.2],[0.25,0.42],[0.75,0.42],[0.75,0.2],[0.25,0.2]]],
+  A: [[[0,0],[0.2,0],[0.5,0.75],[0.8,0],[1,0],[0.65,1],[0.35,1]],[[0.3,0.25],[0.7,0.25],[0.7,0.4],[0.3,0.4]]],
+  T: [[[0,0.8],[0,1],[1,1],[1,0.8],[0.625,0.8],[0.625,0],[0.375,0],[0.375,0.8]]],
+  I: [[[0.3,0],[0.7,0],[0.7,0.8],[1,0.8],[1,1],[0,1],[0,0.8],[0.3,0.8]]],
+  O: [[[0,0],[1,0],[1,1],[0,1]],[[0.25,0.2],[0.75,0.2],[0.75,0.8],[0.25,0.8]]],
+  V: [[[0,1],[0.35,0],[0.65,0],[1,1],[0.75,1],[0.5,0.25],[0.25,1]]],
+  B: [[[0,0],[0.9,0],[1,0.1],[1,0.4],[0.9,0.5],[1,0.6],[1,0.9],[0.9,1],[0,1],[0,0],[0.25,0.2],[0.25,0.42],[0.7,0.42],[0.7,0.2],[0.25,0.2],[0.25,0.58],[0.25,0.8],[0.7,0.8],[0.7,0.58],[0.25,0.58]]],
+  L: [[[0,0],[0.25,0],[0.25,0.8],[1,0.8],[1,1],[0,1]]],
+  D: [[[0,0],[0.7,0],[1,0.3],[1,0.7],[0.7,1],[0,1],[0,0],[0.25,0.2],[0.25,0.8],[0.6,0.8],[0.75,0.65],[0.75,0.35],[0.6,0.2],[0.25,0.2]]],
+};
+
+// Simplified S polygon (the complex one above can be tricky)
+LETTER_POLYS.S = [[[0.05,0],[1,0],[1,0.2],[0.25,0.2],[0.25,0.42],[1,0.42],[1,1],[0,1],[0,0.8],[0.75,0.8],[0.75,0.58],[0,0.58]]];
+LETTER_POLYS.R = [[[0,0],[0.85,0],[1,0.12],[1,0.42],[0.85,0.55],[1,1],[0.7,1],[0.5,0.6],[0.25,0.6],[0.25,1],[0,1]],[[0.25,0.18],[0.25,0.42],[0.7,0.42],[0.7,0.18]]];
+LETTER_POLYS.B = [[[0,0],[0.8,0],[1,0.12],[1,0.38],[0.85,0.5],[1,0.62],[1,0.88],[0.8,1],[0,1]],[[0.25,0.18],[0.25,0.42],[0.65,0.42],[0.75,0.3],[0.65,0.18]],[[0.25,0.58],[0.25,0.82],[0.65,0.82],[0.75,0.7],[0.65,0.58]]];
+LETTER_POLYS.D = [[[0,0],[0.65,0],[0.95,0.25],[0.95,0.75],[0.65,1],[0,1]],[[0.25,0.2],[0.55,0.2],[0.7,0.35],[0.7,0.65],[0.55,0.8],[0.25,0.8]]];
+LETTER_POLYS.O = [[[0,0],[1,0],[1,1],[0,1]],[[0.25,0.2],[0.75,0.2],[0.75,0.8],[0.25,0.8]]];
+LETTER_POLYS.A = [[[0.1,0],[0.4,1],[0.6,1],[0.9,0],[0.7,0],[0.6,0.3],[0.4,0.3],[0.3,0]],[[0.45,0.45],[0.55,0.45],[0.55,0.65],[0.45,0.65]]];
+
+// Point-in-polygon test (ray casting)
+const pointInPoly = (x: number, y: number, poly: number[][]): boolean => {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const xi = poly[i][0], yi = poly[i][1];
+    const xj = poly[j][0], yj = poly[j][1];
+    if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) {
+      inside = !inside;
+    }
+  }
+  return inside;
+};
+
+// Check if point is inside letter (first poly = outer, rest = holes)
+const pointInLetter = (x: number, y: number, polys: number[][][]): boolean => {
+  if (!pointInPoly(x, y, polys[0])) return false;
+  for (let i = 1; i < polys.length; i++) {
+    if (pointInPoly(x, y, polys[i])) return false;
+  }
+  return true;
+};
+
+// Generate filled points for a word
+const getWordPoints = (word: string, targetCount: number, letterW: number, letterH: number, spacing: number): Float32Array => {
+  const points: number[] = [];
+  const totalW = word.length * (letterW + spacing) - spacing;
+  const startX = -totalW / 2;
+
+  // Sample grid for each letter
+  const gridRes = 40;
+  for (let li = 0; li < word.length; li++) {
+    const letter = word[li];
+    const polys = LETTER_POLYS[letter];
+    if (!polys) continue;
+    const ox = startX + li * (letterW + spacing);
+    for (let gx = 0; gx < gridRes; gx++) {
+      for (let gy = 0; gy < gridRes; gy++) {
+        const nx = (gx + Math.random()) / gridRes;
+        const ny = (gy + Math.random()) / gridRes;
+        if (pointInLetter(nx, ny, polys)) {
+          points.push(ox + nx * letterW, ny * letterH - letterH / 2, (Math.random() - 0.5) * 0.15);
+        }
+      }
+    }
+  }
+
+  // Resample to exactly targetCount
+  const result = new Float32Array(targetCount * 3);
+  if (points.length === 0) return result;
+  const srcCount = points.length / 3;
+  for (let i = 0; i < targetCount; i++) {
+    const si = Math.floor(Math.random() * srcCount);
+    result[i * 3] = points[si * 3] + (Math.random() - 0.5) * 0.03;
+    result[i * 3 + 1] = points[si * 3 + 1] + (Math.random() - 0.5) * 0.03;
+    result[i * 3 + 2] = points[si * 3 + 2];
+  }
+  return result;
+};
+
+// ── Reduced particle vortex (background) ──
 const ParticleVortex = () => {
   const points = useRef<THREE.Points>(null!);
-  const count = 3000;
+  const count = 1000;
 
-  const [positions, colors, sizes] = useMemo(() => {
+  const [positions, colors] = useMemo(() => {
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
-    const siz = new Float32Array(count);
     const gold = new THREE.Color('#c9922a');
     const cyan = new THREE.Color('#00d4ff');
-    const orange = new THREE.Color('#ff6b35');
-    const palette = [gold, cyan, orange];
-
+    const palette = [gold, cyan];
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * Math.PI * 12;
-      const radius = 0.3 + (i / count) * 4;
+      const radius = 0.5 + (i / count) * 5;
       const height = (Math.random() - 0.5) * 3;
-      pos[i * 3] = Math.cos(angle) * radius + (Math.random() - 0.5) * 0.5;
+      pos[i * 3] = Math.cos(angle) * radius;
       pos[i * 3 + 1] = height;
-      pos[i * 3 + 2] = Math.sin(angle) * radius + (Math.random() - 0.5) * 0.5;
+      pos[i * 3 + 2] = Math.sin(angle) * radius;
       const c = palette[Math.floor(Math.random() * palette.length)];
-      col[i * 3] = c.r;
-      col[i * 3 + 1] = c.g;
-      col[i * 3 + 2] = c.b;
-      siz[i] = Math.random() * 0.06 + 0.01;
+      col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
     }
-    return [pos, col, siz];
+    return [pos, col];
   }, []);
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
-    points.current.rotation.y = t * 0.15;
-    const posAttr = points.current.geometry.attributes.position;
-    const arr = posAttr.array as Float32Array;
-    for (let i = 0; i < count; i++) {
-      const idx = i * 3;
-      const angle = (i / count) * Math.PI * 12 + t * 0.3;
-      const radius = 0.3 + (i / count) * 4;
-      arr[idx] = Math.cos(angle) * radius;
-      arr[idx + 2] = Math.sin(angle) * radius;
-    }
-    posAttr.needsUpdate = true;
+    points.current.rotation.y = t * 0.1;
   });
 
   return (
@@ -54,12 +127,12 @@ const ParticleVortex = () => {
         <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
         <bufferAttribute attach="attributes-color" count={count} array={colors} itemSize={3} />
       </bufferGeometry>
-      <pointsMaterial size={0.035} vertexColors transparent opacity={0.85} sizeAttenuation blending={THREE.AdditiveBlending} depthWrite={false} />
+      <pointsMaterial size={0.025} vertexColors transparent opacity={0.3} sizeAttenuation blending={THREE.AdditiveBlending} depthWrite={false} />
     </points>
   );
 };
 
-// Central pulsing energy core with layered geometry
+// ── Energy Core (unchanged) ──
 const EnergyCore = () => {
   const outerRef = useRef<THREE.Mesh>(null!);
   const midRef = useRef<THREE.Mesh>(null!);
@@ -72,14 +145,11 @@ const EnergyCore = () => {
     outerRef.current.scale.setScalar(pulse);
     outerRef.current.rotation.y = t * 0.2;
     outerRef.current.rotation.x = Math.sin(t * 0.15) * 0.3;
-
     midRef.current.rotation.y = -t * 0.4;
     midRef.current.rotation.z = t * 0.25;
     midRef.current.scale.setScalar(1 + Math.sin(t * 3) * 0.05);
-
     innerRef.current.rotation.x = t * 0.6;
     innerRef.current.rotation.z = -t * 0.3;
-
     shellRef.current.rotation.y = t * 0.08;
     shellRef.current.rotation.x = t * 0.05;
   });
@@ -87,57 +157,22 @@ const EnergyCore = () => {
   return (
     <Float speed={1.5} rotationIntensity={0.3} floatIntensity={1}>
       <group>
-        {/* Outer fractured shell */}
         <mesh ref={outerRef}>
           <icosahedronGeometry args={[1.6, 1]} />
-          <meshStandardMaterial
-            color="#c9922a"
-            emissive="#c9922a"
-            emissiveIntensity={0.4}
-            wireframe
-            transparent
-            opacity={0.15}
-          />
+          <meshStandardMaterial color="#c9922a" emissive="#c9922a" emissiveIntensity={0.4} wireframe transparent opacity={0.15} />
         </mesh>
-        {/* Mid layer - glass-like */}
         <mesh ref={midRef}>
           <dodecahedronGeometry args={[1.1, 0]} />
-          <meshPhysicalMaterial
-            color="#c9922a"
-            metalness={0.9}
-            roughness={0.05}
-            transmission={0.4}
-            thickness={0.5}
-            ior={2.2}
-            transparent
-            opacity={0.7}
-            envMapIntensity={2}
-          />
+          <meshPhysicalMaterial color="#c9922a" metalness={0.9} roughness={0.05} transmission={0.4} thickness={0.5} ior={2.2} transparent opacity={0.7} envMapIntensity={2} />
         </mesh>
-        {/* Inner plasma core */}
         <mesh ref={innerRef}>
           <octahedronGeometry args={[0.5, 0]} />
-          <meshStandardMaterial
-            color="#00d4ff"
-            emissive="#00d4ff"
-            emissiveIntensity={3}
-            transparent
-            opacity={0.9}
-          />
+          <meshStandardMaterial color="#00d4ff" emissive="#00d4ff" emissiveIntensity={3} transparent opacity={0.9} />
         </mesh>
-        {/* Outermost cage */}
         <mesh ref={shellRef}>
           <icosahedronGeometry args={[2.2, 0]} />
-          <meshStandardMaterial
-            color="#ff6b35"
-            wireframe
-            transparent
-            opacity={0.06}
-            emissive="#ff6b35"
-            emissiveIntensity={0.2}
-          />
+          <meshStandardMaterial color="#ff6b35" wireframe transparent opacity={0.06} emissive="#ff6b35" emissiveIntensity={0.2} />
         </mesh>
-        {/* Point lights from core */}
         <pointLight intensity={4} color="#c9922a" distance={6} />
         <pointLight intensity={2} color="#00d4ff" distance={4} />
       </group>
@@ -145,104 +180,145 @@ const EnergyCore = () => {
   );
 };
 
-// Letter stroke definitions for GNEXUS - each letter defined as line segments [x1,y1,x2,y2]
-const getLetterStrokes = (letter: string): number[][] => {
-  const h = 1; // height
-  const w = 0.6; // width
-  switch (letter) {
-    case 'G': return [
-      [w,h, 0,h], [0,h, 0,0], [0,0, w,0], [w,0, w,h*0.5], [w,h*0.5, w*0.5,h*0.5]
-    ];
-    case 'N': return [
-      [0,0, 0,h], [0,h, w,0], [w,0, w,h]
-    ];
-    case 'E': return [
-      [w,h, 0,h], [0,h, 0,0], [0,0, w,0], [0,h*0.5, w*0.7,h*0.5]
-    ];
-    case 'X': return [
-      [0,h, w,0], [w,h, 0,0]
-    ];
-    case 'U': return [
-      [0,h, 0,0], [0,0, w,0], [w,0, w,h]
-    ];
-    case 'S': return [
-      [w,h, 0,h], [0,h, 0,h*0.5], [0,h*0.5, w,h*0.5], [w,h*0.5, w,0], [w,0, 0,0]
-    ];
-    default: return [];
-  }
-};
+// ── Morphing Particle Text ──
+const WORDS = ['GNEXUS', 'CREATE', 'INNOVATE', 'BUILD'];
+const PARTICLE_COUNT = 5000;
+const LETTER_W = 1.2;
+const LETTER_H = 1.6;
+const LETTER_SPACING = 0.15;
+const HOLD_TIME = 4;
+const MORPH_TIME = 2;
 
-// Particle text "GNEXUS"
-const ParticleText = () => {
-  const points = useRef<THREE.Points>(null!);
-  const count = 3000;
+const MorphingParticleText = () => {
+  const sharpRef = useRef<THREE.Points>(null!);
+  const glowRef = useRef<THREE.Points>(null!);
+  const colRef = useRef<THREE.BufferAttribute>(null!);
+  const colRef2 = useRef<THREE.BufferAttribute>(null!);
 
-  const [positions, colors] = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    const col = new Float32Array(count * 3);
+  const wordTargets = useMemo(() => {
+    return WORDS.map(w => getWordPoints(w, PARTICLE_COUNT, LETTER_W, LETTER_H, LETTER_SPACING));
+  }, []);
+
+  const currentPositions = useMemo(() => new Float32Array(PARTICLE_COUNT * 3), []);
+  const colors = useMemo(() => {
+    const col = new Float32Array(PARTICLE_COUNT * 3);
     const gold = new THREE.Color('#c9922a');
-    const cyan = new THREE.Color('#00d4ff');
-    const white = new THREE.Color('#ffe8b0');
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      col[i * 3] = gold.r; col[i * 3 + 1] = gold.g; col[i * 3 + 2] = gold.b;
+    }
+    return col;
+  }, []);
 
-    const letters = 'GNEXUS';
-    const letterSpacing = 1.0;
-    const totalWidth = letters.length * letterSpacing;
-    const startX = -totalWidth / 2 + letterSpacing * 0.3;
+  // Initialize positions to first word
+  useMemo(() => {
+    currentPositions.set(wordTargets[0]);
+  }, [wordTargets, currentPositions]);
 
-    // Collect all stroke segments with their letter offset
-    const allSegments: { x1: number; y1: number; x2: number; y2: number }[] = [];
-    for (let li = 0; li < letters.length; li++) {
-      const strokes = getLetterStrokes(letters[li]);
-      const offsetX = startX + li * letterSpacing;
-      for (const s of strokes) {
-        allSegments.push({
-          x1: s[0] + offsetX, y1: s[1] - 0.5,
-          x2: s[2] + offsetX, y2: s[3] - 0.5
-        });
+  const stateRef = useRef({ wordIdx: 0, timer: 0, morphing: false, morphProgress: 0 });
+
+  useFrame((state, delta) => {
+    const s = stateRef.current;
+    s.timer += delta;
+
+    if (!s.morphing) {
+      // Holding
+      if (s.timer >= HOLD_TIME) {
+        s.morphing = true;
+        s.timer = 0;
+        s.morphProgress = 0;
+      }
+    } else {
+      // Morphing
+      s.morphProgress = Math.min(s.timer / MORPH_TIME, 1);
+      const nextIdx = (s.wordIdx + 1) % WORDS.length;
+      const from = wordTargets[s.wordIdx];
+      const to = wordTargets[nextIdx];
+      const arr = sharpRef.current.geometry.attributes.position.array as Float32Array;
+
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        // Staggered easing per particle
+        const stagger = (i / PARTICLE_COUNT) * 0.3;
+        const t = Math.max(0, Math.min(1, (s.morphProgress - stagger) / (1 - 0.3)));
+        const ease = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; // easeInOutCubic
+        const idx = i * 3;
+        arr[idx] = from[idx] + (to[idx] - from[idx]) * ease;
+        arr[idx + 1] = from[idx + 1] + (to[idx + 1] - from[idx + 1]) * ease;
+        arr[idx + 2] = from[idx + 2] + (to[idx + 2] - from[idx + 2]) * ease;
+      }
+      sharpRef.current.geometry.attributes.position.needsUpdate = true;
+
+      // Sync glow layer
+      const glowArr = glowRef.current.geometry.attributes.position.array as Float32Array;
+      glowArr.set(arr);
+      glowRef.current.geometry.attributes.position.needsUpdate = true;
+
+      if (s.morphProgress >= 1) {
+        s.wordIdx = nextIdx;
+        s.morphing = false;
+        s.timer = 0;
       }
     }
 
-    // Distribute particles along segments
-    for (let i = 0; i < count; i++) {
-      const seg = allSegments[i % allSegments.length];
-      const t = Math.random();
-      const px = seg.x1 + (seg.x2 - seg.x1) * t + (Math.random() - 0.5) * 0.06;
-      const py = seg.y1 + (seg.y2 - seg.y1) * t + (Math.random() - 0.5) * 0.06;
-      const pz = (Math.random() - 0.5) * 0.15;
-      pos[i * 3] = px;
-      pos[i * 3 + 1] = py;
-      pos[i * 3 + 2] = pz;
-
-      const r = Math.random();
-      const c = r > 0.6 ? gold : r > 0.2 ? white : cyan;
-      col[i * 3] = c.r;
-      col[i * 3 + 1] = c.g;
-      col[i * 3 + 2] = c.b;
+    // Idle shimmer when holding
+    if (!s.morphing) {
+      const t = state.clock.elapsedTime;
+      const base = wordTargets[s.wordIdx];
+      const arr = sharpRef.current.geometry.attributes.position.array as Float32Array;
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const idx = i * 3;
+        arr[idx] = base[idx] + Math.sin(t * 1.5 + i * 0.008) * 0.012;
+        arr[idx + 1] = base[idx + 1] + Math.sin(t * 2.2 + i * 0.006) * 0.015;
+        arr[idx + 2] = base[idx + 2] + Math.cos(t * 1.8 + i * 0.01) * 0.008;
+      }
+      sharpRef.current.geometry.attributes.position.needsUpdate = true;
+      const glowArr = glowRef.current.geometry.attributes.position.array as Float32Array;
+      glowArr.set(arr);
+      glowRef.current.geometry.attributes.position.needsUpdate = true;
     }
-    return [pos, col];
-  }, []);
 
-  const basePositions = useMemo(() => new Float32Array(positions), [positions]);
-
-  useFrame((state) => {
-    const t = state.clock.elapsedTime;
-    const arr = points.current.geometry.attributes.position.array as Float32Array;
-    for (let i = 0; i < count; i++) {
-      arr[i * 3] = basePositions[i * 3] + Math.sin(t * 1.5 + i * 0.01) * 0.015;
-      arr[i * 3 + 1] = basePositions[i * 3 + 1] + Math.sin(t * 2 + i * 0.01) * 0.02;
-      arr[i * 3 + 2] = basePositions[i * 3 + 2] + Math.cos(t * 1.5 + i * 0.02) * 0.01;
+    // Color breathing
+    const ct = state.clock.elapsedTime;
+    const gold = new THREE.Color('#c9922a');
+    const white = new THREE.Color('#ffe8b0');
+    const cyan = new THREE.Color('#00d4ff');
+    const breathe = (Math.sin(ct * 0.5) + 1) / 2; // 0..1
+    const baseColor = new THREE.Color().lerpColors(gold, white, breathe * 0.5);
+    const colArr = colRef.current.array as Float32Array;
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const sparkle = Math.sin(ct * 3 + i * 0.1) > 0.95 ? 1 : 0;
+      const c = sparkle ? cyan : baseColor;
+      colArr[i * 3] = c.r; colArr[i * 3 + 1] = c.g; colArr[i * 3 + 2] = c.b;
     }
-    points.current.geometry.attributes.position.needsUpdate = true;
+    colRef.current.needsUpdate = true;
+    // Glow layer gets same colors
+    const colArr2 = colRef2.current.array as Float32Array;
+    colArr2.set(colArr);
+    colRef2.current.needsUpdate = true;
   });
 
+  const initPos = useMemo(() => new Float32Array(wordTargets[0]), [wordTargets]);
+  const initCol = useMemo(() => new Float32Array(colors), [colors]);
+  const initCol2 = useMemo(() => new Float32Array(colors), [colors]);
+
   return (
-    <points ref={points} position={[0, 0, 3]}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
-        <bufferAttribute attach="attributes-color" count={count} array={colors} itemSize={3} />
-      </bufferGeometry>
-      <pointsMaterial size={0.035} vertexColors transparent opacity={0.95} sizeAttenuation blending={THREE.AdditiveBlending} depthWrite={false} />
-    </points>
+    <group position={[0, 0, 3]}>
+      {/* Glow layer (behind) */}
+      <points ref={glowRef}>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" count={PARTICLE_COUNT} array={initPos} itemSize={3} />
+          <bufferAttribute ref={colRef2} attach="attributes-color" count={PARTICLE_COUNT} array={initCol2} itemSize={3} />
+        </bufferGeometry>
+        <pointsMaterial size={0.12} vertexColors transparent opacity={0.2} sizeAttenuation blending={THREE.AdditiveBlending} depthWrite={false} />
+      </points>
+      {/* Sharp layer (front) */}
+      <points ref={sharpRef}>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" count={PARTICLE_COUNT} array={new Float32Array(initPos)} itemSize={3} />
+          <bufferAttribute ref={colRef} attach="attributes-color" count={PARTICLE_COUNT} array={initCol} itemSize={3} />
+        </bufferGeometry>
+        <pointsMaterial size={0.04} vertexColors transparent opacity={0.95} sizeAttenuation blending={THREE.AdditiveBlending} depthWrite={false} />
+      </points>
+    </group>
   );
 };
 
@@ -277,7 +353,7 @@ export const NebulaVortex3D = () => {
           </p>
         </div>
         <div className="h-[600px] rounded-3xl overflow-hidden border border-border/20 mx-auto max-w-4xl">
-          <Canvas camera={{ position: [0, 0, 7], fov: 50 }} dpr={[1, 2]}>
+          <Canvas camera={{ position: [0, 0, 6], fov: 55 }} dpr={[1, 2]}>
             <Suspense fallback={null}>
               <color attach="background" args={['#0d0b09']} />
               <fog attach="fog" args={['#0d0b09', 6, 18]} />
@@ -286,8 +362,8 @@ export const NebulaVortex3D = () => {
               <pointLight position={[-5, -3, 5]} intensity={0.5} color="#00d4ff" />
               <MouseScene>
                 <EnergyCore />
+                <MorphingParticleText />
               </MouseScene>
-              <ParticleText />
               <ParticleVortex />
               <DreiSparkles count={100} size={2.5} scale={10} color="#c9922a" speed={0.3} />
               <Environment preset="night" />
