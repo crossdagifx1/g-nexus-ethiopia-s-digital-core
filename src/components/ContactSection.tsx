@@ -135,7 +135,7 @@ export const ContactSection = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative py-32 px-6 overflow-hidden">
+    <section ref={sectionRef} className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-t from-card/50 to-background" />
       
@@ -144,12 +144,12 @@ export const ContactSection = () => {
       <div className="contact-orb-2 absolute bottom-1/3 right-1/4 w-64 h-64 bg-cyan/5 rounded-full blur-3xl will-change-transform" />
       
       <div className="relative z-10 max-w-5xl mx-auto">
-        <div ref={headerRef} className="text-center mb-16">
+        <div ref={headerRef} className="text-center mb-10 md:mb-16">
           <span className="contact-header-anim inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold/10 text-gold text-sm font-medium mb-6">
             <Sparkles className="w-4 h-4" />
             Get in Touch
           </span>
-          <h2 className="contact-header-anim text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6">
+          <h2 className="contact-header-anim text-3xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-4 md:mb-6">
             Let's Build{" "}
             <span className="text-gradient-gold">Together</span>
           </h2>
@@ -160,7 +160,7 @@ export const ContactSection = () => {
         </div>
 
         {/* Contact Cards */}
-        <div ref={cardsRef} className="grid md:grid-cols-3 gap-6 mb-16">
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-10 md:mb-16">
           {contactMethods.map((method, index) => (
             <div
               key={method.label}
@@ -193,11 +193,11 @@ export const ContactSection = () => {
         </div>
 
         {/* Trust Badges */}
-        <div ref={trustRef} className="mt-20 pt-10 border-t border-border/30">
+        <div ref={trustRef} className="mt-12 md:mt-20 pt-8 md:pt-10 border-t border-border/30">
           <p className="text-center text-muted-foreground text-sm mb-8">
             Trusted by innovative businesses across Ethiopia
           </p>
-          <div className="flex flex-wrap justify-center gap-8">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-8">
             {["Telebirr", "Chapa", "SantimPay", "Yegara"].map((partner, index) => (
               <div
                 key={partner}

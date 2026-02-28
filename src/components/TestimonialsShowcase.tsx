@@ -71,21 +71,21 @@ export const TestimonialsShowcase = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative py-32 px-6 overflow-hidden">
+    <section ref={sectionRef} className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/20 to-background" />
       <div className="relative z-10 max-w-7xl mx-auto">
-        <div className="text-center mb-20">
+        <div className="text-center mb-12 md:mb-20">
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan/10 text-cyan text-sm font-medium mb-6">
             💬 Client Stories
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6">
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-4 md:mb-6">
             What Our <span className="text-gradient-cyber">Clients</span> Say
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Real feedback from real businesses we've helped grow and transform digitally.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {testimonials.map((t) => (
             <div key={t.name} className="testimonial-card p-6 rounded-2xl glass border-glow group hover:scale-[1.02] transition-all duration-500">
               <Quote className="w-8 h-8 text-gold/30 mb-4" />

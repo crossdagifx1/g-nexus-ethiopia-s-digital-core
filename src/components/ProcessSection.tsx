@@ -53,21 +53,21 @@ export const ProcessSection = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative py-32 px-6 overflow-hidden">
+    <section ref={sectionRef} className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden">
       <div className="absolute inset-0 tibeb-pattern" />
       <div className="relative z-10 max-w-6xl mx-auto">
-        <div className="text-center mb-20">
+        <div className="text-center mb-12 md:mb-20">
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold/10 text-gold text-sm font-medium mb-6">
             ⚙️ How We Work
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6">
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-4 md:mb-6">
             Our <span className="text-gradient-gold">Process</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             A proven methodology refined through 50+ successful projects — transparent, agile, and results-driven.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {steps.map((step, i) => (
             <div key={step.title} className="process-card relative">
               {/* Connector line */}

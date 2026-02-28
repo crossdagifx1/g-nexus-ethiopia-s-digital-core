@@ -174,7 +174,7 @@ export const GNexusSection = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative py-32 px-6 overflow-hidden">
+    <section ref={sectionRef} className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden">
       {/* Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-background to-cyan/5" />
       
@@ -183,14 +183,14 @@ export const GNexusSection = () => {
       <div className="gnexus-orb-2 absolute bottom-20 right-10 w-96 h-96 bg-cyan/10 rounded-full blur-3xl will-change-transform" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
           {/* Content */}
           <div ref={contentRef}>
             <span className="content-anim inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold/10 text-gold text-sm font-medium mb-6">
               <Sparkles className="w-4 h-4" />
               Flagship Product
             </span>
-            <h2 className="content-anim text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6 leading-tight">
+            <h2 className="content-anim text-3xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-4 md:mb-6 leading-tight">
               <span className="text-gradient-gold text-glow-gold">G-Nexus</span>
               <br />
               <span className="text-2xl md:text-3xl lg:text-4xl text-muted-foreground font-normal">

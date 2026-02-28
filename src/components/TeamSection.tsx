@@ -166,7 +166,7 @@ export const TeamSection = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative py-32 px-6 overflow-hidden">
+    <section ref={sectionRef} className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 tibeb-pattern" />
       
@@ -176,11 +176,11 @@ export const TeamSection = () => {
       
       <div className="relative z-10 max-w-5xl mx-auto">
         {/* Section Header */}
-        <div ref={headerRef} className="text-center mb-20">
+        <div ref={headerRef} className="text-center mb-12 md:mb-20">
           <span className="team-header-anim inline-block px-4 py-2 rounded-full bg-cyan/10 text-cyan text-sm font-medium mb-6">
             The Visionaries
           </span>
-          <h2 className="team-header-anim text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6">
+          <h2 className="team-header-anim text-3xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-4 md:mb-6">
             Meet the{" "}
             <span className="text-gradient-cyber">Founders</span>
           </h2>
@@ -191,7 +191,7 @@ export const TeamSection = () => {
         </div>
 
         {/* Team Grid - 2 columns centered */}
-        <div ref={cardsRef} className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 max-w-4xl mx-auto">
           {team.map((member, index) => (
             <TeamMember key={member.name} {...member} index={index} />
           ))}

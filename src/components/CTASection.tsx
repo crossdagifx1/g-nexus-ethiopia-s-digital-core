@@ -27,15 +27,15 @@ export const CTASection = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative py-32 px-6 overflow-hidden">
+    <section ref={sectionRef} className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-background to-cyan/5" />
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-gold/10 rounded-full blur-[100px]" />
-      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-cyan/10 rounded-full blur-[100px]" />
+      <div className="absolute top-1/4 left-1/4 w-[250px] md:w-[500px] h-[250px] md:h-[500px] bg-gold/10 rounded-full blur-[100px]" />
+      <div className="absolute bottom-1/4 right-1/4 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-cyan/10 rounded-full blur-[100px]" />
       
       <div className="cta-content relative z-10 max-w-4xl mx-auto text-center">
-        <div className="p-12 md:p-20 rounded-3xl glass border-glow">
+        <div className="p-8 md:p-12 lg:p-20 rounded-3xl glass border-glow">
           <Sparkles className="w-12 h-12 text-gold mx-auto mb-8" />
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6">
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-4 md:mb-6">
             Ready to Build the <span className="text-gradient-gold text-glow-gold">Future</span>?
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
