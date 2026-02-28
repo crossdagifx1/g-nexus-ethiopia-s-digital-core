@@ -3,121 +3,58 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float, Environment, Sparkles as DreiSparkles } from '@react-three/drei';
 import * as THREE from 'three';
 
-// ── Polygon definitions for each letter ──
-// Coordinates: X [0..1] left-to-right, Y [0..1] bottom-to-top.
-// First polygon = outer shape, subsequent = holes to subtract.
-const LETTER_POLYS: Record<string, number[][][]> = {
-  G: [
-    [[0,0],[0.85,0],[1,0.15],[1,0.55],[0.5,0.55],[0.5,0.45],[0.75,0.45],[0.75,0.2],[0.25,0.2],[0.25,0.8],[1,0.8],[1,1],[0,1]],
-  ],
-  N: [
-    [[0,0],[0.25,0],[0.75,0.6],[0.75,0],[1,0],[1,1],[0.75,1],[0.25,0.4],[0.25,1],[0,1]],
-  ],
-  E: [
-    [[0,0],[1,0],[1,0.2],[0.25,0.2],[0.25,0.42],[0.75,0.42],[0.75,0.58],[0.25,0.58],[0.25,0.8],[1,0.8],[1,1],[0,1]],
-  ],
-  X: [
-    [[0,0],[0.28,0],[0.5,0.35],[0.72,0],[1,0],[0.63,0.5],[1,1],[0.72,1],[0.5,0.65],[0.28,1],[0,1],[0.37,0.5]],
-  ],
-  U: [
-    [[0,0],[0.25,0],[0.25,0.8],[0.75,0.8],[0.75,0],[1,0],[1,1],[0,1]],
-  ],
-  S: [
-    [[0,0],[1,0],[1,0.15],[0.25,0.15],[0.25,0.42],[1,0.42],[1,1],[0,1],[0,0.85],[0.75,0.85],[0.75,0.58],[0,0.58]],
-  ],
-  C: [
-    [[0,0],[1,0],[1,0.2],[0.25,0.2],[0.25,0.8],[1,0.8],[1,1],[0,1]],
-  ],
-  R: [
-    [[0,0],[0.8,0],[1,0.15],[1,0.45],[0.8,0.55],[1,1],[0.72,1],[0.55,0.6],[0.25,0.6],[0.25,1],[0,1]],
-    [[0.25,0.15],[0.7,0.15],[0.75,0.25],[0.75,0.38],[0.7,0.45],[0.25,0.45]],
-  ],
-  A: [
-    [[0,0],[0.15,0],[0.5,1],[0.85,0],[1,0],[0.62,1],[0.38,1]],
-    [[0.35,0.25],[0.65,0.25],[0.55,0.45],[0.45,0.45]],
-  ],
-  T: [
-    [[0.35,0],[0.65,0],[0.65,0.8],[1,0.8],[1,1],[0,1],[0,0.8],[0.35,0.8]],
-  ],
-  I: [
-    [[0,0],[1,0],[1,0.2],[0.65,0.2],[0.65,0.8],[1,0.8],[1,1],[0,1],[0,0.8],[0.35,0.8],[0.35,0.2],[0,0.2]],
-  ],
-  O: [
-    [[0,0],[1,0],[1,1],[0,1]],
-    [[0.22,0.2],[0.78,0.2],[0.78,0.8],[0.22,0.8]],
-  ],
-  V: [
-    [[0,1],[0.38,0],[0.62,0],[1,1],[0.78,1],[0.5,0.22],[0.22,1]],
-  ],
-  B: [
-    [[0,0],[0.75,0],[0.95,0.12],[0.95,0.4],[0.8,0.5],[0.95,0.6],[0.95,0.88],[0.75,1],[0,1]],
-    [[0.25,0.15],[0.65,0.15],[0.72,0.25],[0.72,0.38],[0.65,0.45],[0.25,0.45]],
-    [[0.25,0.55],[0.65,0.55],[0.72,0.62],[0.72,0.78],[0.65,0.85],[0.25,0.85]],
-  ],
-  L: [
-    [[0,0],[0.25,0],[0.25,0.8],[1,0.8],[1,1],[0,1]],
-  ],
-  D: [
-    [[0,0],[0.6,0],[0.9,0.2],[1,0.5],[0.9,0.8],[0.6,1],[0,1]],
-    [[0.25,0.2],[0.5,0.2],[0.7,0.35],[0.75,0.5],[0.7,0.65],[0.5,0.8],[0.25,0.8]],
-  ],
-};
+// ── Canvas-based text to particle positions ──
+// Renders text on an offscreen 2D canvas, samples filled pixels for particle positions.
+const textCanvas = typeof document !== 'undefined' ? document.createElement('canvas') : null;
 
-// Point-in-polygon test (ray casting)
-const pointInPoly = (x: number, y: number, poly: number[][]): boolean => {
-  let inside = false;
-  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-    const xi = poly[i][0], yi = poly[i][1];
-    const xj = poly[j][0], yj = poly[j][1];
-    if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) {
-      inside = !inside;
-    }
-  }
-  return inside;
-};
+const getWordPoints = (word: string, targetCount: number, scaleW: number, scaleH: number): Float32Array => {
+  const result = new Float32Array(targetCount * 3);
+  if (!textCanvas) return result;
 
-// Check if point is inside letter (first poly = outer, rest = holes)
-const pointInLetter = (x: number, y: number, polys: number[][][]): boolean => {
-  if (!pointInPoly(x, y, polys[0])) return false;
-  for (let i = 1; i < polys.length; i++) {
-    if (pointInPoly(x, y, polys[i])) return false;
-  }
-  return true;
-};
+  const ctx = textCanvas.getContext('2d')!;
+  const canvasW = 512;
+  const canvasH = 128;
+  textCanvas.width = canvasW;
+  textCanvas.height = canvasH;
 
-// Generate filled points for a word
-const getWordPoints = (word: string, targetCount: number, letterW: number, letterH: number, spacing: number): Float32Array => {
-  const points: number[] = [];
-  const totalW = word.length * (letterW + spacing) - spacing;
-  const startX = -totalW / 2;
+  // Clear and draw text
+  ctx.clearRect(0, 0, canvasW, canvasH);
+  ctx.fillStyle = '#ffffff';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  
+  // Use bold font, adjust size based on word length
+  const fontSize = word.length <= 5 ? 100 : word.length <= 6 ? 88 : 72;
+  ctx.font = `900 ${fontSize}px Arial, Helvetica, sans-serif`;
+  ctx.fillText(word, canvasW / 2, canvasH / 2);
 
-  // Sample grid for each letter
-  const gridRes = 40;
-  for (let li = 0; li < word.length; li++) {
-    const letter = word[li];
-    const polys = LETTER_POLYS[letter];
-    if (!polys) continue;
-    const ox = startX + li * (letterW + spacing);
-    for (let gx = 0; gx < gridRes; gx++) {
-      for (let gy = 0; gy < gridRes; gy++) {
-        const nx = (gx + Math.random()) / gridRes;
-        const ny = (gy + Math.random()) / gridRes;
-        if (pointInLetter(nx, ny, polys)) {
-          points.push(ox + nx * letterW, ny * letterH - letterH / 2, (Math.random() - 0.5) * 0.15);
-        }
+  // Read pixel data
+  const imageData = ctx.getImageData(0, 0, canvasW, canvasH);
+  const pixels = imageData.data;
+
+  // Collect all filled pixel positions
+  const filledPoints: number[] = [];
+  for (let y = 0; y < canvasH; y += 1) {
+    for (let x = 0; x < canvasW; x += 1) {
+      const alpha = pixels[(y * canvasW + x) * 4 + 3];
+      if (alpha > 128) {
+        // Normalize to centered coordinates
+        const nx = (x / canvasW - 0.5) * scaleW;
+        const ny = -(y / canvasH - 0.5) * scaleH; // flip Y for 3D
+        filledPoints.push(nx, ny);
       }
     }
   }
 
-  // Resample to exactly targetCount
-  const result = new Float32Array(targetCount * 3);
-  if (points.length === 0) return result;
-  const srcCount = points.length / 3;
+  // Distribute particles across filled pixels
+  const pointCount = filledPoints.length / 2;
+  if (pointCount === 0) return result;
+
   for (let i = 0; i < targetCount; i++) {
-    const si = Math.floor(Math.random() * srcCount);
-    result[i * 3] = points[si * 3] + (Math.random() - 0.5) * 0.03;
-    result[i * 3 + 1] = points[si * 3 + 1] + (Math.random() - 0.5) * 0.03;
-    result[i * 3 + 2] = points[si * 3 + 2];
+    const si = Math.floor(Math.random() * pointCount);
+    result[i * 3] = filledPoints[si * 2] + (Math.random() - 0.5) * 0.02;
+    result[i * 3 + 1] = filledPoints[si * 2 + 1] + (Math.random() - 0.5) * 0.02;
+    result[i * 3 + 2] = (Math.random() - 0.5) * 0.08;
   }
   return result;
 };
@@ -213,9 +150,8 @@ const EnergyCore = () => {
 // ── Morphing Particle Text ──
 const WORDS = ['GNEXUS', 'CREATE', 'INNOVATE', 'BUILD'];
 const PARTICLE_COUNT = 5000;
-const LETTER_W = 0.7;
-const LETTER_H = 1.0;
-const LETTER_SPACING = 0.1;
+const TEXT_SCALE_W = 6;
+const TEXT_SCALE_H = 1.5;
 const HOLD_TIME = 4;
 const MORPH_TIME = 2;
 
@@ -226,7 +162,7 @@ const MorphingParticleText = () => {
   const colRef2 = useRef<THREE.BufferAttribute>(null!);
 
   const wordTargets = useMemo(() => {
-    return WORDS.map(w => getWordPoints(w, PARTICLE_COUNT, LETTER_W, LETTER_H, LETTER_SPACING));
+    return WORDS.map(w => getWordPoints(w, PARTICLE_COUNT, TEXT_SCALE_W, TEXT_SCALE_H));
   }, []);
 
   const currentPositions = useMemo(() => new Float32Array(PARTICLE_COUNT * 3), []);
