@@ -150,8 +150,8 @@ const EnergyCore = () => {
 // ── Morphing Particle Text ──
 const WORDS = ['GNEXUS', 'CREATE', 'INNOVATE', 'BUILD'];
 const PARTICLE_COUNT = 5000;
-const TEXT_SCALE_W = 6;
-const TEXT_SCALE_H = 1.5;
+const TEXT_SCALE_W = 5;
+const TEXT_SCALE_H = 1.25;
 const HOLD_TIME = 4;
 const MORPH_TIME = 2;
 
