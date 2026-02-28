@@ -132,13 +132,13 @@ export const Footer = () => {
   }, []);
 
   return (
-    <footer ref={footerRef} className="relative py-20 px-6 border-t border-border/50 overflow-hidden">
+    <footer ref={footerRef} className="relative py-12 md:py-20 px-4 md:px-6 border-t border-border/50 overflow-hidden">
       {/* Background Elements with Parallax */}
       <div className="footer-orb-1 absolute top-0 left-1/4 w-64 h-64 bg-gold/5 rounded-full blur-3xl will-change-transform" />
       <div className="footer-orb-2 absolute bottom-0 right-1/4 w-64 h-64 bg-cyan/5 rounded-full blur-3xl will-change-transform" />
       
       <div className="relative z-10 max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8 md:gap-12 mb-10 md:mb-16">
           {/* Brand */}
           <div ref={brandRef} className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-6 group">
@@ -169,7 +169,7 @@ export const Footer = () => {
           </div>
 
           {/* Links */}
-          <div ref={linksRef} className="lg:col-span-3 grid grid-cols-3 gap-8">
+          <div ref={linksRef} className="lg:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
             {Object.entries(footerLinks).map(([category, links]) => (
               <div key={category} className="link-column">
                 <h4 className="font-display font-bold text-foreground mb-6">{category}</h4>

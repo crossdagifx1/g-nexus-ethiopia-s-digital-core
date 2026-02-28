@@ -190,12 +190,12 @@ export const HeroSection = () => {
       <div className="absolute inset-0 bg-hero-gradient" />
       
       {/* Animated Background Elements with Parallax */}
-      <div className="glow-orb-1 absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-gold/10 rounded-full blur-3xl will-change-transform" />
-      <div className="glow-orb-2 absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-cyan/10 rounded-full blur-3xl will-change-transform" />
+      <div className="glow-orb-1 absolute top-1/4 left-1/4 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-gold/10 rounded-full blur-3xl will-change-transform" />
+      <div className="glow-orb-2 absolute bottom-1/4 right-1/4 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-cyan/10 rounded-full blur-3xl will-change-transform" />
       
       {/* Floating Particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(12)].map((_, i) => (
           <div
             key={i}
             className="floating-particle absolute w-1 h-1 bg-gold/30 rounded-full will-change-transform"
@@ -208,7 +208,7 @@ export const HeroSection = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 text-center pt-20">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-6 text-center pt-16 md:pt-20">
         {/* Badge */}
         <div 
           ref={badgeRef}
@@ -221,7 +221,7 @@ export const HeroSection = () => {
         {/* Headline with word wrapping for animation */}
         <h1 
           ref={headlineRef}
-          className="text-5xl md:text-6xl lg:text-8xl font-display font-bold text-foreground mb-6 leading-tight"
+          className="text-4xl md:text-6xl lg:text-8xl font-display font-bold text-foreground mb-4 md:mb-6 leading-tight"
           style={{ perspective: "1000px" }}
         >
           <span className="word inline-block hover:scale-105 transition-transform duration-300" style={{ transformStyle: "preserve-3d" }}>Ancient</span>{" "}
@@ -272,7 +272,7 @@ export const HeroSection = () => {
         {/* Stats */}
         <div 
           ref={statsRef}
-          className="grid grid-cols-3 gap-8 mt-24 pt-10 border-t border-border/30 max-w-3xl mx-auto opacity-0"
+          className="grid grid-cols-3 gap-4 md:gap-8 mt-16 md:mt-24 pt-8 md:pt-10 border-t border-border/30 max-w-3xl mx-auto opacity-0"
         >
           {[
             { value: "50+", label: "Projects Delivered", color: "text-gold" },
@@ -280,7 +280,7 @@ export const HeroSection = () => {
             { value: "∞", label: "Possibilities", color: "text-foreground" },
           ].map((stat) => (
             <div key={stat.label} className="group cursor-default">
-              <div className={`stat-value text-4xl md:text-5xl font-display font-bold ${stat.color} mb-2 group-hover:scale-110 transition-transform duration-300`}>
+              <div className={`stat-value text-3xl md:text-5xl font-display font-bold ${stat.color} mb-2 group-hover:scale-110 transition-transform duration-300`}>
                 {stat.value}
               </div>
               <div className="text-muted-foreground text-sm">{stat.label}</div>

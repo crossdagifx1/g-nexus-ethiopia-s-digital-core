@@ -2,9 +2,9 @@ import { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float, Environment, Sparkles as DreiSparkles } from '@react-three/drei';
 import * as THREE from 'three';
+import { useDevicePerformance } from '@/hooks/useDevicePerformance';
 
 // ── Canvas-based text to particle positions ──
-// Renders text on an offscreen 2D canvas, samples filled pixels for particle positions.
 const textCanvas = typeof document !== 'undefined' ? document.createElement('canvas') : null;
 
 const getWordPoints = (word: string, targetCount: number, scaleW: number, scaleH: number): Float32Array => {
@@ -17,36 +17,30 @@ const getWordPoints = (word: string, targetCount: number, scaleW: number, scaleH
   textCanvas.width = canvasW;
   textCanvas.height = canvasH;
 
-  // Clear and draw text
   ctx.clearRect(0, 0, canvasW, canvasH);
   ctx.fillStyle = '#ffffff';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   
-  // Use bold font, adjust size based on word length
   const fontSize = word.length <= 5 ? 100 : word.length <= 6 ? 88 : 72;
   ctx.font = `900 ${fontSize}px Arial, Helvetica, sans-serif`;
   ctx.fillText(word, canvasW / 2, canvasH / 2);
 
-  // Read pixel data
   const imageData = ctx.getImageData(0, 0, canvasW, canvasH);
   const pixels = imageData.data;
 
-  // Collect all filled pixel positions
   const filledPoints: number[] = [];
   for (let y = 0; y < canvasH; y += 1) {
     for (let x = 0; x < canvasW; x += 1) {
       const alpha = pixels[(y * canvasW + x) * 4 + 3];
       if (alpha > 128) {
-        // Normalize to centered coordinates
         const nx = (x / canvasW - 0.5) * scaleW;
-        const ny = -(y / canvasH - 0.5) * scaleH; // flip Y for 3D
+        const ny = -(y / canvasH - 0.5) * scaleH;
         filledPoints.push(nx, ny);
       }
     }
   }
 
-  // Distribute particles across filled pixels
   const pointCount = filledPoints.length / 2;
   if (pointCount === 0) return result;
 
@@ -59,10 +53,9 @@ const getWordPoints = (word: string, targetCount: number, scaleW: number, scaleH
   return result;
 };
 
-// ── Reduced particle vortex (background) ──
-const ParticleVortex = () => {
+// ── Particle vortex (background) ──
+const ParticleVortex = ({ count = 1000 }: { count?: number }) => {
   const points = useRef<THREE.Points>(null!);
-  const count = 1000;
 
   const [positions, colors] = useMemo(() => {
     const pos = new Float32Array(count * 3);
@@ -81,11 +74,10 @@ const ParticleVortex = () => {
       col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b;
     }
     return [pos, col];
-  }, []);
+  }, [count]);
 
   useFrame((state) => {
-    const t = state.clock.elapsedTime;
-    points.current.rotation.y = t * 0.1;
+    points.current.rotation.y = state.clock.elapsedTime * 0.1;
   });
 
   return (
@@ -99,7 +91,7 @@ const ParticleVortex = () => {
   );
 };
 
-// ── Energy Core (unchanged) ──
+// ── Energy Core ──
 const EnergyCore = () => {
   const outerRef = useRef<THREE.Mesh>(null!);
   const midRef = useRef<THREE.Mesh>(null!);
@@ -149,36 +141,29 @@ const EnergyCore = () => {
 
 // ── Morphing Particle Text ──
 const WORDS = ['GNEXUS', 'CREATE', 'INNOVATE', 'BUILD'];
-const PARTICLE_COUNT = 5000;
 const TEXT_SCALE_W = 5;
 const TEXT_SCALE_H = 1.25;
 const HOLD_TIME = 4;
 const MORPH_TIME = 2;
 
-const MorphingParticleText = () => {
+const MorphingParticleText = ({ particleCount = 5000 }: { particleCount?: number }) => {
   const sharpRef = useRef<THREE.Points>(null!);
   const glowRef = useRef<THREE.Points>(null!);
   const colRef = useRef<THREE.BufferAttribute>(null!);
   const colRef2 = useRef<THREE.BufferAttribute>(null!);
 
   const wordTargets = useMemo(() => {
-    return WORDS.map(w => getWordPoints(w, PARTICLE_COUNT, TEXT_SCALE_W, TEXT_SCALE_H));
-  }, []);
+    return WORDS.map(w => getWordPoints(w, particleCount, TEXT_SCALE_W, TEXT_SCALE_H));
+  }, [particleCount]);
 
-  const currentPositions = useMemo(() => new Float32Array(PARTICLE_COUNT * 3), []);
   const colors = useMemo(() => {
-    const col = new Float32Array(PARTICLE_COUNT * 3);
+    const col = new Float32Array(particleCount * 3);
     const gold = new THREE.Color('#c9922a');
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
+    for (let i = 0; i < particleCount; i++) {
       col[i * 3] = gold.r; col[i * 3 + 1] = gold.g; col[i * 3 + 2] = gold.b;
     }
     return col;
-  }, []);
-
-  // Initialize positions to first word
-  useMemo(() => {
-    currentPositions.set(wordTargets[0]);
-  }, [wordTargets, currentPositions]);
+  }, [particleCount]);
 
   const stateRef = useRef({ wordIdx: 0, timer: 0, morphing: false, morphProgress: 0 });
 
@@ -187,25 +172,22 @@ const MorphingParticleText = () => {
     s.timer += delta;
 
     if (!s.morphing) {
-      // Holding
       if (s.timer >= HOLD_TIME) {
         s.morphing = true;
         s.timer = 0;
         s.morphProgress = 0;
       }
     } else {
-      // Morphing
       s.morphProgress = Math.min(s.timer / MORPH_TIME, 1);
       const nextIdx = (s.wordIdx + 1) % WORDS.length;
       const from = wordTargets[s.wordIdx];
       const to = wordTargets[nextIdx];
       const arr = sharpRef.current.geometry.attributes.position.array as Float32Array;
 
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        // Staggered easing per particle
-        const stagger = (i / PARTICLE_COUNT) * 0.3;
+      for (let i = 0; i < particleCount; i++) {
+        const stagger = (i / particleCount) * 0.3;
         const t = Math.max(0, Math.min(1, (s.morphProgress - stagger) / (1 - 0.3)));
-        const ease = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; // easeInOutCubic
+        const ease = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
         const idx = i * 3;
         arr[idx] = from[idx] + (to[idx] - from[idx]) * ease;
         arr[idx + 1] = from[idx + 1] + (to[idx + 1] - from[idx + 1]) * ease;
@@ -213,7 +195,6 @@ const MorphingParticleText = () => {
       }
       sharpRef.current.geometry.attributes.position.needsUpdate = true;
 
-      // Sync glow layer
       const glowArr = glowRef.current.geometry.attributes.position.array as Float32Array;
       glowArr.set(arr);
       glowRef.current.geometry.attributes.position.needsUpdate = true;
@@ -225,12 +206,11 @@ const MorphingParticleText = () => {
       }
     }
 
-    // Idle shimmer when holding
     if (!s.morphing) {
       const t = state.clock.elapsedTime;
       const base = wordTargets[s.wordIdx];
       const arr = sharpRef.current.geometry.attributes.position.array as Float32Array;
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
+      for (let i = 0; i < particleCount; i++) {
         const idx = i * 3;
         arr[idx] = base[idx] + Math.sin(t * 1.5 + i * 0.008) * 0.012;
         arr[idx + 1] = base[idx + 1] + Math.sin(t * 2.2 + i * 0.006) * 0.015;
@@ -247,16 +227,15 @@ const MorphingParticleText = () => {
     const gold = new THREE.Color('#c9922a');
     const white = new THREE.Color('#ffe8b0');
     const cyan = new THREE.Color('#00d4ff');
-    const breathe = (Math.sin(ct * 0.5) + 1) / 2; // 0..1
+    const breathe = (Math.sin(ct * 0.5) + 1) / 2;
     const baseColor = new THREE.Color().lerpColors(gold, white, breathe * 0.5);
     const colArr = colRef.current.array as Float32Array;
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
+    for (let i = 0; i < particleCount; i++) {
       const sparkle = Math.sin(ct * 3 + i * 0.1) > 0.95 ? 1 : 0;
       const c = sparkle ? cyan : baseColor;
       colArr[i * 3] = c.r; colArr[i * 3 + 1] = c.g; colArr[i * 3 + 2] = c.b;
     }
     colRef.current.needsUpdate = true;
-    // Glow layer gets same colors
     const colArr2 = colRef2.current.array as Float32Array;
     colArr2.set(colArr);
     colRef2.current.needsUpdate = true;
@@ -268,19 +247,17 @@ const MorphingParticleText = () => {
 
   return (
     <group position={[0, 0, 3]}>
-      {/* Glow layer (behind) */}
       <points ref={glowRef}>
         <bufferGeometry>
-          <bufferAttribute attach="attributes-position" count={PARTICLE_COUNT} array={initPos} itemSize={3} />
-          <bufferAttribute ref={colRef2} attach="attributes-color" count={PARTICLE_COUNT} array={initCol2} itemSize={3} />
+          <bufferAttribute attach="attributes-position" count={particleCount} array={initPos} itemSize={3} />
+          <bufferAttribute ref={colRef2} attach="attributes-color" count={particleCount} array={initCol2} itemSize={3} />
         </bufferGeometry>
         <pointsMaterial size={0.06} vertexColors transparent opacity={0.2} sizeAttenuation blending={THREE.AdditiveBlending} depthWrite={false} />
       </points>
-      {/* Sharp layer (front) */}
       <points ref={sharpRef}>
         <bufferGeometry>
-          <bufferAttribute attach="attributes-position" count={PARTICLE_COUNT} array={new Float32Array(initPos)} itemSize={3} />
-          <bufferAttribute ref={colRef} attach="attributes-color" count={PARTICLE_COUNT} array={initCol} itemSize={3} />
+          <bufferAttribute attach="attributes-position" count={particleCount} array={new Float32Array(initPos)} itemSize={3} />
+          <bufferAttribute ref={colRef} attach="attributes-color" count={particleCount} array={initCol} itemSize={3} />
         </bufferGeometry>
         <pointsMaterial size={0.025} vertexColors transparent opacity={0.95} sizeAttenuation blending={THREE.AdditiveBlending} depthWrite={false} />
       </points>
@@ -302,24 +279,28 @@ const MouseScene = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const NebulaVortex3D = () => {
+  const { isMobile, dpr, particleScale } = useDevicePerformance();
+  const textParticles = isMobile ? 2000 : 5000;
+  const vortexParticles = isMobile ? 400 : 1000;
+
   return (
-    <section className="relative py-32 px-6 overflow-hidden">
+    <section className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/30 to-background" />
       <div className="relative z-10 max-w-7xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 md:mb-12">
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold/10 text-gold text-sm font-medium mb-6">
             🌌 The Nexus Core
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-4">
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-4">
             Energy of <span className="text-gradient-gold text-glow-gold">Creation</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             At the heart of every project lies a vortex of creativity, technology, and ambition — 
             spiraling together to forge digital experiences that transcend the ordinary.
           </p>
         </div>
-        <div className="h-[600px] rounded-3xl overflow-hidden border border-border/20 mx-auto max-w-4xl">
-          <Canvas camera={{ position: [0, 0, 6], fov: 50 }} dpr={[1, 2]}>
+        <div className={`${isMobile ? 'h-[400px]' : 'h-[600px]'} rounded-3xl overflow-hidden border border-border/20 mx-auto max-w-4xl`}>
+          <Canvas camera={{ position: [0, 0, 6], fov: 50 }} dpr={dpr}>
             <Suspense fallback={null}>
               <color attach="background" args={['#0d0b09']} />
               <fog attach="fog" args={['#0d0b09', 6, 18]} />
@@ -328,24 +309,24 @@ export const NebulaVortex3D = () => {
               <pointLight position={[-5, -3, 5]} intensity={0.5} color="#00d4ff" />
               <MouseScene>
                 <EnergyCore />
-                <MorphingParticleText />
+                <MorphingParticleText particleCount={textParticles} />
               </MouseScene>
-              <ParticleVortex />
-              <DreiSparkles count={100} size={2.5} scale={10} color="#c9922a" speed={0.3} />
+              <ParticleVortex count={vortexParticles} />
+              <DreiSparkles count={isMobile ? 50 : 100} size={2.5} scale={10} color="#c9922a" speed={0.3} />
               <Environment preset="night" />
             </Suspense>
           </Canvas>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 max-w-4xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-8 md:mt-12 max-w-4xl mx-auto">
           {[
             { value: '∞', label: 'Creative Potential' },
             { value: '10x', label: 'Faster Delivery' },
             { value: '360°', label: 'Full-Stack Vision' },
             { value: '100%', label: 'Passion Driven' },
           ].map((stat) => (
-            <div key={stat.label} className="p-4 rounded-xl glass border-glow text-center hover:scale-105 transition-transform duration-300">
-              <div className="text-2xl font-display font-bold text-gold mb-1">{stat.value}</div>
-              <div className="text-sm text-muted-foreground">{stat.label}</div>
+            <div key={stat.label} className="p-3 md:p-4 rounded-xl glass border-glow text-center hover:scale-105 transition-transform duration-300">
+              <div className="text-xl md:text-2xl font-display font-bold text-gold mb-1">{stat.value}</div>
+              <div className="text-xs md:text-sm text-muted-foreground">{stat.label}</div>
             </div>
           ))}
         </div>

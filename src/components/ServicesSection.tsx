@@ -39,7 +39,7 @@ const ServiceCard = ({ icon, title, description, features, index, link }: Servic
   <Link 
     ref={cardRef}
     to={link}
-    className="service-card group relative p-8 rounded-2xl glass border-glow transition-all duration-200 block"
+    className="service-card group relative p-6 md:p-8 rounded-2xl glass border-glow transition-all duration-200 block touch-manipulation"
     style={{ transformStyle: 'preserve-3d' }}
     onMouseMove={handleMouseMove}
     onMouseLeave={handleMouseLeave}
@@ -203,7 +203,7 @@ export const ServicesSection = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative py-32 px-6 overflow-hidden">
+    <section ref={sectionRef} className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/30 to-background" />
       
@@ -213,11 +213,11 @@ export const ServicesSection = () => {
       
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Section Header */}
-        <div ref={headerRef} className="text-center mb-20">
+        <div ref={headerRef} className="text-center mb-12 md:mb-20">
           <span className="header-anim inline-block px-4 py-2 rounded-full bg-gold/10 text-gold text-sm font-medium mb-6">
             Our Services
           </span>
-          <h2 className="header-anim text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6">
+          <h2 className="header-anim text-3xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-4 md:mb-6">
             Building Ethiopia's{" "}
             <span className="text-gradient-gold">Digital Future</span>
           </h2>

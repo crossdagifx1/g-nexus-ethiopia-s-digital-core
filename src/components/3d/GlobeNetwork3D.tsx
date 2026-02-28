@@ -2,8 +2,9 @@ import { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Environment, Sparkles as DreiSparkles } from '@react-three/drei';
 import * as THREE from 'three';
+import { useDevicePerformance } from '@/hooks/useDevicePerformance';
 
-const LiquidGlobe = () => {
+const LiquidGlobe = ({ detail = 128 }: { detail?: number }) => {
   const meshRef = useRef<THREE.Mesh>(null!);
   const atmosphereRef = useRef<THREE.Mesh>(null!);
   const { pointer } = useThree();
@@ -22,7 +23,6 @@ const LiquidGlobe = () => {
         varying vec2 vUv;
         uniform float uTime;
         
-        // Simplex-like noise
         vec3 mod289(vec3 x) { return x - floor(x * (1.0/289.0)) * 289.0; }
         vec4 mod289(vec4 x) { return x - floor(x * (1.0/289.0)) * 289.0; }
         vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
@@ -122,60 +122,56 @@ const LiquidGlobe = () => {
   return (
     <group>
       <mesh ref={meshRef} material={liquidMaterial}>
-        <sphereGeometry args={[2, 128, 128]} />
+        <sphereGeometry args={[2, detail, detail]} />
       </mesh>
-      {/* Outer glow atmosphere */}
       <mesh ref={atmosphereRef}>
         <sphereGeometry args={[2.25, 32, 32]} />
-        <meshStandardMaterial
-          color="#c9922a"
-          transparent
-          opacity={0.04}
-          side={THREE.BackSide}
-        />
+        <meshStandardMaterial color="#c9922a" transparent opacity={0.04} side={THREE.BackSide} />
       </mesh>
     </group>
   );
 };
 
-
 export const GlobeNetwork3D = () => {
+  const { isMobile, dpr } = useDevicePerformance();
+  const sphereDetail = isMobile ? 64 : 128;
+
   return (
-    <section className="relative py-32 px-6 overflow-hidden">
+    <section className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/10 to-background" />
       <div className="relative z-10 max-w-7xl mx-auto text-center">
         <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold/10 text-gold text-sm font-medium mb-6">
           🌍 Global Reach
         </span>
-        <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6">
+        <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-4 md:mb-6">
           From <span className="text-gradient-gold text-glow-gold">Addis Ababa</span> to the World
         </h2>
-        <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-16">
+        <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto mb-10 md:mb-16">
           Our roots are Ethiopian, but our reach is global. Move your mouse to explore 
           our worldwide connections.
         </p>
-        <div className="h-[550px] rounded-3xl overflow-hidden max-w-3xl mx-auto mb-16 border border-border/20">
-          <Canvas camera={{ position: [0, 0, 6], fov: 45 }}>
+        <div className={`${isMobile ? 'h-[400px]' : 'h-[550px]'} rounded-3xl overflow-hidden max-w-3xl mx-auto mb-10 md:mb-16 border border-border/20`}>
+          <Canvas camera={{ position: [0, 0, 6], fov: 45 }} dpr={dpr}>
             <Suspense fallback={null}>
               <ambientLight intensity={0.15} />
               <directionalLight position={[5, 3, 5]} intensity={0.8} color="#c9922a" />
               <pointLight position={[-3, -3, 5]} intensity={0.5} color="#00d4ff" />
-              <LiquidGlobe />
-              <DreiSparkles count={30} size={1} scale={6} color="#c9922a" speed={0.3} />
+              <LiquidGlobe detail={sphereDetail} />
+              <DreiSparkles count={isMobile ? 15 : 30} size={1} scale={6} color="#c9922a" speed={0.3} />
               <Environment preset="night" />
             </Suspense>
           </Canvas>
         </div>
-        <div className="grid md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto">
           {[
             { value: '8+', label: 'Countries Served' },
             { value: '3', label: 'Languages Supported' },
             { value: '24/7', label: 'Global Availability' },
             { value: '∞', label: 'Ambition' },
           ].map((stat) => (
-            <div key={stat.label} className="p-6 rounded-2xl glass border-glow text-center group hover:scale-105 transition-all duration-500">
-              <div className="text-3xl font-display font-bold text-gold mb-2 group-hover:scale-110 transition-transform">{stat.value}</div>
-              <div className="text-sm text-muted-foreground">{stat.label}</div>
+            <div key={stat.label} className="p-4 md:p-6 rounded-2xl glass border-glow text-center group hover:scale-105 transition-all duration-500">
+              <div className="text-2xl md:text-3xl font-display font-bold text-gold mb-1 md:mb-2 group-hover:scale-110 transition-transform">{stat.value}</div>
+              <div className="text-xs md:text-sm text-muted-foreground">{stat.label}</div>
             </div>
           ))}
         </div>
