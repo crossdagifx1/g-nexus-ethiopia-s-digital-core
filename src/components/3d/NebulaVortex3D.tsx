@@ -145,53 +145,61 @@ const EnergyCore = () => {
   );
 };
 
-// Orbiting energy rings
-const EnergyRings = () => {
-  const groupRef = useRef<THREE.Group>(null!);
+// Particle text "GNEXUS"
+const ParticleText = () => {
+  const points = useRef<THREE.Points>(null!);
+  const count = 2000;
+
+  const [positions, colors] = useMemo(() => {
+    const pos = new Float32Array(count * 3);
+    const col = new Float32Array(count * 3);
+    const gold = new THREE.Color('#c9922a');
+    const cyan = new THREE.Color('#00d4ff');
+
+    // Create particles arranged to spell GNEXUS using mathematical positioning
+    const letters = 'GNEXUS';
+    const letterWidth = 1.2;
+    const totalWidth = letters.length * letterWidth;
+    const startX = -totalWidth / 2 + letterWidth / 2;
+
+    for (let i = 0; i < count; i++) {
+      const letterIdx = Math.floor(Math.random() * letters.length);
+      const baseX = startX + letterIdx * letterWidth;
+      // Distribute particles in letter-shaped regions
+      const angle = Math.random() * Math.PI * 2;
+      const r = Math.random() * 0.4;
+      pos[i * 3] = baseX + Math.cos(angle) * r * 0.8;
+      pos[i * 3 + 1] = Math.sin(angle) * r + (Math.random() - 0.5) * 0.3;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
+
+      const t = Math.random();
+      const c = t > 0.3 ? gold : cyan;
+      col[i * 3] = c.r;
+      col[i * 3 + 1] = c.g;
+      col[i * 3 + 2] = c.b;
+    }
+    return [pos, col];
+  }, []);
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
-    groupRef.current.rotation.z = t * 0.1;
-  });
-
-  const rings = useMemo(() => [
-    { radius: 2.8, thickness: 0.02, tiltX: Math.PI / 2, tiltY: 0, color: '#c9922a', speed: 0.3 },
-    { radius: 3.2, thickness: 0.015, tiltX: Math.PI / 2.5, tiltY: 0.8, color: '#00d4ff', speed: -0.2 },
-    { radius: 3.6, thickness: 0.012, tiltX: Math.PI / 3, tiltY: 1.5, color: '#ff6b35', speed: 0.15 },
-    { radius: 2.4, thickness: 0.018, tiltX: Math.PI / 1.8, tiltY: 2.2, color: '#c9922a', speed: -0.25 },
-  ], []);
-
-  return (
-    <group ref={groupRef}>
-      {rings.map((ring, i) => (
-        <AnimatedRing key={i} {...ring} index={i} />
-      ))}
-    </group>
-  );
-};
-
-const AnimatedRing = ({ radius, thickness, tiltX, tiltY, color, speed, index }: {
-  radius: number; thickness: number; tiltX: number; tiltY: number; color: string; speed: number; index: number;
-}) => {
-  const meshRef = useRef<THREE.Mesh>(null!);
-
-  useFrame((state) => {
-    const t = state.clock.elapsedTime;
-    meshRef.current.rotation.x = tiltX + Math.sin(t * speed) * 0.2;
-    meshRef.current.rotation.y = tiltY + t * speed;
+    const arr = points.current.geometry.attributes.position.array as Float32Array;
+    for (let i = 0; i < count; i++) {
+      arr[i * 3 + 1] += Math.sin(t * 2 + i * 0.01) * 0.001;
+      arr[i * 3 + 2] += Math.cos(t * 1.5 + i * 0.02) * 0.0005;
+    }
+    points.current.geometry.attributes.position.needsUpdate = true;
+    points.current.rotation.y = Math.sin(t * 0.1) * 0.05;
   });
 
   return (
-    <mesh ref={meshRef}>
-      <torusGeometry args={[radius, thickness, 16, 128]} />
-      <meshStandardMaterial
-        color={color}
-        emissive={color}
-        emissiveIntensity={1.2}
-        transparent
-        opacity={0.6}
-      />
-    </mesh>
+    <points ref={points} position={[0, 0, 3]}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
+        <bufferAttribute attach="attributes-color" count={count} array={colors} itemSize={3} />
+      </bufferGeometry>
+      <pointsMaterial size={0.04} vertexColors transparent opacity={0.9} sizeAttenuation blending={THREE.AdditiveBlending} depthWrite={false} />
+    </points>
   );
 };
 
@@ -235,8 +243,8 @@ export const NebulaVortex3D = () => {
               <pointLight position={[-5, -3, 5]} intensity={0.5} color="#00d4ff" />
               <MouseScene>
                 <EnergyCore />
-                <EnergyRings />
               </MouseScene>
+              <ParticleText />
               <ParticleVortex />
               <DreiSparkles count={100} size={2.5} scale={10} color="#c9922a" speed={0.3} />
               <Environment preset="night" />
