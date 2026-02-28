@@ -77,50 +77,43 @@ const GoldSphere = () => {
   );
 };
 
-const OrbitRings = () => {
-  const group = useRef<THREE.Group>(null!);
+const OrbitParticles = () => {
+  const points = useRef<THREE.Points>(null!);
+  const count = 200;
+
+  const [positions, colors] = useMemo(() => {
+    const pos = new Float32Array(count * 3);
+    const col = new Float32Array(count * 3);
+    const gold = new THREE.Color('#c9922a');
+    const cyan = new THREE.Color('#00d4ff');
+    for (let i = 0; i < count; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const r = 2.5 + Math.random() * 1.5;
+      pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      pos[i * 3 + 2] = r * Math.cos(phi);
+      const c = Math.random() > 0.5 ? gold : cyan;
+      col[i * 3] = c.r;
+      col[i * 3 + 1] = c.g;
+      col[i * 3 + 2] = c.b;
+    }
+    return [pos, col];
+  }, []);
+
   useFrame((state) => {
-    const t = state.clock.elapsedTime;
-    group.current.rotation.z = t * 0.15;
-    group.current.rotation.x = Math.sin(t * 0.1) * 0.3;
+    points.current.rotation.y = state.clock.elapsedTime * 0.1;
+    points.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.08) * 0.2;
   });
 
   return (
-    <group ref={group}>
-      {[2.5, 3.2, 3.9].map((radius, i) => (
-        <group key={i}>
-          <mesh rotation={[Math.PI / 2 + i * 0.3, i * 0.5, 0]}>
-            <torusGeometry args={[radius, 0.025, 16, 100]} />
-            <meshStandardMaterial
-              color={i === 1 ? '#00d4ff' : '#c9922a'}
-              emissive={i === 1 ? '#00d4ff' : '#c9922a'}
-              emissiveIntensity={0.8}
-              transparent
-              opacity={0.7}
-            />
-          </mesh>
-          {/* Orbiting mini-spheres on each ring */}
-          <OrbitingSphere radius={radius} speed={0.5 + i * 0.2} offset={i * 2} color={i === 1 ? '#00d4ff' : '#c9922a'} tilt={Math.PI / 2 + i * 0.3} />
-        </group>
-      ))}
-    </group>
-  );
-};
-
-const OrbitingSphere = ({ radius, speed, offset, color, tilt }: { radius: number; speed: number; offset: number; color: string; tilt: number }) => {
-  const meshRef = useRef<THREE.Mesh>(null!);
-  useFrame((state) => {
-    const t = state.clock.elapsedTime * speed + offset;
-    meshRef.current.position.x = Math.cos(t) * radius;
-    meshRef.current.position.z = Math.sin(t) * radius;
-    meshRef.current.position.y = Math.sin(t) * radius * Math.sin(tilt - Math.PI / 2);
-  });
-
-  return (
-    <mesh ref={meshRef}>
-      <sphereGeometry args={[0.06, 12, 12]} />
-      <meshStandardMaterial color={color} emissive={color} emissiveIntensity={3} />
-    </mesh>
+    <points ref={points}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
+        <bufferAttribute attach="attributes-color" count={count} array={colors} itemSize={3} />
+      </bufferGeometry>
+      <pointsMaterial size={0.06} vertexColors transparent opacity={0.8} sizeAttenuation blending={THREE.AdditiveBlending} depthWrite={false} />
+    </points>
   );
 };
 
@@ -206,9 +199,8 @@ export const FloatingLogo3D = () => {
                 <spotLight position={[0, 10, 0]} intensity={0.4} angle={0.5} penumbra={1} color="#c9922a" />
                 <MouseTracker>
                   <GoldSphere />
-                  <OrbitRings />
                 </MouseTracker>
-                <FloatingParticles3D />
+                <OrbitParticles />
                 <DreiSparkles count={60} size={2} scale={8} color="#c9922a" speed={0.5} />
                 <Environment preset="night" />
               </Suspense>

@@ -181,12 +181,15 @@ const ParticleText = () => {
     return [pos, col];
   }, []);
 
+  const basePositions = useMemo(() => new Float32Array(positions), [positions]);
+
   useFrame((state) => {
     const t = state.clock.elapsedTime;
     const arr = points.current.geometry.attributes.position.array as Float32Array;
     for (let i = 0; i < count; i++) {
-      arr[i * 3 + 1] += Math.sin(t * 2 + i * 0.01) * 0.001;
-      arr[i * 3 + 2] += Math.cos(t * 1.5 + i * 0.02) * 0.0005;
+      arr[i * 3] = basePositions[i * 3] + Math.sin(t * 1.5 + i * 0.01) * 0.02;
+      arr[i * 3 + 1] = basePositions[i * 3 + 1] + Math.sin(t * 2 + i * 0.01) * 0.03;
+      arr[i * 3 + 2] = basePositions[i * 3 + 2] + Math.cos(t * 1.5 + i * 0.02) * 0.015;
     }
     points.current.geometry.attributes.position.needsUpdate = true;
     points.current.rotation.y = Math.sin(t * 0.1) * 0.05;
