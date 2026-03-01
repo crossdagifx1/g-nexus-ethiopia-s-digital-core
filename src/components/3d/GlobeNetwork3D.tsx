@@ -4,159 +4,173 @@ import { Environment, Sparkles as DreiSparkles } from '@react-three/drei';
 import * as THREE from 'three';
 import { useDevicePerformance } from '@/hooks/useDevicePerformance';
 
-const LiquidGlobe = ({ detail = 128 }: { detail?: number }) => {
-  const meshRef = useRef<THREE.Mesh>(null!);
-  const atmosphereRef = useRef<THREE.Mesh>(null!);
+// Generate brain-shaped node positions
+function generateBrainNodes(count: number): Float32Array {
+  const positions = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    // Ellipsoid brain shape
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const r = 1.8 + (Math.random() - 0.5) * 0.6;
+    const xScale = 1.4; // wider
+    const yScale = 1.1; // tall
+    const zScale = 1.0;
+    positions[i * 3] = r * Math.sin(phi) * Math.cos(theta) * xScale;
+    positions[i * 3 + 1] = r * Math.cos(phi) * yScale;
+    positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta) * zScale;
+  }
+  return positions;
+}
+
+// Build connection indices between nearby nodes
+function buildConnections(positions: Float32Array, nodeCount: number, maxDist: number): { indices: Uint16Array; count: number } {
+  const pairs: number[] = [];
+  for (let i = 0; i < nodeCount; i++) {
+    for (let j = i + 1; j < nodeCount; j++) {
+      const dx = positions[i * 3] - positions[j * 3];
+      const dy = positions[i * 3 + 1] - positions[j * 3 + 1];
+      const dz = positions[i * 3 + 2] - positions[j * 3 + 2];
+      if (dx * dx + dy * dy + dz * dz < maxDist * maxDist) {
+        pairs.push(i, j);
+      }
+    }
+  }
+  return { indices: new Uint16Array(pairs), count: pairs.length };
+}
+
+const NeuralNetwork = ({ nodeCount = 80, maxDist = 1.2 }: { nodeCount?: number; maxDist?: number }) => {
+  const groupRef = useRef<THREE.Group>(null!);
+  const linesRef = useRef<THREE.LineSegments>(null!);
+  const nodesRef = useRef<THREE.InstancedMesh>(null!);
   const { pointer } = useThree();
 
-  const liquidMaterial = useMemo(() => {
-    return new THREE.ShaderMaterial({
-      uniforms: {
-        uTime: { value: 0 },
-        uColor1: { value: new THREE.Color('#1a1510') },
-        uColor2: { value: new THREE.Color('#c9922a') },
-        uColor3: { value: new THREE.Color('#00d4ff') },
-      },
-      vertexShader: `
-        varying vec3 vNormal;
-        varying vec3 vPosition;
-        varying vec2 vUv;
-        uniform float uTime;
-        
-        vec3 mod289(vec3 x) { return x - floor(x * (1.0/289.0)) * 289.0; }
-        vec4 mod289(vec4 x) { return x - floor(x * (1.0/289.0)) * 289.0; }
-        vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
-        vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
-        
-        float snoise(vec3 v) {
-          const vec2 C = vec2(1.0/6.0, 1.0/3.0);
-          const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
-          vec3 i = floor(v + dot(v, C.yyy));
-          vec3 x0 = v - i + dot(i, C.xxx);
-          vec3 g = step(x0.yzx, x0.xyz);
-          vec3 l = 1.0 - g;
-          vec3 i1 = min(g.xyz, l.zxy);
-          vec3 i2 = max(g.xyz, l.zxy);
-          vec3 x1 = x0 - i1 + C.xxx;
-          vec3 x2 = x0 - i2 + C.yyy;
-          vec3 x3 = x0 - D.yyy;
-          i = mod289(i);
-          vec4 p = permute(permute(permute(i.z + vec4(0.0, i1.z, i2.z, 1.0)) + i.y + vec4(0.0, i1.y, i2.y, 1.0)) + i.x + vec4(0.0, i1.x, i2.x, 1.0));
-          float n_ = 0.142857142857;
-          vec3 ns = n_ * D.wyz - D.xzx;
-          vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
-          vec4 x_ = floor(j * ns.z);
-          vec4 y_ = floor(j - 7.0 * x_);
-          vec4 x = x_ * ns.x + ns.yyyy;
-          vec4 y = y_ * ns.x + ns.yyyy;
-          vec4 h = 1.0 - abs(x) - abs(y);
-          vec4 b0 = vec4(x.xy, y.xy);
-          vec4 b1 = vec4(x.zw, y.zw);
-          vec4 s0 = floor(b0)*2.0 + 1.0;
-          vec4 s1 = floor(b1)*2.0 + 1.0;
-          vec4 sh = -step(h, vec4(0.0));
-          vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
-          vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
-          vec3 p0 = vec3(a0.xy, h.x);
-          vec3 p1 = vec3(a0.zw, h.y);
-          vec3 p2 = vec3(a1.xy, h.z);
-          vec3 p3 = vec3(a1.zw, h.w);
-          vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
-          p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
-          vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
-          m = m * m;
-          return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
-        }
-        
-        void main() {
-          vNormal = normal;
-          vPosition = position;
-          vUv = uv;
-          
-          float displacement = snoise(position * 1.5 + uTime * 0.3) * 0.15;
-          displacement += snoise(position * 3.0 + uTime * 0.5) * 0.05;
-          vec3 newPosition = position + normal * displacement;
-          
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
-        }
-      `,
-      fragmentShader: `
-        varying vec3 vNormal;
-        varying vec3 vPosition;
-        varying vec2 vUv;
-        uniform float uTime;
-        uniform vec3 uColor1;
-        uniform vec3 uColor2;
-        uniform vec3 uColor3;
-        
-        void main() {
-          float fresnel = pow(1.0 - abs(dot(vNormal, vec3(0.0, 0.0, 1.0))), 2.5);
-          
-          float pattern = sin(vPosition.x * 4.0 + uTime) * sin(vPosition.y * 4.0 + uTime * 0.7) * sin(vPosition.z * 4.0 + uTime * 0.5);
-          pattern = pattern * 0.5 + 0.5;
-          
-          vec3 color = mix(uColor1, uColor2, pattern);
-          color = mix(color, uColor3, fresnel * 0.6);
-          color += uColor2 * fresnel * 0.4;
-          
-          float alpha = 0.85 + fresnel * 0.15;
-          
-          gl_FragColor = vec4(color, alpha);
-        }
-      `,
-      transparent: true,
-    });
-  }, []);
+  const { positions, connections, phases } = useMemo(() => {
+    const pos = generateBrainNodes(nodeCount);
+    const conn = buildConnections(pos, nodeCount, maxDist);
+    const ph = new Float32Array(nodeCount);
+    for (let i = 0; i < nodeCount; i++) ph[i] = Math.random() * Math.PI * 2;
+    return { positions: pos, connections: conn, phases: ph };
+  }, [nodeCount, maxDist]);
+
+  // Line geometry
+  const lineGeometry = useMemo(() => {
+    const geo = new THREE.BufferGeometry();
+    // Build line positions from connection indices
+    const linePos = new Float32Array(connections.count * 3);
+    for (let i = 0; i < connections.count; i++) {
+      const nodeIdx = connections.indices[i];
+      linePos[i * 3] = positions[nodeIdx * 3];
+      linePos[i * 3 + 1] = positions[nodeIdx * 3 + 1];
+      linePos[i * 3 + 2] = positions[nodeIdx * 3 + 2];
+    }
+    geo.setAttribute('position', new THREE.BufferAttribute(linePos, 3));
+    return geo;
+  }, [positions, connections]);
+
+  const lineMaterial = useMemo(() => new THREE.ShaderMaterial({
+    uniforms: { uTime: { value: 0 } },
+    vertexShader: `
+      varying float vDist;
+      void main() {
+        vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+        vDist = -mvPos.z;
+        gl_Position = projectionMatrix * mvPos;
+      }
+    `,
+    fragmentShader: `
+      uniform float uTime;
+      varying float vDist;
+      void main() {
+        float pulse = sin(uTime * 2.0 + vDist * 0.5) * 0.3 + 0.7;
+        vec3 gold = vec3(0.788, 0.573, 0.165);
+        vec3 cyan = vec3(0.0, 0.831, 1.0);
+        vec3 color = mix(gold, cyan, sin(vDist * 0.3 + uTime) * 0.5 + 0.5);
+        gl_FragColor = vec4(color * pulse, pulse * 0.35);
+      }
+    `,
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  }), []);
+
+  // Instance setup
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+  const baseColor = useMemo(() => new THREE.Color('#c9922a'), []);
+  const brightColor = useMemo(() => new THREE.Color('#00d4ff'), []);
+
+  // Init instances
+  useMemo(() => {
+    if (!nodesRef.current) return;
+    for (let i = 0; i < nodeCount; i++) {
+      dummy.position.set(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]);
+      dummy.scale.setScalar(0.06);
+      dummy.updateMatrix();
+      nodesRef.current.setMatrixAt(i, dummy.matrix);
+      nodesRef.current.setColorAt(i, baseColor);
+    }
+    nodesRef.current.instanceMatrix.needsUpdate = true;
+    if (nodesRef.current.instanceColor) nodesRef.current.instanceColor.needsUpdate = true;
+  }, [positions, nodeCount]);
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
-    meshRef.current.rotation.y = t * 0.12 + pointer.x * 0.2;
-    meshRef.current.rotation.x = pointer.y * 0.1;
-    liquidMaterial.uniforms.uTime.value = t;
-    if (atmosphereRef.current) {
-      const s = 1 + Math.sin(t * 0.8) * 0.02;
-      atmosphereRef.current.scale.setScalar(s);
+    groupRef.current.rotation.y = t * 0.08 + pointer.x * 0.15;
+    groupRef.current.rotation.x = pointer.y * 0.08;
+    lineMaterial.uniforms.uTime.value = t;
+
+    if (!nodesRef.current) return;
+    const color = new THREE.Color();
+    for (let i = 0; i < nodeCount; i++) {
+      const pulse = Math.sin(t * 1.5 + phases[i]) * 0.5 + 0.5;
+      const s = 0.04 + pulse * 0.04;
+      dummy.position.set(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]);
+      dummy.scale.setScalar(s);
+      dummy.updateMatrix();
+      nodesRef.current.setMatrixAt(i, dummy.matrix);
+      color.copy(baseColor).lerp(brightColor, pulse * 0.6);
+      nodesRef.current.setColorAt(i, color);
     }
+    nodesRef.current.instanceMatrix.needsUpdate = true;
+    if (nodesRef.current.instanceColor) nodesRef.current.instanceColor.needsUpdate = true;
   });
 
   return (
-    <group>
-      <mesh ref={meshRef} material={liquidMaterial}>
-        <sphereGeometry args={[2, detail, detail]} />
-      </mesh>
-      <mesh ref={atmosphereRef}>
-        <sphereGeometry args={[2.25, 32, 32]} />
-        <meshStandardMaterial color="#c9922a" transparent opacity={0.04} side={THREE.BackSide} />
-      </mesh>
+    <group ref={groupRef}>
+      <instancedMesh ref={nodesRef} args={[undefined, undefined, nodeCount]}>
+        <sphereGeometry args={[1, 12, 12]} />
+        <meshStandardMaterial emissive="#c9922a" emissiveIntensity={2} toneMapped={false} />
+      </instancedMesh>
+      <lineSegments ref={linesRef} geometry={lineGeometry} material={lineMaterial} />
     </group>
   );
 };
 
 export const GlobeNetwork3D = () => {
   const { isMobile, dpr } = useDevicePerformance();
-  const sphereDetail = isMobile ? 64 : 128;
+  const nodeCount = isMobile ? 40 : 80;
+  const maxDist = isMobile ? 1.5 : 1.2;
 
   return (
     <section className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/10 to-background" />
       <div className="relative z-10 max-w-7xl mx-auto text-center">
         <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold/10 text-gold text-sm font-medium mb-6">
-          🌍 Global Reach
+          🧠 Neural Intelligence
         </span>
         <h2 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-4 md:mb-6">
-          From <span className="text-gradient-gold text-glow-gold">Addis Ababa</span> to the World
+          Powered by <span className="text-gradient-gold text-glow-gold">Intelligent Design</span>
         </h2>
         <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto mb-10 md:mb-16">
-          Our roots are Ethiopian, but our reach is global. Move your mouse to explore 
-          our worldwide connections.
+          Every project we build is infused with smart architecture, AI-driven workflows, 
+          and neural-level precision.
         </p>
         <div className={`${isMobile ? 'h-[400px]' : 'h-[550px]'} rounded-3xl overflow-hidden max-w-3xl mx-auto mb-10 md:mb-16 border border-border/20`}>
           <Canvas camera={{ position: [0, 0, 6], fov: 45 }} dpr={dpr}>
             <Suspense fallback={null}>
-              <ambientLight intensity={0.15} />
-              <directionalLight position={[5, 3, 5]} intensity={0.8} color="#c9922a" />
-              <pointLight position={[-3, -3, 5]} intensity={0.5} color="#00d4ff" />
-              <LiquidGlobe detail={sphereDetail} />
+              <ambientLight intensity={0.1} />
+              <pointLight position={[5, 3, 5]} intensity={0.8} color="#c9922a" />
+              <pointLight position={[-3, -3, 5]} intensity={0.4} color="#00d4ff" />
+              <NeuralNetwork nodeCount={nodeCount} maxDist={maxDist} />
               <DreiSparkles count={isMobile ? 15 : 30} size={1} scale={6} color="#c9922a" speed={0.3} />
               <Environment preset="night" />
             </Suspense>
@@ -164,10 +178,10 @@ export const GlobeNetwork3D = () => {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto">
           {[
-            { value: '8+', label: 'Countries Served' },
-            { value: '3', label: 'Languages Supported' },
-            { value: '24/7', label: 'Global Availability' },
-            { value: '∞', label: 'Ambition' },
+            { value: '12+', label: 'AI Models Used' },
+            { value: '50+', label: 'Smart Automations' },
+            { value: '1M+', label: 'Data Points Analyzed' },
+            { value: '∞', label: 'Neural Connections' },
           ].map((stat) => (
             <div key={stat.label} className="p-4 md:p-6 rounded-2xl glass border-glow text-center group hover:scale-105 transition-all duration-500">
               <div className="text-2xl md:text-3xl font-display font-bold text-gold mb-1 md:mb-2 group-hover:scale-110 transition-transform">{stat.value}</div>
