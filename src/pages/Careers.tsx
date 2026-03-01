@@ -4,7 +4,7 @@ import { PageHero } from "@/components/PageHero";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
-import { FloatingParticles } from "@/components/FloatingParticles";
+
 import { TestimonialCarousel } from "@/components/TestimonialCarousel";
 import { Button } from "@/components/ui/button";
 import { Rocket, Heart, Coffee, Globe, Zap, BookOpen, Users, Clock, MapPin, Briefcase, GraduationCap, Wifi, Dumbbell, Plane, DollarSign, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
@@ -74,7 +74,7 @@ export default function Careers() {
 
       {/* Stats */}
       <section className="py-16 px-6 border-y border-border/30 relative overflow-hidden">
-        <FloatingParticles count={12} color="gold" />
+        
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((stat, i) => (
             <AnimatedSection key={stat.label} delay={i * 100} animation="scaleUp">

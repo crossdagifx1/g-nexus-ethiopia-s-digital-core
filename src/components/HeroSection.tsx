@@ -124,17 +124,6 @@ export const HeroSection = () => {
         );
       }
 
-      // Floating particles parallax
-      gsap.to(".floating-particle", {
-        y: "-=100",
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1,
-        },
-      });
 
       // Background parallax
       gsap.to(".hero-bg", {
@@ -193,19 +182,6 @@ export const HeroSection = () => {
       <div className="glow-orb-1 absolute top-1/4 left-1/4 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-gold/10 rounded-full blur-3xl will-change-transform" />
       <div className="glow-orb-2 absolute bottom-1/4 right-1/4 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-cyan/10 rounded-full blur-3xl will-change-transform" />
       
-      {/* Floating Particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(12)].map((_, i) => (
-          <div
-            key={i}
-            className="floating-particle absolute w-1 h-1 bg-gold/30 rounded-full will-change-transform"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-          />
-        ))}
-      </div>
 
       {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-6 text-center pt-16 md:pt-20">

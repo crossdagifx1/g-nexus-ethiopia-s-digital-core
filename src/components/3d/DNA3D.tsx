@@ -1,6 +1,6 @@
 import { useRef, useMemo, Suspense } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Environment, Sparkles as DreiSparkles } from '@react-three/drei';
+import { Environment } from '@react-three/drei';
 import { LazyCanvas } from './LazyCanvas';
 import * as THREE from 'three';
 import { useDevicePerformance } from '@/hooks/useDevicePerformance';
@@ -75,7 +75,7 @@ export const DNA3D = () => {
                 <pointLight position={[-5, -5, 5]} intensity={0.6} color="#00d4ff" />
                 <pointLight position={[0, 0, 3]} intensity={0.3} color="#c9922a" />
                 <DNAHelix helixCount={helixCount} />
-                <DreiSparkles count={isMobile ? 25 : 50} size={1.5} scale={8} color="#c9922a" speed={0.4} />
+                
                 <Environment preset="night" />
               </Suspense>
           </LazyCanvas>

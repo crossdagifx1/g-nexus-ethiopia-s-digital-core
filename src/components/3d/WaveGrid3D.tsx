@@ -1,6 +1,6 @@
 import { useRef, useMemo, Suspense } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Sparkles as DreiSparkles } from '@react-three/drei';
+
 import { LazyCanvas } from './LazyCanvas';
 import * as THREE from 'three';
 import { useDevicePerformance } from '@/hooks/useDevicePerformance';
@@ -154,7 +154,7 @@ export const WaveGrid3D = () => {
             <WavePlane segments={segments} />
             <RisingColumns count={columnCount} />
             <GlowingOrbs count={orbCount} />
-            <DreiSparkles count={isMobile ? 20 : 40} size={1.5} scale={15} color="#00d4ff" speed={0.3} />
+            
             <fog attach="fog" args={['#0f0d0a', 10, 30]} />
           </Suspense>
       </LazyCanvas>
