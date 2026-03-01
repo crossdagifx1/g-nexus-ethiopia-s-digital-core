@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { formatDistanceToNow } from 'date-fns';
+import { logActivity } from '@/lib/activityLogger';
 
 interface SupportTicket {
   id: string; name: string; email: string; subject: string | null;
@@ -25,12 +26,13 @@ export const SupportManager = () => {
 
   const fetchTickets = async () => {
     const { data } = await supabase.from('support_tickets').select('*').order('created_at', { ascending: false });
-    setTickets((data as any) || []); setLoading(false);
+    setTickets((data as SupportTicket[]) || []); setLoading(false);
   };
   useEffect(() => { fetchTickets(); }, []);
 
   const updateStatus = async (id: string, status: string) => {
     await supabase.from('support_tickets').update({ status }).eq('id', id);
+    await logActivity(`Ticket marked ${status}`, 'support_ticket', id);
     toast({ title: `Ticket ${status}` }); fetchTickets();
   };
 
@@ -41,8 +43,7 @@ export const SupportManager = () => {
   });
 
   if (loading) return <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin" /></div>;
-
-  const statusColor = (s: string) => s === 'open' ? 'default' : s === 'in_progress' ? 'secondary' : 'outline';
+  const statusColor = (s: string) => s === 'open' ? 'default' as const : s === 'in_progress' ? 'secondary' as const : 'outline' as const;
 
   return (
     <div>
@@ -50,13 +51,7 @@ export const SupportManager = () => {
         <div className="flex items-center gap-3"><Ticket className="w-5 h-5 text-primary" /><h3 className="font-semibold">Support Tickets ({tickets.length})</h3></div>
         <div className="flex gap-2">
           <Input placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} className="w-48" />
-          <Select value={filterStatus} onValueChange={setFilterStatus}>
-            <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem><SelectItem value="open">Open</SelectItem>
-              <SelectItem value="in_progress">In Progress</SelectItem><SelectItem value="resolved">Resolved</SelectItem>
-            </SelectContent>
-          </Select>
+          <Select value={filterStatus} onValueChange={setFilterStatus}><SelectTrigger className="w-32"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All</SelectItem><SelectItem value="open">Open</SelectItem><SelectItem value="in_progress">In Progress</SelectItem><SelectItem value="resolved">Resolved</SelectItem></SelectContent></Select>
         </div>
       </div>
       <Table>
@@ -69,13 +64,7 @@ export const SupportManager = () => {
               <TableCell><Badge variant={t.priority === 'urgent' ? 'destructive' : 'outline'}>{t.priority}</Badge></TableCell>
               <TableCell><Badge variant={statusColor(t.status)}>{t.status}</Badge></TableCell>
               <TableCell className="text-sm text-muted-foreground">{formatDistanceToNow(new Date(t.created_at), { addSuffix: true })}</TableCell>
-              <TableCell>
-                <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" onClick={() => setViewing(t)}><Eye className="w-4 h-4" /></Button>
-                  {t.status === 'open' && <Button variant="ghost" size="sm" onClick={() => updateStatus(t.id, 'in_progress')}>Start</Button>}
-                  {t.status !== 'resolved' && <Button variant="ghost" size="sm" onClick={() => updateStatus(t.id, 'resolved')}>Resolve</Button>}
-                </div>
-              </TableCell>
+              <TableCell><div className="flex gap-1"><Button variant="ghost" size="icon" onClick={() => setViewing(t)}><Eye className="w-4 h-4" /></Button>{t.status === 'open' && <Button variant="ghost" size="sm" onClick={() => updateStatus(t.id, 'in_progress')}>Start</Button>}{t.status !== 'resolved' && <Button variant="ghost" size="sm" onClick={() => updateStatus(t.id, 'resolved')}>Resolve</Button>}</div></TableCell>
             </TableRow>
           ))}
         </TableBody>
