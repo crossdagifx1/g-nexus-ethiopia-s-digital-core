@@ -1,6 +1,7 @@
 import { useRef, useMemo, Suspense } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Environment, Sparkles as DreiSparkles } from '@react-three/drei';
+import { LazyCanvas } from './LazyCanvas';
 import * as THREE from 'three';
 import { useDevicePerformance } from '@/hooks/useDevicePerformance';
 
@@ -67,8 +68,7 @@ export const DNA3D = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-card/30 via-background to-card/20" />
       <div className="relative z-10 max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-center">
-          <div className={`${isMobile ? 'h-[350px]' : 'h-[550px]'} rounded-3xl overflow-hidden order-2 lg:order-1 border border-border/20`}>
-            <Canvas camera={{ position: [0, 0, 9], fov: 50 }} dpr={dpr}>
+          <LazyCanvas className={`${isMobile ? 'h-[350px]' : 'h-[550px]'} rounded-3xl overflow-hidden order-2 lg:order-1 border border-border/20`} camera={{ position: [0, 0, 9], fov: 50 }} dpr={dpr}>
               <Suspense fallback={null}>
                 <ambientLight intensity={0.2} />
                 <directionalLight position={[5, 5, 5]} intensity={1} color="#c9922a" />
@@ -78,8 +78,7 @@ export const DNA3D = () => {
                 <DreiSparkles count={isMobile ? 25 : 50} size={1.5} scale={8} color="#c9922a" speed={0.4} />
                 <Environment preset="night" />
               </Suspense>
-            </Canvas>
-          </div>
+          </LazyCanvas>
           <div className="order-1 lg:order-2">
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold/10 text-gold text-sm font-medium mb-6">
               ⚡ AI & Automation

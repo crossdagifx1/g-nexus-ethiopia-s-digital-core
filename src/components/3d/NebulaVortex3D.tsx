@@ -1,6 +1,7 @@
 import { useRef, useMemo, Suspense } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Float, Environment, Sparkles as DreiSparkles } from '@react-three/drei';
+import { LazyCanvas } from './LazyCanvas';
 import * as THREE from 'three';
 import { useDevicePerformance } from '@/hooks/useDevicePerformance';
 
@@ -299,8 +300,7 @@ export const NebulaVortex3D = () => {
             spiraling together to forge digital experiences that transcend the ordinary.
           </p>
         </div>
-        <div className={`${isMobile ? 'h-[400px]' : 'h-[600px]'} rounded-3xl overflow-hidden border border-border/20 mx-auto max-w-4xl`}>
-          <Canvas camera={{ position: [0, 0, 6], fov: 50 }} dpr={dpr}>
+        <LazyCanvas className={`${isMobile ? 'h-[400px]' : 'h-[600px]'} rounded-3xl overflow-hidden border border-border/20 mx-auto max-w-4xl`} camera={{ position: [0, 0, 6], fov: 50 }} dpr={dpr}>
             <Suspense fallback={null}>
               <color attach="background" args={['#0d0b09']} />
               <fog attach="fog" args={['#0d0b09', 6, 18]} />
@@ -315,8 +315,7 @@ export const NebulaVortex3D = () => {
               <DreiSparkles count={isMobile ? 50 : 100} size={2.5} scale={10} color="#c9922a" speed={0.3} />
               <Environment preset="night" />
             </Suspense>
-          </Canvas>
-        </div>
+        </LazyCanvas>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-8 md:mt-12 max-w-4xl mx-auto">
           {[
             { value: '∞', label: 'Creative Potential' },

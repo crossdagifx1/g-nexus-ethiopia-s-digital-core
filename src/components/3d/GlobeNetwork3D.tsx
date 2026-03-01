@@ -1,6 +1,7 @@
 import { useRef, useMemo, Suspense } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Environment, Sparkles as DreiSparkles } from '@react-three/drei';
+import { LazyCanvas } from './LazyCanvas';
 import * as THREE from 'three';
 import { useDevicePerformance } from '@/hooks/useDevicePerformance';
 
@@ -164,8 +165,7 @@ export const GlobeNetwork3D = () => {
           Every project we build is infused with smart architecture, AI-driven workflows, 
           and neural-level precision.
         </p>
-        <div className={`${isMobile ? 'h-[400px]' : 'h-[550px]'} rounded-3xl overflow-hidden max-w-3xl mx-auto mb-10 md:mb-16 border border-border/20`}>
-          <Canvas camera={{ position: [0, 0, 6], fov: 45 }} dpr={dpr}>
+        <LazyCanvas className={`${isMobile ? 'h-[400px]' : 'h-[550px]'} rounded-3xl overflow-hidden max-w-3xl mx-auto mb-10 md:mb-16 border border-border/20`} camera={{ position: [0, 0, 6], fov: 45 }} dpr={dpr}>
             <Suspense fallback={null}>
               <ambientLight intensity={0.1} />
               <pointLight position={[5, 3, 5]} intensity={0.8} color="#c9922a" />
@@ -174,8 +174,7 @@ export const GlobeNetwork3D = () => {
               <DreiSparkles count={isMobile ? 15 : 30} size={1} scale={6} color="#c9922a" speed={0.3} />
               <Environment preset="night" />
             </Suspense>
-          </Canvas>
-        </div>
+        </LazyCanvas>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto">
           {[
             { value: '12+', label: 'AI Models Used' },

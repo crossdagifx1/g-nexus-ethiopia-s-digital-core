@@ -1,6 +1,7 @@
 import { useRef, useMemo, Suspense } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Sparkles as DreiSparkles } from '@react-three/drei';
+import { LazyCanvas } from './LazyCanvas';
 import * as THREE from 'three';
 import { useDevicePerformance } from '@/hooks/useDevicePerformance';
 
@@ -144,8 +145,7 @@ export const WaveGrid3D = () => {
           stay ahead of the curve. Move your mouse to interact with the digital terrain.
         </p>
       </div>
-      <div className={`relative ${isMobile ? 'h-[300px]' : 'h-[450px]'} rounded-3xl overflow-hidden max-w-6xl mx-auto border border-border/20`}>
-        <Canvas camera={{ position: [0, 6, 14], fov: 55 }} dpr={dpr}>
+      <LazyCanvas className={`relative ${isMobile ? 'h-[300px]' : 'h-[450px]'} rounded-3xl overflow-hidden max-w-6xl mx-auto border border-border/20`} camera={{ position: [0, 6, 14], fov: 55 }} dpr={dpr}>
           <Suspense fallback={null}>
             <ambientLight intensity={0.15} />
             <directionalLight position={[10, 10, 5]} intensity={0.8} color="#c9922a" />
@@ -157,8 +157,7 @@ export const WaveGrid3D = () => {
             <DreiSparkles count={isMobile ? 20 : 40} size={1.5} scale={15} color="#00d4ff" speed={0.3} />
             <fog attach="fog" args={['#0f0d0a', 10, 30]} />
           </Suspense>
-        </Canvas>
-      </div>
+      </LazyCanvas>
       <div className="relative z-10 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-10 md:mt-16">
         {[
           { title: 'Adaptive Systems', desc: 'AI-driven solutions that learn and evolve with your business needs', icon: '🧠' },
