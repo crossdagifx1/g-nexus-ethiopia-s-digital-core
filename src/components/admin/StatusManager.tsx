@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Loader2, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { logActivity } from '@/lib/activityLogger';
 
 interface ServiceStatus { id: string; name: string; status: string; description: string | null; last_incident: string | null; }
 
@@ -22,7 +22,7 @@ export const StatusManager = () => {
 
   const fetchServices = async () => {
     const { data } = await supabase.from('service_status').select('*').order('name');
-    setServices((data as any) || []); setLoading(false);
+    setServices((data as ServiceStatus[]) || []); setLoading(false);
   };
   useEffect(() => { fetchServices(); }, []);
 
@@ -32,15 +32,23 @@ export const StatusManager = () => {
   const handleSave = async () => {
     if (!form.name) { toast({ title: 'Name required', variant: 'destructive' }); return; }
     const record = { name: form.name, status: form.status, description: form.description || null, last_incident: form.last_incident || null };
-    if (editing) { await supabase.from('service_status').update(record).eq('id', editing.id); }
-    else { await supabase.from('service_status').insert(record); }
+    if (editing) {
+      await supabase.from('service_status').update(record).eq('id', editing.id);
+      await logActivity('Updated service status', 'service_status', editing.id, { name: form.name, status: form.status });
+    } else {
+      await supabase.from('service_status').insert(record);
+      await logActivity('Created service status', 'service_status', undefined, { name: form.name });
+    }
     toast({ title: editing ? 'Service updated' : 'Service added' }); setDialogOpen(false); fetchServices();
   };
 
-  const handleDelete = async (id: string) => { await supabase.from('service_status').delete().eq('id', id); toast({ title: 'Deleted' }); fetchServices(); };
+  const handleDelete = async (id: string) => {
+    await supabase.from('service_status').delete().eq('id', id);
+    await logActivity('Deleted service status', 'service_status', id);
+    toast({ title: 'Deleted' }); fetchServices();
+  };
 
   const statusColor = (s: string) => s === 'operational' ? 'text-green-500' : s === 'degraded' ? 'text-yellow-500' : 'text-red-500';
-
   if (loading) return <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin" /></div>;
 
   return (
@@ -57,12 +65,7 @@ export const StatusManager = () => {
               <TableCell className="font-medium">{s.name}</TableCell>
               <TableCell><span className={`font-medium capitalize ${statusColor(s.status)}`}>{s.status}</span></TableCell>
               <TableCell className="text-muted-foreground text-sm">{s.description || '-'}</TableCell>
-              <TableCell>
-                <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" onClick={() => openEdit(s)}><Edit2 className="w-4 h-4" /></Button>
-                  <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(s.id)}><Trash2 className="w-4 h-4" /></Button>
-                </div>
-              </TableCell>
+              <TableCell><div className="flex gap-1"><Button variant="ghost" size="icon" onClick={() => openEdit(s)}><Edit2 className="w-4 h-4" /></Button><Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(s.id)}><Trash2 className="w-4 h-4" /></Button></div></TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -72,17 +75,7 @@ export const StatusManager = () => {
           <DialogHeader><DialogTitle>{editing ? 'Edit' : 'Add'} Service</DialogTitle></DialogHeader>
           <div className="space-y-3">
             <div><Label>Service Name</Label><Input value={form.name} onChange={e => setForm({...form, name: e.target.value})} /></div>
-            <div><Label>Status</Label>
-              <Select value={form.status} onValueChange={v => setForm({...form, status: v})}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="operational">Operational</SelectItem>
-                  <SelectItem value="degraded">Degraded</SelectItem>
-                  <SelectItem value="outage">Outage</SelectItem>
-                  <SelectItem value="maintenance">Maintenance</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <div><Label>Status</Label><Select value={form.status} onValueChange={v => setForm({...form, status: v})}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="operational">Operational</SelectItem><SelectItem value="degraded">Degraded</SelectItem><SelectItem value="outage">Outage</SelectItem><SelectItem value="maintenance">Maintenance</SelectItem></SelectContent></Select></div>
             <div><Label>Description</Label><Input value={form.description} onChange={e => setForm({...form, description: e.target.value})} /></div>
             <div><Label>Last Incident</Label><Input value={form.last_incident} onChange={e => setForm({...form, last_incident: e.target.value})} /></div>
             <Button className="w-full" onClick={handleSave}>{editing ? 'Update' : 'Create'}</Button>

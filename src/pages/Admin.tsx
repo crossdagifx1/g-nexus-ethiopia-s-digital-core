@@ -225,6 +225,21 @@ const Admin = () => {
         <div className="p-6">
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
+              {/* Quick Actions */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[
+                  { label: 'Write Blog with AI', icon: FileText, desc: 'Generate a blog post using AI', tab: 'blog' },
+                  { label: 'View Support Tickets', icon: Ticket, desc: 'Check open tickets', tab: 'support' },
+                  { label: 'Manage Team', icon: UsersRound, desc: 'Add or edit team members', tab: 'team' },
+                ].map((action) => (
+                  <motion.button key={action.tab} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} onClick={() => setActiveTab(action.tab)}
+                    className="p-5 bg-card border border-border rounded-2xl text-left hover:border-primary/50 transition-colors">
+                    <action.icon className="w-6 h-6 text-primary mb-2" />
+                    <h4 className="font-semibold text-sm">{action.label}</h4>
+                    <p className="text-xs text-muted-foreground">{action.desc}</p>
+                  </motion.button>
+                ))}
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 {[
                   { icon: MessageSquare, label: 'Total Conversations', value: stats.totalChats, extra: `Today: ${stats.todayChats}`, color: 'text-primary bg-primary/10' },
