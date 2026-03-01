@@ -1,6 +1,7 @@
 import { useRef, useMemo, Suspense } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Float, MeshDistortMaterial, Environment, Sparkles as DreiSparkles } from '@react-three/drei';
+import { LazyCanvas } from './LazyCanvas';
 import * as THREE from 'three';
 import { useDevicePerformance } from '@/hooks/useDevicePerformance';
 
@@ -125,8 +126,7 @@ export const FloatingLogo3D = () => {
               ))}
             </div>
           </div>
-          <div className={`${isMobile ? 'h-[350px]' : 'h-[550px]'} rounded-3xl overflow-hidden border border-border/20`}>
-            <Canvas camera={{ position: [0, 0, 7], fov: 50 }} dpr={dpr}>
+          <LazyCanvas className={`${isMobile ? 'h-[350px]' : 'h-[550px]'} rounded-3xl overflow-hidden border border-border/20`} camera={{ position: [0, 0, 7], fov: 50 }} dpr={dpr}>
               <Suspense fallback={null}>
                 <ambientLight intensity={0.2} />
                 <directionalLight position={[5, 5, 5]} intensity={1.2} color="#c9922a" />
@@ -139,8 +139,7 @@ export const FloatingLogo3D = () => {
                 <DreiSparkles count={isMobile ? 30 : 60} size={2} scale={8} color="#c9922a" speed={0.5} />
                 <Environment preset="night" />
               </Suspense>
-            </Canvas>
-          </div>
+          </LazyCanvas>
         </div>
       </div>
     </section>
