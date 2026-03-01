@@ -3,7 +3,7 @@ import { PageHero } from "@/components/PageHero";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { TimelineSection } from "@/components/TimelineSection";
-import { FloatingParticles } from "@/components/FloatingParticles";
+
 import { Target, Eye, Heart, Award, Users, Globe, Zap, Rocket, Star, Shield, Coffee } from "lucide-react";
 
 const values = [
@@ -57,7 +57,7 @@ export default function About() {
 
       {/* Stats Section */}
       <section className="py-16 px-6 border-y border-border/30 relative overflow-hidden">
-        <FloatingParticles count={15} color="gold" />
+        
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((stat, i) => (
             <AnimatedSection key={stat.label} delay={i * 100} animation="scaleUp">

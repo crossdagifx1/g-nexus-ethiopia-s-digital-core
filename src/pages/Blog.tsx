@@ -5,7 +5,7 @@ import { PageHero } from "@/components/PageHero";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
-import { FloatingParticles } from "@/components/FloatingParticles";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar, Clock, User, ArrowRight, Search, TrendingUp, BookOpen, Mail, Loader2 } from "lucide-react";

@@ -1,6 +1,6 @@
 import { useRef, useMemo, forwardRef, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Float, Environment, Sparkles as DreiSparkles } from '@react-three/drei';
+import { Float, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 
 const CrystalCluster = () => {
@@ -158,7 +158,7 @@ export const CrystalShowcase3D = () => {
                 <pointLight position={[-5, -3, 3]} intensity={0.8} color="#00d4ff" />
                 <spotLight position={[0, 8, 0]} intensity={0.5} angle={0.6} penumbra={1} color="#c9922a" />
                 <CrystalCluster />
-                <DreiSparkles count={80} size={2} scale={6} color="#c9922a" speed={0.4} />
+                
                 <Environment preset="studio" />
               </Suspense>
             </Canvas>

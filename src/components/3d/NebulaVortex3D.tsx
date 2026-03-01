@@ -1,6 +1,6 @@
 import { useRef, useMemo, Suspense } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Float, Environment, Sparkles as DreiSparkles } from '@react-three/drei';
+import { Float, Environment } from '@react-three/drei';
 import { LazyCanvas } from './LazyCanvas';
 import * as THREE from 'three';
 import { useDevicePerformance } from '@/hooks/useDevicePerformance';
@@ -311,8 +311,6 @@ export const NebulaVortex3D = () => {
                 <EnergyCore />
                 <MorphingParticleText particleCount={textParticles} />
               </MouseScene>
-              <ParticleVortex count={vortexParticles} />
-              <DreiSparkles count={isMobile ? 50 : 100} size={2.5} scale={10} color="#c9922a" speed={0.3} />
               <Environment preset="night" />
             </Suspense>
         </LazyCanvas>

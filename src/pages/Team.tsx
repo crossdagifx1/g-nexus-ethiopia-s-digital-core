@@ -3,7 +3,7 @@ import { PageLayout } from "@/components/PageLayout";
 import { PageHero } from "@/components/PageHero";
 import { AnimatedSection } from "@/components/AnimatedSection";
 import { SkillProgressBar } from "@/components/SkillProgressBar";
-import { FloatingParticles } from "@/components/FloatingParticles";
+
 import { TestimonialCarousel } from "@/components/TestimonialCarousel";
 import { Code, Palette, Linkedin, Twitter, Github, Globe, Coffee, Lightbulb, Users, Heart, Loader2 } from "lucide-react";
 import { supabase } from '@/integrations/supabase/client';
@@ -85,7 +85,7 @@ export default function Team() {
 
       {/* Team Members */}
       <section className="py-24 px-6 relative">
-        <FloatingParticles count={10} color="mixed" />
+        
         {loading ? <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin" /></div> : (
           <div className="max-w-6xl mx-auto space-y-24">
             {team.map((member, i) => {
