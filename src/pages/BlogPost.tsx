@@ -8,6 +8,8 @@ import { ArrowLeft, Calendar, Clock, User, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { formatDistanceToNow } from 'date-fns';
 
+import ReactMarkdown from 'react-markdown';
+
 interface BlogPostData {
   id: string; title: string; content: string | null; excerpt: string | null;
   category: string | null; author_name: string | null; published_at: string | null;
@@ -40,14 +42,31 @@ export default function BlogPost() {
               <ArrowLeft className="w-4 h-4" /> Back to Blog
             </Link>
             {post.category && <Badge variant="outline" className="mb-4">{post.category}</Badge>}
-            <h1 className="font-display font-bold text-3xl md:text-5xl mb-6">{post.title}</h1>
+            <h1 className="font-display font-bold text-3xl md:text-5xl mb-6 leading-tight">{post.title}</h1>
             <div className="flex items-center gap-6 text-sm text-muted-foreground mb-8">
               {post.author_name && <span className="flex items-center gap-2"><User className="w-4 h-4" />{post.author_name}</span>}
               {post.published_at && <span className="flex items-center gap-2"><Calendar className="w-4 h-4" />{formatDistanceToNow(new Date(post.published_at), { addSuffix: true })}</span>}
             </div>
-            {post.image_url && <img src={post.image_url} alt={post.title} className="w-full rounded-2xl mb-8 object-cover max-h-96" />}
-            <div className="prose prose-invert max-w-none">
-              {post.content ? post.content.split('\n').map((p, i) => <p key={i} className="text-muted-foreground leading-relaxed mb-4">{p}</p>) : <p className="text-muted-foreground">{post.excerpt}</p>}
+            {post.image_url && <img src={post.image_url} alt={post.title} className="w-full rounded-2xl mb-8 object-cover max-h-96 shadow-2xl" />}
+            <div className="prose prose-invert prose-amber max-w-none">
+              {post.content ? (
+                <ReactMarkdown
+                  components={{
+                    p: ({ children }) => <p className="text-muted-foreground leading-relaxed mb-6 text-lg">{children}</p>,
+                    h2: ({ children }) => <h2 className="text-2xl font-bold mt-12 mb-6 text-foreground border-b border-border/50 pb-2">{children}</h2>,
+                    h3: ({ children }) => <h3 className="text-xl font-bold mt-8 mb-4 text-foreground">{children}</h3>,
+                    ul: ({ children }) => <ul className="list-disc list-inside mb-6 space-y-2 text-muted-foreground">{children}</ul>,
+                    ol: ({ children }) => <ol className="list-decimal list-inside mb-6 space-y-2 text-muted-foreground">{children}</ol>,
+                    li: ({ children }) => <li className="ml-4">{children}</li>,
+                    strong: ({ children }) => <strong className="font-bold text-foreground">{children}</strong>,
+                    blockquote: ({ children }) => <blockquote className="border-l-4 border-primary pl-6 py-2 italic my-8 bg-primary/5 rounded-r-lg">{children}</blockquote>,
+                  }}
+                >
+                  {post.content}
+                </ReactMarkdown>
+              ) : (
+                <p className="text-lg text-muted-foreground leading-relaxed italic">{post.excerpt}</p>
+              )}
             </div>
           </AnimatedSection>
         </div>

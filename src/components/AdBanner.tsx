@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { X } from 'lucide-react';
+import { ExternalLink, Info } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Ad {
   id: string;
@@ -12,57 +13,97 @@ interface Ad {
 }
 
 interface AdBannerProps {
-  placement: 'hero_banner' | 'in_feed' | 'sidebar';
+  placement?: 'hero_banner' | 'sidebar' | 'in_feed' | 'popup';
   className?: string;
 }
 
-export const AdBanner = ({ placement, className = '' }: AdBannerProps) => {
+export const AdBanner = ({ placement = 'in_feed', className = "" }: AdBannerProps) => {
   const [ad, setAd] = useState<Ad | null>(null);
-  const [dismissed, setDismissed] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const fetchAd = async () => {
-      const { data } = await supabase
-        .from('ads' as any)
-        .select('*')
-        .eq('placement', placement)
-        .eq('status', 'active')
-        .limit(1);
-      if (data && (data as any[]).length > 0) {
-        setAd((data as any[])[0]);
-        // Track impression
-        await (supabase.from('ads' as any) as any)
-          .update({ impressions: ((data as any[])[0].impressions || 0) + 1 })
-          .eq('id', (data as any[])[0].id);
+      try {
+        const { data, error } = await supabase
+          .from('ads')
+          .select('id, title, description, image_url, link_url, placement')
+          .eq('status', 'active')
+          .eq('placement', placement)
+          .limit(1)
+          .maybeSingle();
+
+        if (data && !error) {
+          setAd(data as Ad);
+          // Track impression
+          await (supabase.rpc('increment_ad_impressions' as any, { ad_id: data.id }) as any);
+        }
+      } catch (err) {
+        console.error('Error fetching ad:', err);
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchAd();
   }, [placement]);
 
-  if (!ad || dismissed) return null;
-
   const handleClick = async () => {
-    await (supabase.from('ads' as any) as any)
-      .update({ clicks: (ad as any).clicks + 1 })
-      .eq('id', ad.id);
-    if (ad.link_url) window.open(ad.link_url, '_blank');
+    if (ad) {
+      await (supabase.rpc('increment_ad_clicks' as any, { ad_id: ad.id }) as any);
+    }
   };
 
+  if (loading || !ad) return null;
+
   return (
-    <div className={`relative rounded-2xl overflow-hidden border border-border/50 bg-card/50 backdrop-blur ${className}`}>
-      <button onClick={() => setDismissed(true)} className="absolute top-2 right-2 z-10 p-1 rounded-full bg-background/80 hover:bg-background text-muted-foreground hover:text-foreground transition-colors">
-        <X className="w-3 h-3" />
-      </button>
-      <div className="cursor-pointer" onClick={handleClick}>
-        {ad.image_url && (
-          <img src={ad.image_url} alt={ad.title} className="w-full h-40 object-cover" />
-        )}
-        <div className="p-4">
-          <p className="text-xs text-muted-foreground mb-1">Sponsored</p>
-          <h4 className="font-semibold text-sm text-foreground">{ad.title}</h4>
-          {ad.description && <p className="text-xs text-muted-foreground mt-1">{ad.description}</p>}
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className={`relative overflow-hidden rounded-2xl border border-primary/20 bg-muted/30 group ${className}`}
+      >
+        <div className="absolute top-2 right-2 z-10">
+          <Badge variant="secondary" className="text-[10px] py-0 px-1 opacity-50 group-hover:opacity-100 transition-opacity">
+            Sponsored
+          </Badge>
         </div>
-      </div>
-    </div>
+
+        <a
+          href={ad.link_url || '#'}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={handleClick}
+          className="block h-full"
+        >
+          {ad.image_url && (
+            <div className="aspect-[16/6] w-full overflow-hidden">
+              <img
+                src={ad.image_url}
+                alt={ad.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+          )}
+
+          <div className="p-4 bg-gradient-to-t from-background/80 to-transparent">
+            <div className="flex items-center justify-between gap-2">
+              <h4 className="font-semibold text-sm group-hover:text-primary transition-colors">{ad.title}</h4>
+              <ExternalLink className="w-3 h-3 text-muted-foreground group-hover:text-primary" />
+            </div>
+            {ad.description && (
+              <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{ad.description}</p>
+            )}
+          </div>
+        </a>
+      </motion.div>
+    </AnimatePresence>
   );
 };
+
+// Helper Badge component if ui/badge is not available or to avoid circular deps
+const Badge = ({ children, variant, className }: any) => (
+  <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${variant === 'secondary' ? 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80' : 'border-transparent bg-primary text-primary-foreground hover:bg-primary/80'} ${className}`}>
+    {children}
+  </span>
+);
