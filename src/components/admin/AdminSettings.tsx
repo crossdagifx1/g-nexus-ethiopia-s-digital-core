@@ -26,7 +26,7 @@ export const AdminSettings = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [chatSettings, setChatSettings] = useState<ChatSettings>({ agent_name: 'Tsion', greeting_message: '', business_hours_start: '09:00', business_hours_end: '18:00', auto_response_enabled: false, quick_replies: [] });
   const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({ email_notifications: true, sound_enabled: true, new_chat_alert: true });
-  const [companySettings, setCompanySettings] = useState<CompanySettings>({ name: 'G-Squad', email: '', phone: '', social_links: { facebook: '', twitter: '', linkedin: '', instagram: '' } });
+  const [companySettings, setCompanySettings] = useState<CompanySettings>({ name: 'G-Nexus', email: '', phone: '', social_links: { facebook: '', twitter: '', linkedin: '', instagram: '' } });
   const [seoSettings, setSeoSettings] = useState<SEOSettings>({ site_title: '', site_description: '', og_image_url: '' });
   const [newQuickReply, setNewQuickReply] = useState('');
   const [aiTestPrompt, setAiTestPrompt] = useState('');
@@ -167,7 +167,7 @@ export const AdminSettings = () => {
             {/* SEO Settings */}
             <Card className="mt-6"><CardHeader><CardTitle className="flex items-center gap-2"><Globe className="w-5 h-5" />SEO & Meta Settings</CardTitle></CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2"><Label>Site Title</Label><Input value={seoSettings.site_title} onChange={e => setSeoSettings({ ...seoSettings, site_title: e.target.value })} placeholder="G-Squad - Digital Agency" /></div>
+                <div className="space-y-2"><Label>Site Title</Label><Input value={seoSettings.site_title} onChange={e => setSeoSettings({ ...seoSettings, site_title: e.target.value })} placeholder="G-Nexus - Digital Agency" /></div>
                 <div className="space-y-2"><Label>Meta Description</Label><Textarea value={seoSettings.site_description} onChange={e => setSeoSettings({ ...seoSettings, site_description: e.target.value })} placeholder="Your site description for search engines..." rows={2} /></div>
                 <div className="space-y-2"><Label>OG Image URL</Label><Input value={seoSettings.og_image_url} onChange={e => setSeoSettings({ ...seoSettings, og_image_url: e.target.value })} placeholder="https://..." /></div>
                 <Button onClick={() => saveSettings('seo_settings', seoSettings)} disabled={isSaving}>{isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}Save SEO Settings</Button>

@@ -17,7 +17,7 @@ interface Message {
 type ChatMode = 'agent' | 'gnexus';
 
 const AGENTS = {
-  agent: { name: "Tsion", avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&h=100&fit=crop&crop=face", greeting: "ሰላም! 👋 I'm Tsion from G-Squad. How can I help you today?", subtitle: "G-Squad Support" },
+  agent: { name: "Tsion", avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&h=100&fit=crop&crop=face", greeting: "ሰላም! 👋 I'm Tsion from G-Nexus. How can I help you today?", subtitle: "G-Nexus Support" },
   gnexus: { name: "G-Nexus AI", avatar: "", greeting: "Welcome to G-Nexus AI! 🚀 Ask me anything about the G-Nexus platform.", subtitle: "Platform Assistant" },
 };
 
@@ -199,7 +199,7 @@ const AIChatWidget = () => {
                       {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                     </Button>
                   </div>
-                  <p className="text-[10px] text-muted-foreground mt-2 text-center">Chat with {agent.name} • Powered by G-Squad AI</p>
+                  <p className="text-[10px] text-muted-foreground mt-2 text-center">Chat with {agent.name} • Powered by G-Nexus AI</p>
                 </div>
               </>
             )}

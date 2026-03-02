@@ -19,7 +19,7 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-muted hover:text-foreground",
         link: "text-gold underline-offset-4 hover:underline",
-        // G-Squad Custom Variants
+        // G-Nexus Custom Variants
         gold: "bg-gradient-to-r from-gold to-gold-glow text-background font-semibold shadow-lg hover:shadow-[0_0_30px_hsl(38,70%,50%,0.5)] hover:scale-105",
         cyber: "bg-gradient-to-r from-cyan to-cyan-glow text-background font-semibold shadow-lg hover:shadow-[0_0_30px_hsl(185,85%,50%,0.5)] hover:scale-105",
         glass: "glass border-gold/30 text-foreground hover:border-gold/60 hover:bg-card/60",

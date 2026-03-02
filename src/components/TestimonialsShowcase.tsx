@@ -9,7 +9,7 @@ const testimonials = [
   {
     name: 'Abebe Kebede',
     role: 'CEO, TechEthio Solutions',
-    quote: 'G-Squad transformed our entire digital presence. The AI chatbot alone increased our lead conversion by 300%. Truly next-level work.',
+    quote: 'G-Nexus transformed our entire digital presence. The AI chatbot alone increased our lead conversion by 300%. Truly next-level work.',
     rating: 5,
     avatar: '🧑‍💼',
   },

@@ -133,7 +133,7 @@ export default function Team() {
       {/* Day in Life */}
       <section className="py-24 px-6 bg-muted/10">
         <div className="max-w-4xl mx-auto">
-          <AnimatedSection><h2 className="font-display font-bold text-3xl text-center mb-4">A Day at G-Squad</h2><p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">How we blend Ethiopian traditions with modern productivity.</p></AnimatedSection>
+          <AnimatedSection><h2 className="font-display font-bold text-3xl text-center mb-4">A Day at G-Nexus</h2><p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">How we blend Ethiopian traditions with modern productivity.</p></AnimatedSection>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {dayInLife.map((item, i) => (
               <AnimatedSection key={item.time} delay={i * 100} animation="scaleUp">

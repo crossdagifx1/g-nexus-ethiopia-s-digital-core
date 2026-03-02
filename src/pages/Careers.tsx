@@ -39,7 +39,7 @@ const applicationProcess = [
 ];
 
 const employeeTestimonials = [
-  { quote: "Joining G-Squad was the best career decision I made.", author: "Hana M.", role: "Senior Developer", rating: 5 },
+  { quote: "Joining G-Nexus was the best career decision I made.", author: "Hana M.", role: "Senior Developer", rating: 5 },
   { quote: "Nowhere else has the same family feel combined with world-class challenges.", author: "Dawit T.", role: "Designer", rating: 5 },
   { quote: "I've grown more in one year here than in my previous five years combined.", author: "Meron A.", role: "AI Engineer", rating: 5 },
 ];

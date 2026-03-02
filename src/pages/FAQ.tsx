@@ -12,7 +12,7 @@ interface FAQItem { id: string; question: string; answer: string; category: stri
 
 // Fallback FAQ data
 const fallbackFaqs = [
-  { id: '1', question: "What services does G-Squad offer?", answer: "We offer web development, 3D visualization, AI automation, and our flagship G-Nexus platform for Ethiopian SMEs.", category: "General" },
+  { id: '1', question: "What services does G-Nexus offer?", answer: "We offer web development, 3D visualization, AI automation, and our flagship G-Nexus platform for Ethiopian SMEs.", category: "General" },
   { id: '2', question: "How much does a typical project cost?", answer: "Project costs vary based on scope. Contact us for a free consultation and custom quote.", category: "Pricing" },
   { id: '3', question: "Do you support local payment methods?", answer: "Yes! G-Nexus integrates with Telebirr, Chapa, and SantimPay for seamless Ethiopian payments.", category: "Platform" },
   { id: '4', question: "How long does a project take?", answer: "Timelines vary: websites take 2-4 weeks, 3D projects 1-2 weeks, and AI solutions 4-8 weeks.", category: "General" },

@@ -145,7 +145,7 @@ export const Footer = () => {
               <img src={gNexusLogo} alt="G-Nexus Logo" className="w-12 h-12 rounded-xl object-contain shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300" />
               <div>
                 <span className="font-display font-bold text-2xl text-foreground">G-Nexus</span>
-                <p className="text-xs text-muted-foreground">by G-Squad</p>
+                <p className="text-xs text-muted-foreground">by G-Nexus</p>
               </div>
             </Link>
             <p className="text-muted-foreground leading-relaxed mb-6 max-w-sm">

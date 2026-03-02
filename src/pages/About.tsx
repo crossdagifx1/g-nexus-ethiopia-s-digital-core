@@ -20,7 +20,7 @@ const stats = [
 ];
 
 const timeline = [
-  { year: "2023", title: "G-Squad Founded", description: "Two passionate developers in Addis Ababa started with a vision to digitize Ethiopian businesses.", icon: <Rocket className="w-4 h-4 text-gold" /> },
+  { year: "2023", title: "G-Nexus Founded", description: "Two passionate developers in Addis Ababa started with a vision to digitize Ethiopian businesses.", icon: <Rocket className="w-4 h-4 text-gold" /> },
   { year: "2024", title: "G-Nexus Launched", description: "Our flagship platform was born, integrating local payment systems with modern business tools.", icon: <Zap className="w-4 h-4 text-gold" /> },
   { year: "2025", title: "AI Integration", description: "We pioneered AI-powered automation for Ethiopian businesses, setting new industry standards.", icon: <Star className="w-4 h-4 text-gold" /> },
   { year: "2026", title: "Regional Expansion", description: "Expanding our reach across East Africa, bringing digital transformation to the region.", icon: <Globe className="w-4 h-4 text-gold" /> },

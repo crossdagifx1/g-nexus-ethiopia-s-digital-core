@@ -95,7 +95,7 @@ export const Navbar = () => {
             <span className="font-display font-bold text-xl text-foreground group-hover:text-gold transition-colors duration-300">
               G-Nexus
             </span>
-            <span className="text-xs text-muted-foreground -mt-1">by G-Squad</span>
+            <span className="text-xs text-muted-foreground -mt-1">by G-Nexus</span>
           </div>
         </Link>
 

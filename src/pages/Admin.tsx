@@ -174,7 +174,7 @@ const Admin = () => {
         <div className="p-4 border-b border-border">
           <div className="flex items-center gap-3">
             <img src={gNexusLogo} alt="G-Nexus" className="w-10 h-10 rounded-xl object-contain" />
-            <div><h2 className="font-bold text-sm">G-Squad</h2><p className="text-xs text-muted-foreground">Admin Portal</p></div>
+            <div><h2 className="font-bold text-sm">G-Nexus</h2><p className="text-xs text-muted-foreground">Admin Portal</p></div>
           </div>
         </div>
         <ScrollArea className="flex-1 p-2">

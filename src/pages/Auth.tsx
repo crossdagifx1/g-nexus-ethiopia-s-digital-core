@@ -57,7 +57,7 @@ const Auth = () => {
             <div className="inline-flex items-center justify-center mb-4">
               <img src={gNexusLogo} alt="G-Nexus" className="w-20 h-20 object-contain" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight">G-Squad Admin</h1>
+            <h1 className="text-2xl font-bold tracking-tight">G-Nexus Admin</h1>
             <p className="text-muted-foreground text-sm mt-1">Sign in to access the admin portal</p>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -65,7 +65,7 @@ const Auth = () => {
               <Label htmlFor="email">Email</Label>
               <div className="relative mt-1">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="admin@g-squad.dev" className="pl-10" />
+                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="admin@G-Nexus.dev" className="pl-10" />
               </div>
             </div>
             <div>

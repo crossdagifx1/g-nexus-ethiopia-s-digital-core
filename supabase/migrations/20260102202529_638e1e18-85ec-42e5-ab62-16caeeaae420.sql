@@ -84,9 +84,9 @@ WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
 
 -- Insert default admin settings
 INSERT INTO public.admin_settings (key, value, description) VALUES
-('chat_settings', '{"agent_name": "Tsion", "greeting_message": "Hi! I am Tsion, your AI assistant from G-Squad. How can I help you today?", "business_hours_start": "09:00", "business_hours_end": "18:00", "auto_response_enabled": false, "quick_replies": ["Tell me about your services", "I need a quote", "Contact sales"]}', 'Chat widget configuration'),
+('chat_settings', '{"agent_name": "Tsion", "greeting_message": "Hi! I am Tsion, your AI assistant from G-Nexus. How can I help you today?", "business_hours_start": "09:00", "business_hours_end": "18:00", "auto_response_enabled": false, "quick_replies": ["Tell me about your services", "I need a quote", "Contact sales"]}', 'Chat widget configuration'),
 ('notification_settings', '{"email_notifications": true, "sound_enabled": true, "new_chat_alert": true}', 'Notification preferences'),
-('company_settings', '{"name": "G-Squad", "email": "info@g-squad.net", "phone": "+251 911 123456", "social_links": {"facebook": "", "twitter": "", "linkedin": "", "instagram": ""}}', 'Company information')
+('company_settings', '{"name": "G-Nexus", "email": "info@G-Nexus.net", "phone": "+251 911 123456", "social_links": {"facebook": "", "twitter": "", "linkedin": "", "instagram": ""}}', 'Company information')
 ON CONFLICT (key) DO NOTHING;
 
 -- Create trigger to update last_message_at on chat_conversations

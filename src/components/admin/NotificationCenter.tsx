@@ -19,7 +19,7 @@ export const NotificationCenter = () => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    // Listen for new conversations
+    // Listen for new conversations and messages
     const channel = supabase
       .channel('admin-notifications')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_conversations' }, (payload) => {
@@ -30,6 +30,18 @@ export const NotificationCenter = () => {
           time: new Date(),
           read: false,
         }, ...prev].slice(0, 20));
+      })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_messages' }, (payload) => {
+        // Only notify if it's from a user
+        if ((payload.new as any).role === 'user') {
+          setNotifications(prev => [{
+            id: (payload.new as any).id,
+            type: 'message',
+            message: `New message: ${(payload.new as any).content.slice(0, 30)}...`,
+            time: new Date(),
+            read: false,
+          }, ...prev].slice(0, 20));
+        }
       })
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chat_ratings' }, (payload) => {
         setNotifications(prev => [{
