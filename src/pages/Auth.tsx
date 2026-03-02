@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import gNexusLogo from '@/assets/g-nexus-logo.png';
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -53,10 +54,10 @@ const Auth = () => {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
         <div className="bg-card border border-border rounded-3xl p-8 shadow-2xl">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-4">
-              <span className="text-2xl font-bold text-primary-foreground">G</span>
+            <div className="inline-flex items-center justify-center mb-4">
+              <img src={gNexusLogo} alt="G-Nexus" className="w-20 h-20 object-contain" />
             </div>
-            <h1 className="text-2xl font-bold">G-Squad Admin</h1>
+            <h1 className="text-2xl font-bold tracking-tight">G-Squad Admin</h1>
             <p className="text-muted-foreground text-sm mt-1">Sign in to access the admin portal</p>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
