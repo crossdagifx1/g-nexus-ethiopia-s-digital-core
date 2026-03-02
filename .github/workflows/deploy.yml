@@ -25,21 +25,44 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Deploy to FTP via lftp
+      - name: Package build as ZIP
+        run: |
+          cd dist
+          zip -r ../deploy.zip .
+          cd ..
+          cp extract.php ./deploy_extract.php
+
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+
+      - name: Upload files via FTP
         env:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
-          sudo apt-get update && sudo apt-get install -y lftp
           lftp -c "
             set ftp:passive-mode true;
             set ftp:ssl-allow false;
             set net:timeout 30;
-            set net:max-retries 2;
+            set net:max-retries 3;
             set net:reconnect-interval-base 5;
             open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" $FTP_SERVER;
-            ls public_html/;
-            mirror --reverse --delete --verbose --parallel=1 ./dist/ public_html/;
+            put -O public_html/ deploy.zip;
+            put -O public_html/ deploy_extract.php;
             quit
           "
+
+      - name: Extract files on server via PHP
+        run: |
+          RESPONSE=$(curl -sS -w "\n%{http_code}" \
+            "https://gnexuset.com/deploy_extract.php?token=gnexus-deploy-2026")
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | head -n -1)
+          echo "Response: $BODY"
+          echo "HTTP Status: $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Deployment extraction failed with status $HTTP_CODE"
+            exit 1
+          fi
+          echo "✅ Deployment complete!"
