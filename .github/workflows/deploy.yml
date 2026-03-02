@@ -28,27 +28,30 @@ jobs:
         run: npm run build
 
       - name: Deploy dist contents to cpanel-deploy branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+          # 1. Create a temporary clone of the deployment branch
+          REPO_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
+          git clone --branch cpanel-deploy --single-branch "$REPO_URL" deployment-repo || \
+          (git init deployment-repo && cd deployment-repo && git checkout -b cpanel-deploy)
 
-          # Fetch existing branch or create it if it doesn't exist
-          git fetch origin cpanel-deploy || git checkout --orphan cpanel-deploy && git rm -rf . && git commit --allow-empty -m "initial commit" && git push origin cpanel-deploy
+          # 2. Sync dist contents
+          # Delete everything except .git
+          find deployment-repo -maxdepth 1 -not -name '.git' -not -name '.' -exec rm -rf {} +
+          cp -r dist/* deployment-repo/
 
-          # Use a separate directory to prepare the deployment commit
-          rm -rf /tmp/cpanel-deploy
-          git clone --branch cpanel-deploy --single-branch "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" /tmp/cpanel-deploy
-
-          # Clear the deployment repo except .git
-          find /tmp/cpanel-deploy -maxdepth 1 -not -name '.git' -not -name '.' -exec rm -rf {} +
-
-          # Copy dist contents to the deployment repo
-          cp -r dist/* /tmp/cpanel-deploy/
-
-          cd /tmp/cpanel-deploy
+          # 3. Commit and Push
+          cd deployment-repo
           git add -A
-          git commit -m "deploy: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" || echo "No changes to deploy"
-          git push origin cpanel-deploy
+          if git commit -m "deploy: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"; then
+            git push origin cpanel-deploy
+          else
+            echo "No changes to deploy"
+          fi
 
       - name: Trigger cPanel Git Pull via API
         env:
