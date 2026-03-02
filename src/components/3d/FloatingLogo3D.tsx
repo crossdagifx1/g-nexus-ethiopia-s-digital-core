@@ -135,7 +135,6 @@ export const FloatingLogo3D = () => {
                 <MouseTracker>
                   <GoldSphere />
                 </MouseTracker>
-                <Environment preset="night" />
               </Suspense>
           </LazyCanvas>
         </div>

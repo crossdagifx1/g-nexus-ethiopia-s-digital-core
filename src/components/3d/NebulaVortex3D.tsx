@@ -302,8 +302,6 @@ export const NebulaVortex3D = () => {
         </div>
         <LazyCanvas className={`${isMobile ? 'h-[400px]' : 'h-[600px]'} rounded-3xl overflow-hidden border border-border/20 mx-auto max-w-4xl`} camera={{ position: [0, 0, 6], fov: 50 }} dpr={dpr}>
             <Suspense fallback={null}>
-              <color attach="background" args={['#0d0b09']} />
-              <fog attach="fog" args={['#0d0b09', 6, 18]} />
               <ambientLight intensity={0.15} />
               <directionalLight position={[5, 5, 5]} intensity={0.8} color="#c9922a" />
               <pointLight position={[-5, -3, 5]} intensity={0.5} color="#00d4ff" />
@@ -311,7 +309,7 @@ export const NebulaVortex3D = () => {
                 <EnergyCore />
                 <MorphingParticleText particleCount={textParticles} />
               </MouseScene>
-              <Environment preset="night" />
+              
             </Suspense>
         </LazyCanvas>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-8 md:mt-12 max-w-4xl mx-auto">
