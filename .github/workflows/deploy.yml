@@ -27,20 +27,36 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Commit build artifacts for cPanel
+      - name: Deploy dist contents to cpanel-deploy branch
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add -f dist/
-          git status
-          git diff --cached --quiet || git commit -m "chore: add build artifacts for cPanel deployment [skip ci]"
 
-      - name: Push build branch to GitHub
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: cpanel-deploy
-          force: true
+          # Create a temp directory with just the dist contents at root
+          DEPLOY_DIR=$(mktemp -d)
+          cp -r dist/. "$DEPLOY_DIR/"
+
+          # Create a clean orphan branch in a separate worktree
+          git fetch origin cpanel-deploy 2>/dev/null || true
+          git worktree add --orphan -b cpanel-deploy-tmp /tmp/cpanel-deploy 2>/dev/null || \
+            git worktree add /tmp/cpanel-deploy cpanel-deploy 2>/dev/null || true
+
+          # Clear the worktree and copy dist contents to root
+          rm -rf /tmp/cpanel-deploy/*
+          cp -r dist/. /tmp/cpanel-deploy/
+
+          cd /tmp/cpanel-deploy
+          git init 2>/dev/null || true
+          git checkout --orphan cpanel-deploy 2>/dev/null || true
+          git add -A
+          git commit -m "deploy: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+
+      - name: Push cpanel-deploy branch to GitHub
+        run: |
+          cd /tmp/cpanel-deploy
+          git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" 2>/dev/null || \
+            git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          git push origin cpanel-deploy --force
 
       - name: Trigger cPanel Git Pull via API
         env:
