@@ -1,0 +1,256 @@
+build-and-deploy	Set up job	﻿2026-03-02T10:46:43.1662170Z Current runner version: '2.331.0'
+build-and-deploy	Set up job	2026-03-02T10:46:43.1688015Z ##[group]Runner Image Provisioner
+build-and-deploy	Set up job	2026-03-02T10:46:43.1689019Z Hosted Compute Agent
+build-and-deploy	Set up job	2026-03-02T10:46:43.1689689Z Version: 20260213.493
+build-and-deploy	Set up job	2026-03-02T10:46:43.1690335Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+build-and-deploy	Set up job	2026-03-02T10:46:43.1691217Z Build Date: 2026-02-13T00:28:41Z
+build-and-deploy	Set up job	2026-03-02T10:46:43.1691935Z Worker ID: {6e8c6038-8173-4094-9b66-a1d4822b2f2e}
+build-and-deploy	Set up job	2026-03-02T10:46:43.1692721Z Azure Region: westus
+build-and-deploy	Set up job	2026-03-02T10:46:43.1693313Z ##[endgroup]
+build-and-deploy	Set up job	2026-03-02T10:46:43.1695156Z ##[group]Operating System
+build-and-deploy	Set up job	2026-03-02T10:46:43.1695894Z Ubuntu
+build-and-deploy	Set up job	2026-03-02T10:46:43.1696442Z 24.04.3
+build-and-deploy	Set up job	2026-03-02T10:46:43.1696945Z LTS
+build-and-deploy	Set up job	2026-03-02T10:46:43.1697440Z ##[endgroup]
+build-and-deploy	Set up job	2026-03-02T10:46:43.1698045Z ##[group]Runner Image
+build-and-deploy	Set up job	2026-03-02T10:46:43.1698683Z Image: ubuntu-24.04
+build-and-deploy	Set up job	2026-03-02T10:46:43.1699401Z Version: 20260224.36.1
+build-and-deploy	Set up job	2026-03-02T10:46:43.1700462Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260224.36/images/ubuntu/Ubuntu2404-Readme.md
+build-and-deploy	Set up job	2026-03-02T10:46:43.1702255Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260224.36
+build-and-deploy	Set up job	2026-03-02T10:46:43.1703231Z ##[endgroup]
+build-and-deploy	Set up job	2026-03-02T10:46:43.1704729Z ##[group]GITHUB_TOKEN Permissions
+build-and-deploy	Set up job	2026-03-02T10:46:43.1706666Z Contents: write
+build-and-deploy	Set up job	2026-03-02T10:46:43.1707288Z Metadata: read
+build-and-deploy	Set up job	2026-03-02T10:46:43.1707997Z ##[endgroup]
+build-and-deploy	Set up job	2026-03-02T10:46:43.1710179Z Secret source: Actions
+build-and-deploy	Set up job	2026-03-02T10:46:43.1711171Z Prepare workflow directory
+build-and-deploy	Set up job	2026-03-02T10:46:43.2038833Z Prepare all required actions
+build-and-deploy	Set up job	2026-03-02T10:46:43.2076715Z Getting action download info
+build-and-deploy	Set up job	2026-03-02T10:46:43.6984393Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+build-and-deploy	Set up job	2026-03-02T10:46:43.8326694Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+build-and-deploy	Set up job	2026-03-02T10:46:43.9255630Z Download action repository 'ad-m/github-push-action@master' (SHA:57116acb309081ee57864270b0e3c4cedbe45452)
+build-and-deploy	Set up job	2026-03-02T10:46:44.5803008Z Complete job name: build-and-deploy
+build-and-deploy	Checkout repository	﻿2026-03-02T10:46:44.6560461Z ##[group]Run actions/checkout@v4
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.6561433Z with:
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.6562047Z   repository: crossdagifx1/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.6562931Z   token: ***
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.6563387Z   ssh-strict: true
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.6564051Z   ssh-user: git
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.6564523Z   persist-credentials: true
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.6565047Z   clean: true
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.6565509Z   sparse-checkout-cone-mode: true
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.6566050Z   fetch-depth: 1
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.6566506Z   fetch-tags: false
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.6566973Z   show-progress: true
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.6567438Z   lfs: false
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.6567868Z   submodules: false
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.6568356Z   set-safe-directory: true
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.6569148Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7666943Z Syncing repository: crossdagifx1/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7669191Z ##[group]Getting Git version info
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7670314Z Working directory is '/home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core'
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7671790Z [command]/usr/bin/git version
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7729096Z git version 2.53.0
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7755406Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7770066Z Temporarily overriding HOME='/home/runner/work/_temp/603fc8ed-816f-406d-88df-ecd9b0835515' before making global git config changes
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7772636Z Adding repository directory to the temporary git global config as a safe directory
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7782894Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7822826Z Deleting the contents of '/home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core'
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7825923Z ##[group]Initializing the repository
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7831157Z [command]/usr/bin/git init /home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7928192Z hint: Using 'master' as the name for the initial branch. This default branch name
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7929703Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7931459Z hint: to use in all of your new repositories, which will suppress this warning,
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7932595Z hint: call:
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7933395Z hint:
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7934746Z hint: 	git config --global init.defaultBranch <name>
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7936036Z hint:
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7937251Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7939227Z hint: 'development'. The just-created branch can be renamed via this command:
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7940721Z hint:
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7941482Z hint: 	git branch -m <name>
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7942415Z hint:
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7943920Z hint: Disable this message with "git config set advice.defaultBranchName false"
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7946704Z Initialized empty Git repository in /home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core/.git/
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7950833Z [command]/usr/bin/git remote add origin https://github.com/crossdagifx1/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7982695Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7984375Z ##[group]Disabling automatic garbage collection
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.7988003Z [command]/usr/bin/git config --local gc.auto 0
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.8019107Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.8020596Z ##[group]Setting up auth
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.8027251Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.8061105Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.8395185Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.8429079Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.8662978Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.8696424Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.8942791Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.8980058Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.8981118Z ##[group]Fetching the repository
+build-and-deploy	Checkout repository	2026-03-02T10:46:44.8989035Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +acee20e16243aaef28186cdda50116cb165de297:refs/remotes/origin/main
+build-and-deploy	Checkout repository	2026-03-02T10:46:45.4319123Z From https://github.com/crossdagifx1/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:46:45.4321282Z  * [new ref]         acee20e16243aaef28186cdda50116cb165de297 -> origin/main
+build-and-deploy	Checkout repository	2026-03-02T10:46:45.4354095Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:46:45.4355581Z ##[group]Determining the checkout info
+build-and-deploy	Checkout repository	2026-03-02T10:46:45.4357297Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:46:45.4362899Z [command]/usr/bin/git sparse-checkout disable
+build-and-deploy	Checkout repository	2026-03-02T10:46:45.4406192Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+build-and-deploy	Checkout repository	2026-03-02T10:46:45.4434338Z ##[group]Checking out the ref
+build-and-deploy	Checkout repository	2026-03-02T10:46:45.4438986Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+build-and-deploy	Checkout repository	2026-03-02T10:46:45.4624100Z Switched to a new branch 'main'
+build-and-deploy	Checkout repository	2026-03-02T10:46:45.4656214Z branch 'main' set up to track 'origin/main'.
+build-and-deploy	Checkout repository	2026-03-02T10:46:45.4664274Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:46:45.4683004Z [command]/usr/bin/git log -1 --format=%H
+build-and-deploy	Checkout repository	2026-03-02T10:46:45.4709025Z acee20e16243aaef28186cdda50116cb165de297
+build-and-deploy	Setup Node.js	﻿2026-03-02T10:46:45.4969883Z ##[group]Run actions/setup-node@v4
+build-and-deploy	Setup Node.js	2026-03-02T10:46:45.4970466Z with:
+build-and-deploy	Setup Node.js	2026-03-02T10:46:45.4971059Z   node-version: 20
+build-and-deploy	Setup Node.js	2026-03-02T10:46:45.4971478Z   cache: npm
+build-and-deploy	Setup Node.js	2026-03-02T10:46:45.4971879Z   always-auth: false
+build-and-deploy	Setup Node.js	2026-03-02T10:46:45.4972313Z   check-latest: false
+build-and-deploy	Setup Node.js	2026-03-02T10:46:45.4972909Z   token: ***
+build-and-deploy	Setup Node.js	2026-03-02T10:46:45.4973307Z ##[endgroup]
+build-and-deploy	Setup Node.js	2026-03-02T10:46:45.6773968Z Found in cache @ /opt/hostedtoolcache/node/20.20.0/x64
+build-and-deploy	Setup Node.js	2026-03-02T10:46:45.6780720Z ##[group]Environment details
+build-and-deploy	Setup Node.js	2026-03-02T10:46:46.0009139Z node: v20.20.0
+build-and-deploy	Setup Node.js	2026-03-02T10:46:46.0010581Z npm: 10.8.2
+build-and-deploy	Setup Node.js	2026-03-02T10:46:46.0011613Z yarn: 1.22.22
+build-and-deploy	Setup Node.js	2026-03-02T10:46:46.0013692Z ##[endgroup]
+build-and-deploy	Setup Node.js	2026-03-02T10:46:46.0035659Z [command]/opt/hostedtoolcache/node/20.20.0/x64/bin/npm config get cache
+build-and-deploy	Setup Node.js	2026-03-02T10:46:46.1199896Z /home/runner/.npm
+build-and-deploy	Setup Node.js	2026-03-02T10:46:46.4177261Z npm cache is not found
+build-and-deploy	Install dependencies	﻿2026-03-02T10:46:46.4334340Z ##[group]Run npm install
+build-and-deploy	Install dependencies	2026-03-02T10:46:46.4335556Z [36;1mnpm install[0m
+build-and-deploy	Install dependencies	2026-03-02T10:46:46.4402236Z shell: /usr/bin/bash -e {0}
+build-and-deploy	Install dependencies	2026-03-02T10:46:46.4403396Z ##[endgroup]
+build-and-deploy	Install dependencies	2026-03-02T10:46:51.4416478Z npm warn deprecated three-mesh-bvh@0.7.8: Deprecated due to three.js version incompatibility. Please use v0.8.0, instead.
+build-and-deploy	Install dependencies	2026-03-02T10:46:55.6371285Z 
+build-and-deploy	Install dependencies	2026-03-02T10:46:55.6372275Z added 440 packages, and audited 441 packages in 9s
+build-and-deploy	Install dependencies	2026-03-02T10:46:55.6372794Z 
+build-and-deploy	Install dependencies	2026-03-02T10:46:55.6373269Z 73 packages are looking for funding
+build-and-deploy	Install dependencies	2026-03-02T10:46:55.6374089Z   run `npm fund` for details
+build-and-deploy	Install dependencies	2026-03-02T10:46:55.6463307Z 
+build-and-deploy	Install dependencies	2026-03-02T10:46:55.6464419Z 2 moderate severity vulnerabilities
+build-and-deploy	Install dependencies	2026-03-02T10:46:55.6464949Z 
+build-and-deploy	Install dependencies	2026-03-02T10:46:55.6465538Z To address all issues (including breaking changes), run:
+build-and-deploy	Install dependencies	2026-03-02T10:46:55.6466431Z   npm audit fix --force
+build-and-deploy	Install dependencies	2026-03-02T10:46:55.6466828Z 
+build-and-deploy	Install dependencies	2026-03-02T10:46:55.6467127Z Run `npm audit` for details.
+build-and-deploy	Build project	﻿2026-03-02T10:46:55.6789153Z ##[group]Run npm run build
+build-and-deploy	Build project	2026-03-02T10:46:55.6789483Z [36;1mnpm run build[0m
+build-and-deploy	Build project	2026-03-02T10:46:55.6847122Z shell: /usr/bin/bash -e {0}
+build-and-deploy	Build project	2026-03-02T10:46:55.6847393Z ##[endgroup]
+build-and-deploy	Build project	2026-03-02T10:46:55.7944741Z 
+build-and-deploy	Build project	2026-03-02T10:46:55.7945475Z > vite_react_shadcn_ts@0.0.0 build
+build-and-deploy	Build project	2026-03-02T10:46:55.7946144Z > vite build
+build-and-deploy	Build project	2026-03-02T10:46:55.7946402Z 
+build-and-deploy	Build project	2026-03-02T10:46:56.0226205Z [36mvite v5.4.21 [32mbuilding for production...[36m[39m
+build-and-deploy	Build project	2026-03-02T10:46:56.0810581Z transforming...
+build-and-deploy	Build project	2026-03-02T10:46:57.4745379Z [33m[vite:css] @import must precede all other statements (besides @charset or empty @layer)
+build-and-deploy	Build project	2026-03-02T10:46:57.4752280Z 4  |  
+build-and-deploy	Build project	2026-03-02T10:46:57.4754419Z 5  |  /* G-SQUAD Design System - Habesha Futurism */
+build-and-deploy	Build project	2026-03-02T10:46:57.4756082Z 6  |  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+build-and-deploy	Build project	2026-03-02T10:46:57.4757709Z    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+build-and-deploy	Build project	2026-03-02T10:46:57.4758531Z 7  |  
+build-and-deploy	Build project	2026-03-02T10:46:57.4759058Z 8  |  @layer base {[39m
+build-and-deploy	Build project	2026-03-02T10:47:06.5184146Z [32m✓[39m 3939 modules transformed.
+build-and-deploy	Build project	2026-03-02T10:47:07.5615434Z rendering chunks...
+build-and-deploy	Build project	2026-03-02T10:47:07.5857654Z computing gzip size...
+build-and-deploy	Build project	2026-03-02T10:47:07.6461763Z [2mdist/[22m[32mindex.html                        [39m[1m[2m    2.38 kB[22m[1m[22m[2m │ gzip:   0.79 kB[22m
+build-and-deploy	Build project	2026-03-02T10:47:07.6462817Z [33m
+build-and-deploy	Build project	2026-03-02T10:47:07.6463480Z (!) Some chunks are larger than 500 kB after minification. Consider:
+build-and-deploy	Build project	2026-03-02T10:47:07.6464618Z - Using dynamic import() to code-split the application
+build-and-deploy	Build project	2026-03-02T10:47:07.6466261Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+build-and-deploy	Build project	2026-03-02T10:47:07.6468010Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+build-and-deploy	Build project	2026-03-02T10:47:07.6469394Z [2mdist/[22m[2massets/[22m[32mhero-pattern-DtpG-QBB.jpg  [39m[1m[2m  283.41 kB[22m[1m[22m
+build-and-deploy	Build project	2026-03-02T10:47:07.6470786Z [2mdist/[22m[2massets/[22m[32mg-nexus-logo-6uIEUX9k.png  [39m[1m[2m  716.84 kB[22m[1m[22m
+build-and-deploy	Build project	2026-03-02T10:47:07.6472287Z [2mdist/[22m[2massets/[22m[35mindex-2Mw1CfcB.css         [39m[1m[2m  101.62 kB[22m[1m[22m[2m │ gzip:  15.79 kB[22m
+build-and-deploy	Build project	2026-03-02T10:47:07.6474447Z [2mdist/[22m[2massets/[22m[36mindex-DwSoEM77.js          [39m[1m[33m2,451.70 kB[39m[22m[2m │ gzip: 683.82 kB[22m
+build-and-deploy	Build project	2026-03-02T10:47:07.6475333Z [32m✓ built in 11.60s[39m
+build-and-deploy	Commit build artifacts for cPanel	﻿2026-03-02T10:47:07.7786704Z ##[group]Run git config user.name "GitHub Actions"
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.7787162Z [36;1mgit config user.name "GitHub Actions"[0m
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.7787505Z [36;1mgit config user.email "actions@github.com"[0m
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.7787802Z [36;1mgit add -f dist/[0m
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.7788023Z [36;1mgit status[0m
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.7788449Z [36;1mgit diff --cached --quiet || git commit -m "chore: add build artifacts for cPanel deployment [skip ci]"[0m
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.7838276Z shell: /usr/bin/bash -e {0}
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.7838550Z ##[endgroup]
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8596958Z On branch main
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8597648Z Your branch is up to date with 'origin/main'.
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8598023Z 
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8598212Z Changes to be committed:
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8598809Z   (use "git restore --staged <file>..." to unstage)
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8599580Z 	new file:   dist/assets/g-nexus-logo-6uIEUX9k.png
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8600580Z 	new file:   dist/assets/hero-pattern-DtpG-QBB.jpg
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8601481Z 	new file:   dist/assets/index-2Mw1CfcB.css
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8601918Z 	new file:   dist/assets/index-DwSoEM77.js
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8602289Z 	new file:   dist/favicon.ico
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8602611Z 	new file:   dist/index.html
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8602952Z 	new file:   dist/placeholder.svg
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8603276Z 	new file:   dist/robots.txt
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8603468Z 
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8815774Z [main c574743] chore: add build artifacts for cPanel deployment [skip ci]
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8816296Z  8 files changed, 4751 insertions(+)
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8816688Z  create mode 100644 dist/assets/g-nexus-logo-6uIEUX9k.png
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8817172Z  create mode 100644 dist/assets/hero-pattern-DtpG-QBB.jpg
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8817617Z  create mode 100644 dist/assets/index-2Mw1CfcB.css
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8817991Z  create mode 100644 dist/assets/index-DwSoEM77.js
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8818319Z  create mode 100644 dist/favicon.ico
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8818603Z  create mode 100644 dist/index.html
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8818913Z  create mode 100644 dist/placeholder.svg
+build-and-deploy	Commit build artifacts for cPanel	2026-03-02T10:47:07.8819208Z  create mode 100644 dist/robots.txt
+build-and-deploy	Push build branch to GitHub	﻿2026-03-02T10:47:07.8886217Z ##[group]Run ad-m/github-push-action@master
+build-and-deploy	Push build branch to GitHub	2026-03-02T10:47:07.8886527Z with:
+build-and-deploy	Push build branch to GitHub	2026-03-02T10:47:07.8887015Z   github_token: ***
+build-and-deploy	Push build branch to GitHub	2026-03-02T10:47:07.8887232Z   branch: cpanel-deploy
+build-and-deploy	Push build branch to GitHub	2026-03-02T10:47:07.8887436Z   force: true
+build-and-deploy	Push build branch to GitHub	2026-03-02T10:47:07.8887630Z   github_url: https://github.com
+build-and-deploy	Push build branch to GitHub	2026-03-02T10:47:07.8887885Z   push_to_submodules: on-demand
+build-and-deploy	Push build branch to GitHub	2026-03-02T10:47:07.8888111Z   directory: .
+build-and-deploy	Push build branch to GitHub	2026-03-02T10:47:07.8888293Z ##[endgroup]
+build-and-deploy	Push build branch to GitHub	2026-03-02T10:47:07.9188387Z Push to branch cpanel-deploy
+build-and-deploy	Push build branch to GitHub	2026-03-02T10:47:09.0981082Z remote: 
+build-and-deploy	Push build branch to GitHub	2026-03-02T10:47:09.0989239Z remote: Create a pull request for 'cpanel-deploy' on GitHub by visiting:        
+build-and-deploy	Push build branch to GitHub	2026-03-02T10:47:09.0990763Z remote:      https://github.com/crossdagifx1/g-nexus-ethiopia-s-digital-core/pull/new/cpanel-deploy        
+build-and-deploy	Push build branch to GitHub	2026-03-02T10:47:09.0991438Z remote: 
+build-and-deploy	Push build branch to GitHub	2026-03-02T10:47:09.0991936Z To https://github.com/crossdagifx1/g-nexus-ethiopia-s-digital-core.git
+build-and-deploy	Push build branch to GitHub	2026-03-02T10:47:09.0994471Z  * [new branch]      HEAD -> cpanel-deploy
+build-and-deploy	Trigger cPanel Git Pull via API	﻿2026-03-02T10:47:09.1134688Z ##[group]Run echo "Triggering cPanel Git pull..."
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1135119Z [36;1mecho "Triggering cPanel Git pull..."[0m
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1135461Z [36;1mRESPONSE=$(curl -sS -w "\n%{http_code}" \[0m
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1135834Z [36;1m  -H "Authorization: cpanel $CPANEL_USER:$CPANEL_TOKEN" \[0m
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1136422Z [36;1m  "https://${CPANEL_DOMAIN}:2083/execute/VersionControl/update?repository_root=${CPANEL_REPO_DIR}")[0m
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1136974Z [36;1mHTTP_CODE=$(echo "$RESPONSE" | tail -n1)[0m
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1137459Z [36;1mBODY=$(echo "$RESPONSE" | head -n -1)[0m
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1137741Z [36;1mecho "Response: $BODY"[0m
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1137995Z [36;1mecho "HTTP Status: $HTTP_CODE"[0m
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1138269Z [36;1mif [ "$HTTP_CODE" != "200" ]; then[0m
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1138599Z [36;1m  echo "::error::cPanel deploy failed with HTTP $HTTP_CODE"[0m
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1138929Z [36;1m  exit 1[0m
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1139111Z [36;1mfi[0m
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1139378Z [36;1mecho "✅ Deployment triggered successfully!"[0m
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1187800Z shell: /usr/bin/bash -e {0}
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1188044Z env:
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1188363Z   CPANEL_USER: ***
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1188628Z   CPANEL_TOKEN: ***
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1188857Z   CPANEL_DOMAIN: ***
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1189118Z   CPANEL_REPO_DIR: ***
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1189323Z ##[endgroup]
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:09.1257450Z Triggering cPanel Git pull...
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:19.1458727Z curl: (6) Could not resolve host: ***
+build-and-deploy	Trigger cPanel Git Pull via API	2026-03-02T10:47:19.1490914Z ##[error]Process completed with exit code 6.
+build-and-deploy	Post Checkout repository	﻿2026-03-02T10:47:19.1629490Z Post job cleanup.
+build-and-deploy	Post Checkout repository	2026-03-02T10:47:19.2604216Z [command]/usr/bin/git version
+build-and-deploy	Post Checkout repository	2026-03-02T10:47:19.2642916Z git version 2.53.0
+build-and-deploy	Post Checkout repository	2026-03-02T10:47:19.2687207Z Temporarily overriding HOME='/home/runner/work/_temp/3dc7c18c-a3df-4c14-b3c5-c5806f1a9d26' before making global git config changes
+build-and-deploy	Post Checkout repository	2026-03-02T10:47:19.2688335Z Adding repository directory to the temporary git global config as a safe directory
+build-and-deploy	Post Checkout repository	2026-03-02T10:47:19.2693105Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Post Checkout repository	2026-03-02T10:47:19.2730171Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+build-and-deploy	Post Checkout repository	2026-03-02T10:47:19.2765296Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+build-and-deploy	Post Checkout repository	2026-03-02T10:47:19.3008301Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+build-and-deploy	Post Checkout repository	2026-03-02T10:47:19.3030108Z http.https://github.com/.extraheader
+build-and-deploy	Post Checkout repository	2026-03-02T10:47:19.3043415Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+build-and-deploy	Post Checkout repository	2026-03-02T10:47:19.3075200Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+build-and-deploy	Post Checkout repository	2026-03-02T10:47:19.3309065Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+build-and-deploy	Post Checkout repository	2026-03-02T10:47:19.3341394Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+build-and-deploy	Complete job	﻿2026-03-02T10:47:19.3693976Z Cleaning up orphan processes

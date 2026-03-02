@@ -9,8 +9,8 @@ import gNexusLogo from "@/assets/g-nexus-logo.png";
 gsap.registerPlugin(ScrollTrigger);
 
 const navLinks = [
-  { 
-    label: "Services", 
+  {
+    label: "Services",
     href: "/web-development",
     hasDropdown: true,
     dropdownItems: [
@@ -20,6 +20,7 @@ const navLinks = [
     ]
   },
   { label: "Portfolio", href: "/portfolio" },
+  { label: "Blog", href: "/blog" },
   { label: "Team", href: "/team" },
   { label: "Platform", href: "/gnexus" },
   { label: "Contact", href: "/contact" },
@@ -37,13 +38,13 @@ export const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
-      
+
       // Calculate scroll progress
       const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = scrollHeight > 0 ? (window.scrollY / scrollHeight) * 100 : 0;
       setScrollProgress(progress);
     };
-    
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -70,14 +71,13 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <nav 
+    <nav
       ref={navRef}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? "bg-background/80 backdrop-blur-xl border-b border-border/50 py-2" : "bg-transparent py-4"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? "bg-background/80 backdrop-blur-xl border-b border-border/50 py-2" : "bg-transparent py-4"
+        }`}
     >
       {/* Scroll Progress Bar */}
-      <div 
+      <div
         ref={progressRef}
         className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-gold via-cyan to-gold transition-all duration-150"
         style={{ width: `${scrollProgress}%` }}
@@ -86,9 +86,9 @@ export const Navbar = () => {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo - Links to Home */}
         <Link to="/" className="flex items-center gap-3 group">
-          <img 
-            src={gNexusLogo} 
-            alt="G-Nexus Logo" 
+          <img
+            src={gNexusLogo}
+            alt="G-Nexus Logo"
             className="w-11 h-11 rounded-xl object-contain transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg group-hover:shadow-[0_0_30px_hsl(38,70%,50%,0.5)]"
           />
           <div className="flex flex-col">
@@ -102,7 +102,7 @@ export const Navbar = () => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link, index) => (
-            <div 
+            <div
               key={link.label}
               className="relative"
               onMouseEnter={() => link.hasDropdown && setActiveDropdown(link.label)}
@@ -117,7 +117,7 @@ export const Navbar = () => {
                     <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === link.label ? 'rotate-180' : ''}`} />
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-gold to-cyan group-hover:w-full transition-all duration-300" />
                   </button>
-                  
+
                   {/* Dropdown Menu */}
                   <div className={`absolute top-full left-0 mt-2 min-w-[200px] rounded-xl bg-background/95 backdrop-blur-xl border border-border/50 shadow-xl overflow-hidden transition-all duration-300 ${activeDropdown === link.label ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-2 pointer-events-none'}`}>
                     {link.dropdownItems?.map((item, i) => (

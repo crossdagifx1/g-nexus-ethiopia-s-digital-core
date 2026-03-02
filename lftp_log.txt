@@ -1,0 +1,203 @@
+build-and-deploy	Set up job	﻿2026-03-02T10:00:04.5353520Z Current runner version: '2.331.0'
+build-and-deploy	Set up job	2026-03-02T10:00:04.5378955Z ##[group]Runner Image Provisioner
+build-and-deploy	Set up job	2026-03-02T10:00:04.5380066Z Hosted Compute Agent
+build-and-deploy	Set up job	2026-03-02T10:00:04.5380636Z Version: 20260213.493
+build-and-deploy	Set up job	2026-03-02T10:00:04.5381269Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+build-and-deploy	Set up job	2026-03-02T10:00:04.5382078Z Build Date: 2026-02-13T00:28:41Z
+build-and-deploy	Set up job	2026-03-02T10:00:04.5382752Z Worker ID: {523de94e-3e6c-4451-a22f-bc5073c8689f}
+build-and-deploy	Set up job	2026-03-02T10:00:04.5383422Z Azure Region: northcentralus
+build-and-deploy	Set up job	2026-03-02T10:00:04.5384136Z ##[endgroup]
+build-and-deploy	Set up job	2026-03-02T10:00:04.5385568Z ##[group]Operating System
+build-and-deploy	Set up job	2026-03-02T10:00:04.5386283Z Ubuntu
+build-and-deploy	Set up job	2026-03-02T10:00:04.5386877Z 24.04.3
+build-and-deploy	Set up job	2026-03-02T10:00:04.5387353Z LTS
+build-and-deploy	Set up job	2026-03-02T10:00:04.5388072Z ##[endgroup]
+build-and-deploy	Set up job	2026-03-02T10:00:04.5388680Z ##[group]Runner Image
+build-and-deploy	Set up job	2026-03-02T10:00:04.5389271Z Image: ubuntu-24.04
+build-and-deploy	Set up job	2026-03-02T10:00:04.5389961Z Version: 20260224.36.1
+build-and-deploy	Set up job	2026-03-02T10:00:04.5391803Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260224.36/images/ubuntu/Ubuntu2404-Readme.md
+build-and-deploy	Set up job	2026-03-02T10:00:04.5395066Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260224.36
+build-and-deploy	Set up job	2026-03-02T10:00:04.5396752Z ##[endgroup]
+build-and-deploy	Set up job	2026-03-02T10:00:04.5399231Z ##[group]GITHUB_TOKEN Permissions
+build-and-deploy	Set up job	2026-03-02T10:00:04.5402164Z Contents: read
+build-and-deploy	Set up job	2026-03-02T10:00:04.5403017Z Metadata: read
+build-and-deploy	Set up job	2026-03-02T10:00:04.5403722Z Packages: read
+build-and-deploy	Set up job	2026-03-02T10:00:04.5404271Z ##[endgroup]
+build-and-deploy	Set up job	2026-03-02T10:00:04.5406721Z Secret source: Actions
+build-and-deploy	Set up job	2026-03-02T10:00:04.5408158Z Prepare workflow directory
+build-and-deploy	Set up job	2026-03-02T10:00:04.5748384Z Prepare all required actions
+build-and-deploy	Set up job	2026-03-02T10:00:04.5786924Z Getting action download info
+build-and-deploy	Set up job	2026-03-02T10:00:04.9733983Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+build-and-deploy	Set up job	2026-03-02T10:00:05.1159584Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+build-and-deploy	Set up job	2026-03-02T10:00:05.3141329Z Complete job name: build-and-deploy
+build-and-deploy	Checkout repository	﻿2026-03-02T10:00:05.3912246Z ##[group]Run actions/checkout@v4
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.3913237Z with:
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.3913851Z   repository: crossdagifx1/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.3914765Z   token: ***
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.3915226Z   ssh-strict: true
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.3915692Z   ssh-user: git
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.3916163Z   persist-credentials: true
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.3916691Z   clean: true
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.3917175Z   sparse-checkout-cone-mode: true
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.3917915Z   fetch-depth: 1
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.3918383Z   fetch-tags: false
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.3918855Z   show-progress: true
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.3919358Z   lfs: false
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.3919784Z   submodules: false
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.3920260Z   set-safe-directory: true
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.3921023Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5049594Z Syncing repository: crossdagifx1/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5051625Z ##[group]Getting Git version info
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5052725Z Working directory is '/home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core'
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5054217Z [command]/usr/bin/git version
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5152130Z git version 2.53.0
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5181549Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5197829Z Temporarily overriding HOME='/home/runner/work/_temp/23e0de0e-9b32-45fc-8a28-eec560bc434f' before making global git config changes
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5199460Z Adding repository directory to the temporary git global config as a safe directory
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5211874Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5258652Z Deleting the contents of '/home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core'
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5262528Z ##[group]Initializing the repository
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5267315Z [command]/usr/bin/git init /home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5384671Z hint: Using 'master' as the name for the initial branch. This default branch name
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5386474Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5388180Z hint: to use in all of your new repositories, which will suppress this warning,
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5389762Z hint: call:
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5391038Z hint:
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5392312Z hint: 	git config --global init.defaultBranch <name>
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5393740Z hint:
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5395161Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5397426Z hint: 'development'. The just-created branch can be renamed via this command:
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5399763Z hint:
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5400542Z hint: 	git branch -m <name>
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5401470Z hint:
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5402774Z hint: Disable this message with "git config set advice.defaultBranchName false"
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5405551Z Initialized empty Git repository in /home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core/.git/
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5409905Z [command]/usr/bin/git remote add origin https://github.com/crossdagifx1/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5454600Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5455522Z ##[group]Disabling automatic garbage collection
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5456315Z [command]/usr/bin/git config --local gc.auto 0
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5490972Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5492092Z ##[group]Setting up auth
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5501312Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5540596Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5948835Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.5985178Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.6247448Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.6283779Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.6543154Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.6580627Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.6581564Z ##[group]Fetching the repository
+build-and-deploy	Checkout repository	2026-03-02T10:00:05.6590387Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +3412eca2493d27e7188a87a24621083630551d63:refs/remotes/origin/main
+build-and-deploy	Checkout repository	2026-03-02T10:00:06.0830399Z From https://github.com/crossdagifx1/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:00:06.0831945Z  * [new ref]         3412eca2493d27e7188a87a24621083630551d63 -> origin/main
+build-and-deploy	Checkout repository	2026-03-02T10:00:06.0868282Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:00:06.0870196Z ##[group]Determining the checkout info
+build-and-deploy	Checkout repository	2026-03-02T10:00:06.0872255Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:00:06.0875782Z [command]/usr/bin/git sparse-checkout disable
+build-and-deploy	Checkout repository	2026-03-02T10:00:06.0922066Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+build-and-deploy	Checkout repository	2026-03-02T10:00:06.0952373Z ##[group]Checking out the ref
+build-and-deploy	Checkout repository	2026-03-02T10:00:06.0956137Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+build-and-deploy	Checkout repository	2026-03-02T10:00:06.1143958Z Switched to a new branch 'main'
+build-and-deploy	Checkout repository	2026-03-02T10:00:06.1145884Z branch 'main' set up to track 'origin/main'.
+build-and-deploy	Checkout repository	2026-03-02T10:00:06.1154690Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:00:06.1195432Z [command]/usr/bin/git log -1 --format=%H
+build-and-deploy	Checkout repository	2026-03-02T10:00:06.1220978Z 3412eca2493d27e7188a87a24621083630551d63
+build-and-deploy	Setup Node.js	﻿2026-03-02T10:00:06.1556049Z ##[group]Run actions/setup-node@v4
+build-and-deploy	Setup Node.js	2026-03-02T10:00:06.1557257Z with:
+build-and-deploy	Setup Node.js	2026-03-02T10:00:06.1558250Z   node-version: 20
+build-and-deploy	Setup Node.js	2026-03-02T10:00:06.1559180Z   cache: npm
+build-and-deploy	Setup Node.js	2026-03-02T10:00:06.1560281Z   always-auth: false
+build-and-deploy	Setup Node.js	2026-03-02T10:00:06.1561244Z   check-latest: false
+build-and-deploy	Setup Node.js	2026-03-02T10:00:06.1562531Z   token: ***
+build-and-deploy	Setup Node.js	2026-03-02T10:00:06.1563402Z ##[endgroup]
+build-and-deploy	Setup Node.js	2026-03-02T10:00:06.3402670Z Found in cache @ /opt/hostedtoolcache/node/20.20.0/x64
+build-and-deploy	Setup Node.js	2026-03-02T10:00:06.3410630Z ##[group]Environment details
+build-and-deploy	Setup Node.js	2026-03-02T10:00:06.6924328Z node: v20.20.0
+build-and-deploy	Setup Node.js	2026-03-02T10:00:06.6925615Z npm: 10.8.2
+build-and-deploy	Setup Node.js	2026-03-02T10:00:06.6926408Z yarn: 1.22.22
+build-and-deploy	Setup Node.js	2026-03-02T10:00:06.6928403Z ##[endgroup]
+build-and-deploy	Setup Node.js	2026-03-02T10:00:06.6951133Z [command]/opt/hostedtoolcache/node/20.20.0/x64/bin/npm config get cache
+build-and-deploy	Setup Node.js	2026-03-02T10:00:06.8128002Z /home/runner/.npm
+build-and-deploy	Setup Node.js	2026-03-02T10:00:06.9532934Z npm cache is not found
+build-and-deploy	Install dependencies	﻿2026-03-02T10:00:06.9685757Z ##[group]Run npm install
+build-and-deploy	Install dependencies	2026-03-02T10:00:06.9687083Z [36;1mnpm install[0m
+build-and-deploy	Install dependencies	2026-03-02T10:00:06.9755653Z shell: /usr/bin/bash -e {0}
+build-and-deploy	Install dependencies	2026-03-02T10:00:06.9756689Z ##[endgroup]
+build-and-deploy	Install dependencies	2026-03-02T10:00:12.0704187Z npm warn deprecated three-mesh-bvh@0.7.8: Deprecated due to three.js version incompatibility. Please use v0.8.0, instead.
+build-and-deploy	Install dependencies	2026-03-02T10:00:16.3611939Z 
+build-and-deploy	Install dependencies	2026-03-02T10:00:16.3612998Z added 440 packages, and audited 441 packages in 9s
+build-and-deploy	Install dependencies	2026-03-02T10:00:16.3613720Z 
+build-and-deploy	Install dependencies	2026-03-02T10:00:16.3614074Z 73 packages are looking for funding
+build-and-deploy	Install dependencies	2026-03-02T10:00:16.3614643Z   run `npm fund` for details
+build-and-deploy	Install dependencies	2026-03-02T10:00:16.3697122Z 
+build-and-deploy	Install dependencies	2026-03-02T10:00:16.3697868Z 2 moderate severity vulnerabilities
+build-and-deploy	Install dependencies	2026-03-02T10:00:16.3698311Z 
+build-and-deploy	Install dependencies	2026-03-02T10:00:16.3698794Z To address all issues (including breaking changes), run:
+build-and-deploy	Install dependencies	2026-03-02T10:00:16.3699483Z   npm audit fix --force
+build-and-deploy	Install dependencies	2026-03-02T10:00:16.3699807Z 
+build-and-deploy	Install dependencies	2026-03-02T10:00:16.3700067Z Run `npm audit` for details.
+build-and-deploy	Build project	﻿2026-03-02T10:00:16.4044139Z ##[group]Run npm run build
+build-and-deploy	Build project	2026-03-02T10:00:16.4044501Z [36;1mnpm run build[0m
+build-and-deploy	Build project	2026-03-02T10:00:16.4162122Z shell: /usr/bin/bash -e {0}
+build-and-deploy	Build project	2026-03-02T10:00:16.4162670Z ##[endgroup]
+build-and-deploy	Build project	2026-03-02T10:00:16.5355646Z 
+build-and-deploy	Build project	2026-03-02T10:00:16.5356309Z > vite_react_shadcn_ts@0.0.0 build
+build-and-deploy	Build project	2026-03-02T10:00:16.5356907Z > vite build
+build-and-deploy	Build project	2026-03-02T10:00:16.5357139Z 
+build-and-deploy	Build project	2026-03-02T10:00:16.7901228Z [36mvite v5.4.21 [32mbuilding for production...[36m[39m
+build-and-deploy	Build project	2026-03-02T10:00:16.8505895Z transforming...
+build-and-deploy	Build project	2026-03-02T10:00:18.6490498Z [33m[vite:css] @import must precede all other statements (besides @charset or empty @layer)
+build-and-deploy	Build project	2026-03-02T10:00:18.6491482Z 4  |  
+build-and-deploy	Build project	2026-03-02T10:00:18.6492148Z 5  |  /* G-SQUAD Design System - Habesha Futurism */
+build-and-deploy	Build project	2026-03-02T10:00:18.6493842Z 6  |  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+build-and-deploy	Build project	2026-03-02T10:00:18.6495587Z    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+build-and-deploy	Build project	2026-03-02T10:00:18.6496533Z 7  |  
+build-and-deploy	Build project	2026-03-02T10:00:18.6497111Z 8  |  @layer base {[39m
+build-and-deploy	Build project	2026-03-02T10:00:27.6535089Z [32m✓[39m 3939 modules transformed.
+build-and-deploy	Build project	2026-03-02T10:00:28.7234681Z rendering chunks...
+build-and-deploy	Build project	2026-03-02T10:00:28.7477474Z computing gzip size...
+build-and-deploy	Build project	2026-03-02T10:00:28.8086234Z [2mdist/[22m[32mindex.html                        [39m[1m[2m    2.38 kB[22m[1m[22m[2m │ gzip:   0.79 kB[22m
+build-and-deploy	Build project	2026-03-02T10:00:28.8088261Z [2mdist/[22m[2massets/[22m[32mhero-pattern-DtpG-QBB.jpg  [39m[1m[2m  283.41 kB[22m[1m[22m
+build-and-deploy	Build project	2026-03-02T10:00:28.8089991Z [2mdist/[22m[2massets/[22m[32mg-nexus-logo-6uIEUX9k.png  [39m[1m[2m  716.84 kB[22m[1m[22m
+build-and-deploy	Build project	2026-03-02T10:00:28.8091835Z [2mdist/[22m[2massets/[22m[35mindex-2Mw1CfcB.css         [39m[1m[2m  101.62 kB[22m[1m[22m[2m │ gzip:  15.79 kB[22m
+build-and-deploy	Build project	2026-03-02T10:00:28.8093900Z [2mdist/[22m[2massets/[22m[36mindex-DwSoEM77.js          [39m[1m[33m2,451.70 kB[39m[22m[2m │ gzip: 683.82 kB[22m
+build-and-deploy	Build project	2026-03-02T10:00:28.8094914Z [33m
+build-and-deploy	Build project	2026-03-02T10:00:28.8095576Z (!) Some chunks are larger than 500 kB after minification. Consider:
+build-and-deploy	Build project	2026-03-02T10:00:28.8096499Z - Using dynamic import() to code-split the application
+build-and-deploy	Build project	2026-03-02T10:00:28.8098450Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+build-and-deploy	Build project	2026-03-02T10:00:28.8100854Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+build-and-deploy	Build project	2026-03-02T10:00:28.8101406Z [32m✓ built in 11.99s[39m
+build-and-deploy	Deploy to FTP via lftp	﻿2026-03-02T10:00:28.9498805Z ##[group]Run lftp -c "
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9499124Z [36;1mlftp -c "[0m
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9499355Z [36;1m  set ftp:passive-mode true;[0m
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9499631Z [36;1m  set ftp:ssl-allow false;[0m
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9499891Z [36;1m  set net:timeout 20;[0m
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9500141Z [36;1m  set net:max-retries 3;[0m
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9500418Z [36;1m  set net:reconnect-interval-base 5;[0m
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9500797Z [36;1m  open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" $FTP_SERVER;[0m
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9501227Z [36;1m  mirror --reverse --delete --verbose ./dist/ public_html/;[0m
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9501566Z [36;1m  quit[0m
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9501758Z [36;1m"[0m
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9550591Z shell: /usr/bin/bash -e {0}
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9550839Z env:
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9551289Z   FTP_SERVER: ***
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9551529Z   FTP_USERNAME: ***
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9551758Z   FTP_PASSWORD: ***
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9551955Z ##[endgroup]
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9624367Z /home/runner/work/_temp/d231dc4a-aba1-4742-bf23-41067b6a34d3.sh: line 1: lftp: command not found
+build-and-deploy	Deploy to FTP via lftp	2026-03-02T10:00:28.9638570Z ##[error]Process completed with exit code 127.
+build-and-deploy	Post Checkout repository	﻿2026-03-02T10:00:28.9752599Z Post job cleanup.
+build-and-deploy	Post Checkout repository	2026-03-02T10:00:29.0736778Z [command]/usr/bin/git version
+build-and-deploy	Post Checkout repository	2026-03-02T10:00:29.0775050Z git version 2.53.0
+build-and-deploy	Post Checkout repository	2026-03-02T10:00:29.0822196Z Temporarily overriding HOME='/home/runner/work/_temp/0d29bb8a-fbf4-4cd9-82c1-9e1e76ebb7ca' before making global git config changes
+build-and-deploy	Post Checkout repository	2026-03-02T10:00:29.0823863Z Adding repository directory to the temporary git global config as a safe directory
+build-and-deploy	Post Checkout repository	2026-03-02T10:00:29.0837836Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Post Checkout repository	2026-03-02T10:00:29.0876219Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+build-and-deploy	Post Checkout repository	2026-03-02T10:00:29.0913787Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+build-and-deploy	Post Checkout repository	2026-03-02T10:00:29.1166740Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+build-and-deploy	Post Checkout repository	2026-03-02T10:00:29.1192086Z http.https://github.com/.extraheader
+build-and-deploy	Post Checkout repository	2026-03-02T10:00:29.1205354Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+build-and-deploy	Post Checkout repository	2026-03-02T10:00:29.1240639Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+build-and-deploy	Post Checkout repository	2026-03-02T10:00:29.1488800Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+build-and-deploy	Post Checkout repository	2026-03-02T10:00:29.1524304Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+build-and-deploy	Complete job	﻿2026-03-02T10:00:29.1885999Z Cleaning up orphan processes

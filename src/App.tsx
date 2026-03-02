@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { PageTransition } from "@/components/PageTransition";
 import AIChatWidget from "@/components/AIChatWidget";
 import Index from "./pages/Index";
@@ -56,10 +56,19 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </PageTransition>
-        <AIChatWidget />
+        <ChatWidgetWrapper />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );
+
+const ChatWidgetWrapper = () => {
+  const location = useLocation();
+  const hiddenRoutes = ['/admin', '/auth'];
+  const isHidden = hiddenRoutes.some(route => location.pathname.startsWith(route));
+
+  if (isHidden) return null;
+  return <AIChatWidget />;
+};
 
 export default App;

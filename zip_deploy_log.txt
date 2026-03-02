@@ -1,0 +1,315 @@
+build-and-deploy	Set up job	﻿2026-03-02T10:23:45.2960328Z Current runner version: '2.331.0'
+build-and-deploy	Set up job	2026-03-02T10:23:45.2984584Z ##[group]Runner Image Provisioner
+build-and-deploy	Set up job	2026-03-02T10:23:45.2985593Z Hosted Compute Agent
+build-and-deploy	Set up job	2026-03-02T10:23:45.2986217Z Version: 20260213.493
+build-and-deploy	Set up job	2026-03-02T10:23:45.2986911Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+build-and-deploy	Set up job	2026-03-02T10:23:45.2987686Z Build Date: 2026-02-13T00:28:41Z
+build-and-deploy	Set up job	2026-03-02T10:23:45.2988388Z Worker ID: {679d56d2-f979-4413-9de1-313b66eff783}
+build-and-deploy	Set up job	2026-03-02T10:23:45.2989088Z Azure Region: westus3
+build-and-deploy	Set up job	2026-03-02T10:23:45.2989656Z ##[endgroup]
+build-and-deploy	Set up job	2026-03-02T10:23:45.2991360Z ##[group]Operating System
+build-and-deploy	Set up job	2026-03-02T10:23:45.2992067Z Ubuntu
+build-and-deploy	Set up job	2026-03-02T10:23:45.2992696Z 24.04.3
+build-and-deploy	Set up job	2026-03-02T10:23:45.2993199Z LTS
+build-and-deploy	Set up job	2026-03-02T10:23:45.2993731Z ##[endgroup]
+build-and-deploy	Set up job	2026-03-02T10:23:45.2994349Z ##[group]Runner Image
+build-and-deploy	Set up job	2026-03-02T10:23:45.2995004Z Image: ubuntu-24.04
+build-and-deploy	Set up job	2026-03-02T10:23:45.2995554Z Version: 20260224.36.1
+build-and-deploy	Set up job	2026-03-02T10:23:45.2996695Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260224.36/images/ubuntu/Ubuntu2404-Readme.md
+build-and-deploy	Set up job	2026-03-02T10:23:45.2998433Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260224.36
+build-and-deploy	Set up job	2026-03-02T10:23:45.2999373Z ##[endgroup]
+build-and-deploy	Set up job	2026-03-02T10:23:45.3000595Z ##[group]GITHUB_TOKEN Permissions
+build-and-deploy	Set up job	2026-03-02T10:23:45.3002669Z Contents: read
+build-and-deploy	Set up job	2026-03-02T10:23:45.3003260Z Metadata: read
+build-and-deploy	Set up job	2026-03-02T10:23:45.3003820Z Packages: read
+build-and-deploy	Set up job	2026-03-02T10:23:45.3004483Z ##[endgroup]
+build-and-deploy	Set up job	2026-03-02T10:23:45.3006655Z Secret source: Actions
+build-and-deploy	Set up job	2026-03-02T10:23:45.3007498Z Prepare workflow directory
+build-and-deploy	Set up job	2026-03-02T10:23:45.3340136Z Prepare all required actions
+build-and-deploy	Set up job	2026-03-02T10:23:45.3379613Z Getting action download info
+build-and-deploy	Set up job	2026-03-02T10:23:45.7859714Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+build-and-deploy	Set up job	2026-03-02T10:23:45.9207799Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+build-and-deploy	Set up job	2026-03-02T10:23:46.1150318Z Complete job name: build-and-deploy
+build-and-deploy	Checkout repository	﻿2026-03-02T10:23:46.1867378Z ##[group]Run actions/checkout@v4
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.1868245Z with:
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.1868821Z   repository: crossdagifx1/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.1869642Z   token: ***
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.1870065Z   ssh-strict: true
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.1870487Z   ssh-user: git
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.1871147Z   persist-credentials: true
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.1871644Z   clean: true
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.1872086Z   sparse-checkout-cone-mode: true
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.1872600Z   fetch-depth: 1
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.1873027Z   fetch-tags: false
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.1873461Z   show-progress: true
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.1873893Z   lfs: false
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.1874305Z   submodules: false
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.1874742Z   set-safe-directory: true
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.1875464Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.2961086Z Syncing repository: crossdagifx1/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.2963028Z ##[group]Getting Git version info
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.2964057Z Working directory is '/home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core'
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.2965390Z [command]/usr/bin/git version
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3045863Z git version 2.53.0
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3071951Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3093004Z Temporarily overriding HOME='/home/runner/work/_temp/70f28d48-bd7c-49e0-ad9e-e0edbc6f8ab5' before making global git config changes
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3094426Z Adding repository directory to the temporary git global config as a safe directory
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3098477Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3137649Z Deleting the contents of '/home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core'
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3141107Z ##[group]Initializing the repository
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3145581Z [command]/usr/bin/git init /home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3255704Z hint: Using 'master' as the name for the initial branch. This default branch name
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3257249Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3258278Z hint: to use in all of your new repositories, which will suppress this warning,
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3259300Z hint: call:
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3260185Z hint:
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3261027Z hint: 	git config --global init.defaultBranch <name>
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3261711Z hint:
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3262336Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3263363Z hint: 'development'. The just-created branch can be renamed via this command:
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3264164Z hint:
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3264748Z hint: 	git branch -m <name>
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3265331Z hint:
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3265959Z hint: Disable this message with "git config set advice.defaultBranchName false"
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3267267Z Initialized empty Git repository in /home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core/.git/
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3270980Z [command]/usr/bin/git remote add origin https://github.com/crossdagifx1/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3306449Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3307242Z ##[group]Disabling automatic garbage collection
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3310879Z [command]/usr/bin/git config --local gc.auto 0
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3339596Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3340335Z ##[group]Setting up auth
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3346949Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3382948Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3790434Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.3827496Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.4086505Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.4121954Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.4358780Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.4393661Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.4394996Z ##[group]Fetching the repository
+build-and-deploy	Checkout repository	2026-03-02T10:23:46.4403699Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +8c957551c3cda29b871239be481497c44aad4e14:refs/remotes/origin/main
+build-and-deploy	Checkout repository	2026-03-02T10:23:47.1531723Z From https://github.com/crossdagifx1/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Checkout repository	2026-03-02T10:23:47.1533815Z  * [new ref]         8c957551c3cda29b871239be481497c44aad4e14 -> origin/main
+build-and-deploy	Checkout repository	2026-03-02T10:23:47.1567448Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:23:47.1568833Z ##[group]Determining the checkout info
+build-and-deploy	Checkout repository	2026-03-02T10:23:47.1572799Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:23:47.1576431Z [command]/usr/bin/git sparse-checkout disable
+build-and-deploy	Checkout repository	2026-03-02T10:23:47.1622162Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+build-and-deploy	Checkout repository	2026-03-02T10:23:47.1657748Z ##[group]Checking out the ref
+build-and-deploy	Checkout repository	2026-03-02T10:23:47.1658915Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+build-and-deploy	Checkout repository	2026-03-02T10:23:47.1840283Z Switched to a new branch 'main'
+build-and-deploy	Checkout repository	2026-03-02T10:23:47.1842639Z branch 'main' set up to track 'origin/main'.
+build-and-deploy	Checkout repository	2026-03-02T10:23:47.1852522Z ##[endgroup]
+build-and-deploy	Checkout repository	2026-03-02T10:23:47.1888354Z [command]/usr/bin/git log -1 --format=%H
+build-and-deploy	Checkout repository	2026-03-02T10:23:47.1912386Z 8c957551c3cda29b871239be481497c44aad4e14
+build-and-deploy	Setup Node.js	﻿2026-03-02T10:23:47.2226162Z ##[group]Run actions/setup-node@v4
+build-and-deploy	Setup Node.js	2026-03-02T10:23:47.2227276Z with:
+build-and-deploy	Setup Node.js	2026-03-02T10:23:47.2228017Z   node-version: 20
+build-and-deploy	Setup Node.js	2026-03-02T10:23:47.2228840Z   cache: npm
+build-and-deploy	Setup Node.js	2026-03-02T10:23:47.2229830Z   always-auth: false
+build-and-deploy	Setup Node.js	2026-03-02T10:23:47.2230913Z   check-latest: false
+build-and-deploy	Setup Node.js	2026-03-02T10:23:47.2232117Z   token: ***
+build-and-deploy	Setup Node.js	2026-03-02T10:23:47.2232893Z ##[endgroup]
+build-and-deploy	Setup Node.js	2026-03-02T10:23:47.4026941Z Found in cache @ /opt/hostedtoolcache/node/20.20.0/x64
+build-and-deploy	Setup Node.js	2026-03-02T10:23:47.4032615Z ##[group]Environment details
+build-and-deploy	Setup Node.js	2026-03-02T10:23:47.7548046Z node: v20.20.0
+build-and-deploy	Setup Node.js	2026-03-02T10:23:47.7548619Z npm: 10.8.2
+build-and-deploy	Setup Node.js	2026-03-02T10:23:47.7548986Z yarn: 1.22.22
+build-and-deploy	Setup Node.js	2026-03-02T10:23:47.7550285Z ##[endgroup]
+build-and-deploy	Setup Node.js	2026-03-02T10:23:47.7572909Z [command]/opt/hostedtoolcache/node/20.20.0/x64/bin/npm config get cache
+build-and-deploy	Setup Node.js	2026-03-02T10:23:48.0307659Z /home/runner/.npm
+build-and-deploy	Setup Node.js	2026-03-02T10:23:48.2818056Z npm cache is not found
+build-and-deploy	Install dependencies	﻿2026-03-02T10:23:48.2948658Z ##[group]Run npm install
+build-and-deploy	Install dependencies	2026-03-02T10:23:48.2949051Z [36;1mnpm install[0m
+build-and-deploy	Install dependencies	2026-03-02T10:23:48.3011029Z shell: /usr/bin/bash -e {0}
+build-and-deploy	Install dependencies	2026-03-02T10:23:48.3011363Z ##[endgroup]
+build-and-deploy	Install dependencies	2026-03-02T10:23:54.3126819Z npm warn deprecated three-mesh-bvh@0.7.8: Deprecated due to three.js version incompatibility. Please use v0.8.0, instead.
+build-and-deploy	Install dependencies	2026-03-02T10:23:58.1984041Z 
+build-and-deploy	Install dependencies	2026-03-02T10:23:58.1986960Z added 440 packages, and audited 441 packages in 10s
+build-and-deploy	Install dependencies	2026-03-02T10:23:58.1987649Z 
+build-and-deploy	Install dependencies	2026-03-02T10:23:58.1988059Z 73 packages are looking for funding
+build-and-deploy	Install dependencies	2026-03-02T10:23:58.1988768Z   run `npm fund` for details
+build-and-deploy	Install dependencies	2026-03-02T10:23:58.2057719Z 
+build-and-deploy	Install dependencies	2026-03-02T10:23:58.2058301Z 2 moderate severity vulnerabilities
+build-and-deploy	Install dependencies	2026-03-02T10:23:58.2058696Z 
+build-and-deploy	Install dependencies	2026-03-02T10:23:58.2059166Z To address all issues (including breaking changes), run:
+build-and-deploy	Install dependencies	2026-03-02T10:23:58.2059821Z   npm audit fix --force
+build-and-deploy	Install dependencies	2026-03-02T10:23:58.2060125Z 
+build-and-deploy	Install dependencies	2026-03-02T10:23:58.2060356Z Run `npm audit` for details.
+build-and-deploy	Build project	﻿2026-03-02T10:23:58.2435304Z ##[group]Run npm run build
+build-and-deploy	Build project	2026-03-02T10:23:58.2435616Z [36;1mnpm run build[0m
+build-and-deploy	Build project	2026-03-02T10:23:58.2486098Z shell: /usr/bin/bash -e {0}
+build-and-deploy	Build project	2026-03-02T10:23:58.2486362Z ##[endgroup]
+build-and-deploy	Build project	2026-03-02T10:23:58.3609190Z 
+build-and-deploy	Build project	2026-03-02T10:23:58.3609807Z > vite_react_shadcn_ts@0.0.0 build
+build-and-deploy	Build project	2026-03-02T10:23:58.3610200Z > vite build
+build-and-deploy	Build project	2026-03-02T10:23:58.3610351Z 
+build-and-deploy	Build project	2026-03-02T10:23:58.6003619Z [36mvite v5.4.21 [32mbuilding for production...[36m[39m
+build-and-deploy	Build project	2026-03-02T10:23:58.8931147Z transforming...
+build-and-deploy	Build project	2026-03-02T10:23:59.9403840Z [33m[vite:css] @import must precede all other statements (besides @charset or empty @layer)
+build-and-deploy	Build project	2026-03-02T10:23:59.9404760Z 4  |  
+build-and-deploy	Build project	2026-03-02T10:23:59.9405293Z 5  |  /* G-SQUAD Design System - Habesha Futurism */
+build-and-deploy	Build project	2026-03-02T10:23:59.9406855Z 6  |  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+build-and-deploy	Build project	2026-03-02T10:23:59.9408474Z    |  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+build-and-deploy	Build project	2026-03-02T10:23:59.9409274Z 7  |  
+build-and-deploy	Build project	2026-03-02T10:23:59.9409741Z 8  |  @layer base {[39m
+build-and-deploy	Build project	2026-03-02T10:24:09.1623223Z [32m✓[39m 3939 modules transformed.
+build-and-deploy	Build project	2026-03-02T10:24:10.1911534Z rendering chunks...
+build-and-deploy	Build project	2026-03-02T10:24:10.2139019Z computing gzip size...
+build-and-deploy	Build project	2026-03-02T10:24:10.2734905Z [2mdist/[22m[32mindex.html                        [39m[1m[2m    2.38 kB[22m[1m[22m[2m │ gzip:   0.79 kB[22m
+build-and-deploy	Build project	2026-03-02T10:24:10.2737112Z [2mdist/[22m[2massets/[22m[32mhero-pattern-DtpG-QBB.jpg  [39m[1m[2m  283.41 kB[22m[1m[22m
+build-and-deploy	Build project	2026-03-02T10:24:10.2737796Z [33m
+build-and-deploy	Build project	2026-03-02T10:24:10.2738550Z (!) Some chunks are larger than 500 kB after minification. Consider:
+build-and-deploy	Build project	2026-03-02T10:24:10.2739457Z - Using dynamic import() to code-split the application
+build-and-deploy	Build project	2026-03-02T10:24:10.2741177Z - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+build-and-deploy	Build project	2026-03-02T10:24:10.2742864Z - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+build-and-deploy	Build project	2026-03-02T10:24:10.2744252Z [2mdist/[22m[2massets/[22m[32mg-nexus-logo-6uIEUX9k.png  [39m[1m[2m  716.84 kB[22m[1m[22m
+build-and-deploy	Build project	2026-03-02T10:24:10.2745957Z [2mdist/[22m[2massets/[22m[35mindex-2Mw1CfcB.css         [39m[1m[2m  101.62 kB[22m[1m[22m[2m │ gzip:  15.79 kB[22m
+build-and-deploy	Build project	2026-03-02T10:24:10.2748053Z [2mdist/[22m[2massets/[22m[36mindex-DwSoEM77.js          [39m[1m[33m2,451.70 kB[39m[22m[2m │ gzip: 683.82 kB[22m
+build-and-deploy	Build project	2026-03-02T10:24:10.2749140Z [32m✓ built in 11.65s[39m
+build-and-deploy	Package build as ZIP	﻿2026-03-02T10:24:10.4090273Z ##[group]Run cd dist
+build-and-deploy	Package build as ZIP	2026-03-02T10:24:10.4090546Z [36;1mcd dist[0m
+build-and-deploy	Package build as ZIP	2026-03-02T10:24:10.4090971Z [36;1mzip -r ../deploy.zip .[0m
+build-and-deploy	Package build as ZIP	2026-03-02T10:24:10.4091216Z [36;1mcd ..[0m
+build-and-deploy	Package build as ZIP	2026-03-02T10:24:10.4091438Z [36;1mcp extract.php ./deploy_extract.php[0m
+build-and-deploy	Package build as ZIP	2026-03-02T10:24:10.4140500Z shell: /usr/bin/bash -e {0}
+build-and-deploy	Package build as ZIP	2026-03-02T10:24:10.4140854Z ##[endgroup]
+build-and-deploy	Package build as ZIP	2026-03-02T10:24:10.5002096Z   adding: assets/ (stored 0%)
+build-and-deploy	Package build as ZIP	2026-03-02T10:24:10.5748577Z   adding: assets/index-DwSoEM77.js (deflated 72%)
+build-and-deploy	Package build as ZIP	2026-03-02T10:24:10.5767374Z   adding: assets/index-2Mw1CfcB.css (deflated 85%)
+build-and-deploy	Package build as ZIP	2026-03-02T10:24:10.5851122Z   adding: assets/hero-pattern-DtpG-QBB.jpg (deflated 1%)
+build-and-deploy	Package build as ZIP	2026-03-02T10:24:10.6031992Z   adding: assets/g-nexus-logo-6uIEUX9k.png (deflated 1%)
+build-and-deploy	Package build as ZIP	2026-03-02T10:24:10.6032852Z   adding: index.html (deflated 67%)
+build-and-deploy	Package build as ZIP	2026-03-02T10:24:10.6037471Z   adding: favicon.ico (deflated 2%)
+build-and-deploy	Package build as ZIP	2026-03-02T10:24:10.6038225Z   adding: placeholder.svg (deflated 72%)
+build-and-deploy	Package build as ZIP	2026-03-02T10:24:10.6038935Z   adding: robots.txt (deflated 54%)
+build-and-deploy	Install lftp	﻿2026-03-02T10:24:10.6090403Z ##[group]Run sudo apt-get update && sudo apt-get install -y lftp
+build-and-deploy	Install lftp	2026-03-02T10:24:10.6091164Z [36;1msudo apt-get update && sudo apt-get install -y lftp[0m
+build-and-deploy	Install lftp	2026-03-02T10:24:10.6139608Z shell: /usr/bin/bash -e {0}
+build-and-deploy	Install lftp	2026-03-02T10:24:10.6139850Z ##[endgroup]
+build-and-deploy	Install lftp	2026-03-02T10:24:10.7792499Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+build-and-deploy	Install lftp	2026-03-02T10:24:10.8330282Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+build-and-deploy	Install lftp	2026-03-02T10:24:10.8332130Z Hit:6 https://packages.microsoft.com/repos/azure-cli noble InRelease
+build-and-deploy	Install lftp	2026-03-02T10:24:10.8341784Z Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+build-and-deploy	Install lftp	2026-03-02T10:24:10.8352852Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:10.8426558Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:10.8443931Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.1652299Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [97.6 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.1851216Z Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [11.4 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.1889286Z Get:10 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [76.5 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.2076908Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1800 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.2179150Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [331 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.2198410Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [175 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.2218488Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 c-n-f Metadata [16.5 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.2232569Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1558 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.2315221Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [316 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.2340430Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [387 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.2371679Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 c-n-f Metadata [32.7 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.2385740Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [2735 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.2522742Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [630 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.2987743Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Components [212 B]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.3002573Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [940 B]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.3037531Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [7284 B]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.3039487Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [10.5 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.3047691Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble-backports/restricted amd64 Components [216 B]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.3083360Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Components [212 B]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.3336915Z Get:27 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1494 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.3454374Z Get:28 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [240 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.3478548Z Get:29 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Components [21.5 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.3493553Z Get:30 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 c-n-f Metadata [9932 B]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.3507476Z Get:31 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [961 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.3562729Z Get:32 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [218 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.3584806Z Get:33 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Components [74.1 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.3601453Z Get:34 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 c-n-f Metadata [20.5 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.4103332Z Get:35 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [2568 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.4236300Z Get:36 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [596 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.4275239Z Get:37 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Components [212 B]
+build-and-deploy	Install lftp	2026-03-02T10:24:11.4287839Z Get:38 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse amd64 Components [212 B]
+build-and-deploy	Install lftp	2026-03-02T10:24:17.7125544Z Fetched 14.8 MB in 2s (7713 kB/s)
+build-and-deploy	Install lftp	2026-03-02T10:24:18.4815696Z Reading package lists...
+build-and-deploy	Install lftp	2026-03-02T10:24:18.5161225Z Reading package lists...
+build-and-deploy	Install lftp	2026-03-02T10:24:18.7024990Z Building dependency tree...
+build-and-deploy	Install lftp	2026-03-02T10:24:18.7036150Z Reading state information...
+build-and-deploy	Install lftp	2026-03-02T10:24:18.9148538Z The following NEW packages will be installed:
+build-and-deploy	Install lftp	2026-03-02T10:24:18.9155832Z   lftp
+build-and-deploy	Install lftp	2026-03-02T10:24:18.9360671Z 0 upgraded, 1 newly installed, 0 to remove and 32 not upgraded.
+build-and-deploy	Install lftp	2026-03-02T10:24:18.9361325Z Need to get 704 kB of archives.
+build-and-deploy	Install lftp	2026-03-02T10:24:18.9361738Z After this operation, 1892 kB of additional disk space will be used.
+build-and-deploy	Install lftp	2026-03-02T10:24:18.9362233Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+build-and-deploy	Install lftp	2026-03-02T10:24:19.0097528Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 lftp amd64 4.9.2-2ubuntu1.1 [704 kB]
+build-and-deploy	Install lftp	2026-03-02T10:24:19.3442193Z Fetched 704 kB in 0s (6352 kB/s)
+build-and-deploy	Install lftp	2026-03-02T10:24:19.6879646Z Selecting previously unselected package lftp.
+build-and-deploy	Install lftp	2026-03-02T10:24:19.9433892Z (Reading database ... 
+build-and-deploy	Install lftp	2026-03-02T10:24:19.9434549Z (Reading database ... 5%
+build-and-deploy	Install lftp	2026-03-02T10:24:19.9434953Z (Reading database ... 10%
+build-and-deploy	Install lftp	2026-03-02T10:24:19.9435309Z (Reading database ... 15%
+build-and-deploy	Install lftp	2026-03-02T10:24:19.9435667Z (Reading database ... 20%
+build-and-deploy	Install lftp	2026-03-02T10:24:19.9436001Z (Reading database ... 25%
+build-and-deploy	Install lftp	2026-03-02T10:24:19.9436350Z (Reading database ... 30%
+build-and-deploy	Install lftp	2026-03-02T10:24:19.9436684Z (Reading database ... 35%
+build-and-deploy	Install lftp	2026-03-02T10:24:19.9437008Z (Reading database ... 40%
+build-and-deploy	Install lftp	2026-03-02T10:24:19.9437343Z (Reading database ... 45%
+build-and-deploy	Install lftp	2026-03-02T10:24:19.9437673Z (Reading database ... 50%
+build-and-deploy	Install lftp	2026-03-02T10:24:20.1411329Z (Reading database ... 55%
+build-and-deploy	Install lftp	2026-03-02T10:24:20.4789790Z (Reading database ... 60%
+build-and-deploy	Install lftp	2026-03-02T10:24:20.5823739Z (Reading database ... 65%
+build-and-deploy	Install lftp	2026-03-02T10:24:20.6713019Z (Reading database ... 70%
+build-and-deploy	Install lftp	2026-03-02T10:24:20.8892291Z (Reading database ... 75%
+build-and-deploy	Install lftp	2026-03-02T10:24:21.7247984Z (Reading database ... 80%
+build-and-deploy	Install lftp	2026-03-02T10:24:23.0556252Z (Reading database ... 85%
+build-and-deploy	Install lftp	2026-03-02T10:24:23.9848780Z (Reading database ... 90%
+build-and-deploy	Install lftp	2026-03-02T10:24:25.1924146Z (Reading database ... 95%
+build-and-deploy	Install lftp	2026-03-02T10:24:25.1924774Z (Reading database ... 100%
+build-and-deploy	Install lftp	2026-03-02T10:24:25.1926111Z (Reading database ... 218749 files and directories currently installed.)
+build-and-deploy	Install lftp	2026-03-02T10:24:25.1972599Z Preparing to unpack .../lftp_4.9.2-2ubuntu1.1_amd64.deb ...
+build-and-deploy	Install lftp	2026-03-02T10:24:25.1991619Z Unpacking lftp (4.9.2-2ubuntu1.1) ...
+build-and-deploy	Install lftp	2026-03-02T10:24:25.3238062Z Setting up lftp (4.9.2-2ubuntu1.1) ...
+build-and-deploy	Install lftp	2026-03-02T10:24:25.3282139Z Processing triggers for hicolor-icon-theme (0.17-2) ...
+build-and-deploy	Install lftp	2026-03-02T10:24:25.9819488Z Processing triggers for man-db (2.12.0-4build2) ...
+build-and-deploy	Install lftp	2026-03-02T10:24:26.0210451Z Not building database; man-db/auto-update is not 'true'.
+build-and-deploy	Install lftp	2026-03-02T10:24:27.5766992Z 
+build-and-deploy	Install lftp	2026-03-02T10:24:27.5767669Z Running kernel seems to be up-to-date.
+build-and-deploy	Install lftp	2026-03-02T10:24:27.5768103Z 
+build-and-deploy	Install lftp	2026-03-02T10:24:27.5768364Z No services need to be restarted.
+build-and-deploy	Install lftp	2026-03-02T10:24:27.5768628Z 
+build-and-deploy	Install lftp	2026-03-02T10:24:27.5768848Z No containers need to be restarted.
+build-and-deploy	Install lftp	2026-03-02T10:24:27.5769126Z 
+build-and-deploy	Install lftp	2026-03-02T10:24:27.5769422Z No user sessions are running outdated binaries.
+build-and-deploy	Install lftp	2026-03-02T10:24:27.5769748Z 
+build-and-deploy	Install lftp	2026-03-02T10:24:28.4473014Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+build-and-deploy	Upload files via FTP	﻿2026-03-02T10:24:28.4515104Z ##[group]Run lftp -c "
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4515386Z [36;1mlftp -c "[0m
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4515602Z [36;1m  set ftp:passive-mode true;[0m
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4515868Z [36;1m  set ftp:ssl-allow false;[0m
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4516113Z [36;1m  set net:timeout 30;[0m
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4516350Z [36;1m  set net:max-retries 3;[0m
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4516617Z [36;1m  set net:reconnect-interval-base 5;[0m
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4516958Z [36;1m  open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" $FTP_SERVER;[0m
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4517315Z [36;1m  put -O public_html/ deploy.zip;[0m
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4517613Z [36;1m  put -O public_html/ deploy_extract.php;[0m
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4517882Z [36;1m  quit[0m
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4518054Z [36;1m"[0m
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4565685Z shell: /usr/bin/bash -e {0}
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4565926Z env:
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4566249Z   FTP_SERVER: ***
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4566483Z   FTP_USERNAME: ***
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4566701Z   FTP_PASSWORD: ***
+build-and-deploy	Upload files via FTP	2026-03-02T10:24:28.4566884Z ##[endgroup]
+build-and-deploy	Upload files via FTP	2026-03-02T10:28:17.0803825Z put: deploy.zip: Fatal error: max-retries exceeded
+build-and-deploy	Upload files via FTP	2026-03-02T10:29:55.3379855Z put: deploy_extract.php: Fatal error: max-retries exceeded
+build-and-deploy	Upload files via FTP	2026-03-02T10:29:55.3406260Z ##[error]Process completed with exit code 1.
+build-and-deploy	Post Checkout repository	﻿2026-03-02T10:29:55.3515437Z Post job cleanup.
+build-and-deploy	Post Checkout repository	2026-03-02T10:29:55.4468312Z [command]/usr/bin/git version
+build-and-deploy	Post Checkout repository	2026-03-02T10:29:55.4505242Z git version 2.53.0
+build-and-deploy	Post Checkout repository	2026-03-02T10:29:55.4551060Z Temporarily overriding HOME='/home/runner/work/_temp/4b4b6e15-a924-4b1c-ad6a-d93c1c4bb304' before making global git config changes
+build-and-deploy	Post Checkout repository	2026-03-02T10:29:55.4552623Z Adding repository directory to the temporary git global config as a safe directory
+build-and-deploy	Post Checkout repository	2026-03-02T10:29:55.4558116Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/g-nexus-ethiopia-s-digital-core/g-nexus-ethiopia-s-digital-core
+build-and-deploy	Post Checkout repository	2026-03-02T10:29:55.4595477Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+build-and-deploy	Post Checkout repository	2026-03-02T10:29:55.4630073Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+build-and-deploy	Post Checkout repository	2026-03-02T10:29:55.4874749Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+build-and-deploy	Post Checkout repository	2026-03-02T10:29:55.4897085Z http.https://github.com/.extraheader
+build-and-deploy	Post Checkout repository	2026-03-02T10:29:55.4910856Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+build-and-deploy	Post Checkout repository	2026-03-02T10:29:55.4943460Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+build-and-deploy	Post Checkout repository	2026-03-02T10:29:55.5182337Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+build-and-deploy	Post Checkout repository	2026-03-02T10:29:55.5214396Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+build-and-deploy	Complete job	﻿2026-03-02T10:29:55.5602237Z Cleaning up orphan processes
