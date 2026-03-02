@@ -66,10 +66,19 @@ jobs:
         run: |
           echo "Triggering cPanel Git pull..."
           ENCODED_DIR=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$CPANEL_REPO_DIR', safe=''))")
+
+          # Step 1: Update the branch tracked by cPanel to cpanel-deploy
+          echo "Setting cPanel repo branch to cpanel-deploy..."
+          curl -sS -k \
+            -H "Authorization: cpanel $CPANEL_USER:$CPANEL_TOKEN" \
+            -H "Host: gnexuset.com" \
+            "https://91.204.209.29:2083/execute/VersionControl/update?repository_root=${ENCODED_DIR}&branch=cpanel-deploy" || true
+
+          # Step 2: Trigger deployment pull
           RESPONSE=$(curl -sS -k -w "\n%{http_code}" \
             -H "Authorization: cpanel $CPANEL_USER:$CPANEL_TOKEN" \
             -H "Host: gnexuset.com" \
-            "https://91.204.209.29:2083/execute/VersionControl/update?repository_root=${ENCODED_DIR}")
+            "https://91.204.209.29:2083/execute/VersionControl/deploy?repository_root=${ENCODED_DIR}")
           HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
           BODY=$(echo "$RESPONSE" | head -n -1)
           echo "Response: $BODY"
