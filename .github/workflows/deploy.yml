@@ -50,9 +50,10 @@ jobs:
         run: |
           echo "Triggering cPanel Git pull..."
           ENCODED_DIR=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$CPANEL_REPO_DIR', safe=''))")
-          RESPONSE=$(curl -sS -w "\n%{http_code}" \
+          RESPONSE=$(curl -sS -k -w "\n%{http_code}" \
             -H "Authorization: cpanel $CPANEL_USER:$CPANEL_TOKEN" \
-            "https://gnexuset.com:2083/execute/VersionControl/update?repository_root=${ENCODED_DIR}")
+            -H "Host: gnexuset.com" \
+            "https://91.204.209.29:2083/execute/VersionControl/update?repository_root=${ENCODED_DIR}")
           HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
           BODY=$(echo "$RESPONSE" | head -n -1)
           echo "Response: $BODY"
