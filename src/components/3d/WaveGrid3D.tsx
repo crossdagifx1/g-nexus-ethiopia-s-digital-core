@@ -152,8 +152,6 @@ export const WaveGrid3D = () => {
             <pointLight position={[-5, 5, -5]} intensity={0.6} color="#00d4ff" />
             <pointLight position={[5, 2, 5]} intensity={0.4} color="#ff6b35" />
             <WavePlane segments={segments} />
-            <RisingColumns count={columnCount} />
-            <GlowingOrbs count={orbCount} />
             
             <fog attach="fog" args={['#0f0d0a', 10, 30]} />
           </Suspense>
