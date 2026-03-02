@@ -72,7 +72,9 @@ const NeuralNetwork = ({ nodeCount = 80, maxDist = 1.2 }: { nodeCount?: number; 
     uniforms: { uTime: { value: 0 } },
     vertexShader: `
       varying float vDist;
+      varying vec3 vPos;
       void main() {
+        vPos = position;
         vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
         vDist = -mvPos.z;
         gl_Position = projectionMatrix * mvPos;
@@ -81,17 +83,32 @@ const NeuralNetwork = ({ nodeCount = 80, maxDist = 1.2 }: { nodeCount?: number; 
     fragmentShader: `
       uniform float uTime;
       varying float vDist;
+      varying vec3 vPos;
       void main() {
-        float pulse = sin(uTime * 2.0 + vDist * 0.5) * 0.3 + 0.7;
-        vec3 gold = vec3(0.788, 0.573, 0.165);
-        vec3 cyan = vec3(0.0, 0.831, 1.0);
-        vec3 color = mix(gold, cyan, sin(vDist * 0.3 + uTime) * 0.5 + 0.5);
-        gl_FragColor = vec4(color * pulse, pulse * 0.35);
+        // Liquid pulse with multiple wave layers
+        float wave1 = sin(uTime * 2.5 + vDist * 0.8) * 0.5 + 0.5;
+        float wave2 = sin(uTime * 1.3 + vPos.y * 2.0 + vDist * 0.4) * 0.5 + 0.5;
+        float pulse = mix(wave1, wave2, 0.5) * 0.4 + 0.6;
+        
+        // Brighter gold and cyan
+        vec3 gold = vec3(1.0, 0.78, 0.1);
+        vec3 cyan = vec3(0.0, 0.95, 1.0);
+        vec3 white = vec3(1.0, 1.0, 1.0);
+        
+        float t = sin(vPos.x * 0.8 + vPos.y * 0.5 + uTime * 0.7) * 0.5 + 0.5;
+        vec3 color = mix(gold, cyan, t);
+        // Add bright white hot spots
+        color = mix(color, white, pow(pulse, 4.0) * 0.4);
+        
+        // High visibility alpha
+        float alpha = pulse * 0.85;
+        gl_FragColor = vec4(color, alpha);
       }
     `,
     transparent: true,
     blending: THREE.AdditiveBlending,
     depthWrite: false,
+    linewidth: 2,
   }), []);
 
   // Instance setup
@@ -139,7 +156,7 @@ const NeuralNetwork = ({ nodeCount = 80, maxDist = 1.2 }: { nodeCount?: number; 
     <group ref={groupRef}>
       <instancedMesh ref={nodesRef} args={[undefined, undefined, nodeCount]}>
         <sphereGeometry args={[1, 12, 12]} />
-        <meshStandardMaterial emissive="#c9922a" emissiveIntensity={2} toneMapped={false} />
+        <meshStandardMaterial emissive="#ffc030" emissiveIntensity={4} toneMapped={false} />
       </instancedMesh>
       <lineSegments ref={linesRef} geometry={lineGeometry} material={lineMaterial} />
     </group>
@@ -162,18 +179,19 @@ export const GlobeNetwork3D = () => {
           Powered by <span className="text-gradient-gold text-glow-gold">Intelligent Design</span>
         </h2>
         <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto mb-10 md:mb-16">
-          Every project we build is infused with smart architecture, AI-driven workflows, 
+          Every project we build is infused with smart architecture, AI-driven workflows,
           and neural-level precision.
         </p>
         <LazyCanvas className={`${isMobile ? 'h-[400px]' : 'h-[550px]'} rounded-3xl overflow-hidden max-w-3xl mx-auto mb-10 md:mb-16 border border-border/20`} camera={{ position: [0, 0, 6], fov: 45 }} dpr={dpr}>
-            <Suspense fallback={null}>
-              <ambientLight intensity={0.1} />
-              <pointLight position={[5, 3, 5]} intensity={0.8} color="#c9922a" />
-              <pointLight position={[-3, -3, 5]} intensity={0.4} color="#00d4ff" />
-              <NeuralNetwork nodeCount={nodeCount} maxDist={maxDist} />
-              
-              
-            </Suspense>
+          <Suspense fallback={null}>
+            <ambientLight intensity={0.4} />
+            <pointLight position={[5, 3, 5]} intensity={2.5} color="#ffc030" />
+            <pointLight position={[-3, -3, 5]} intensity={1.5} color="#00e5ff" />
+            <pointLight position={[0, 5, -3]} intensity={1.0} color="#ffffff" />
+            <NeuralNetwork nodeCount={nodeCount} maxDist={maxDist} />
+
+
+          </Suspense>
         </LazyCanvas>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto">
           {[
