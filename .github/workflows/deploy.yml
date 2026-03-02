@@ -31,37 +31,22 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          cd dist
+          git init
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           
+          # Add all files in dist
+          git add .
+          
+          # Create a fresh commit
+          git commit -m "deploy: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          
+          # Force push to the cpanel-deploy branch
+          # This replaces the entire branch content with the new build
+          # cPanel Git version control works best when the branch is clean
           REPO_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
-          
-          # 1. Prepare temporary deployment repo
-          rm -rf /tmp/deployment-repo
-          mkdir -p /tmp/deployment-repo
-          cd /tmp/deployment-repo
-          
-          # Try to clone existing branch, or init a new one
-          if git clone --branch cpanel-deploy --single-branch "$REPO_URL" . ; then
-            echo "Successfully cloned existing cpanel-deploy branch"
-          else
-            echo "Branch cpanel-deploy not found or clone failed. Initializing new..."
-            git init
-            git remote add origin "$REPO_URL"
-            git checkout -b cpanel-deploy
-          fi
-
-          # 2. Sync dist contents (Delete everything except .git)
-          find . -maxdepth 1 -not -name '.git' -not -name '.' -exec rm -rf {} +
-          cp -r ${{ github.workspace }}/dist/* .
-
-          # 3. Commit and Push
-          git add -A
-          if git commit -m "deploy: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"; then
-            git push origin cpanel-deploy
-          else
-            echo "No changes to deploy"
-          fi
+          git push --force "$REPO_URL" HEAD:cpanel-deploy
 
       - name: Trigger cPanel Git Pull via API
         env:
