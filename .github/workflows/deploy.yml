@@ -33,6 +33,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: ./public_html/
           local-dir: ./dist/
-          protocol: ftp
-          port: 21
-          log-level: verbose
+          protocol: sftp
+          port: 22
+          security: strict
