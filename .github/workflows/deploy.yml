@@ -34,18 +34,28 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           
-          # 1. Create a temporary clone of the deployment branch
           REPO_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
-          git clone --branch cpanel-deploy --single-branch "$REPO_URL" deployment-repo || \
-          (git init deployment-repo && cd deployment-repo && git checkout -b cpanel-deploy)
+          
+          # 1. Prepare temporary deployment repo
+          rm -rf /tmp/deployment-repo
+          mkdir -p /tmp/deployment-repo
+          cd /tmp/deployment-repo
+          
+          # Try to clone existing branch, or init a new one
+          if git clone --branch cpanel-deploy --single-branch "$REPO_URL" . ; then
+            echo "Successfully cloned existing cpanel-deploy branch"
+          else
+            echo "Branch cpanel-deploy not found or clone failed. Initializing new..."
+            git init
+            git remote add origin "$REPO_URL"
+            git checkout -b cpanel-deploy
+          fi
 
-          # 2. Sync dist contents
-          # Delete everything except .git
-          find deployment-repo -maxdepth 1 -not -name '.git' -not -name '.' -exec rm -rf {} +
-          cp -r dist/* deployment-repo/
+          # 2. Sync dist contents (Delete everything except .git)
+          find . -maxdepth 1 -not -name '.git' -not -name '.' -exec rm -rf {} +
+          cp -r ${{ github.workspace }}/dist/* .
 
           # 3. Commit and Push
-          cd deployment-repo
           git add -A
           if git commit -m "deploy: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"; then
             git push origin cpanel-deploy
