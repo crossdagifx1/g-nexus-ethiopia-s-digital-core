@@ -140,12 +140,13 @@ const NeuralNetwork = ({ nodeCount = 80, maxDist = 1.2 }: { nodeCount?: number; 
     const color = new THREE.Color();
     for (let i = 0; i < nodeCount; i++) {
       const pulse = Math.sin(t * 1.5 + phases[i]) * 0.5 + 0.5;
-      const s = 0.04 + pulse * 0.04;
+      // Much bigger nodes - 3x larger than before
+      const s = 0.10 + pulse * 0.12;
       dummy.position.set(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]);
       dummy.scale.setScalar(s);
       dummy.updateMatrix();
       nodesRef.current.setMatrixAt(i, dummy.matrix);
-      color.copy(baseColor).lerp(brightColor, pulse * 0.6);
+      color.copy(baseColor).lerp(brightColor, pulse * 0.8);
       nodesRef.current.setColorAt(i, color);
     }
     nodesRef.current.instanceMatrix.needsUpdate = true;
@@ -165,8 +166,8 @@ const NeuralNetwork = ({ nodeCount = 80, maxDist = 1.2 }: { nodeCount?: number; 
 
 export const GlobeNetwork3D = () => {
   const { isMobile, dpr } = useDevicePerformance();
-  const nodeCount = isMobile ? 40 : 80;
-  const maxDist = isMobile ? 1.5 : 1.2;
+  const nodeCount = isMobile ? 60 : 120;
+  const maxDist = isMobile ? 1.4 : 1.1;
 
   return (
     <section className="relative py-16 md:py-24 lg:py-32 px-4 md:px-6 overflow-hidden">
@@ -184,10 +185,11 @@ export const GlobeNetwork3D = () => {
         </p>
         <LazyCanvas className={`${isMobile ? 'h-[400px]' : 'h-[550px]'} rounded-3xl overflow-hidden max-w-3xl mx-auto mb-10 md:mb-16 border border-border/20`} camera={{ position: [0, 0, 6], fov: 45 }} dpr={dpr}>
           <Suspense fallback={null}>
-            <ambientLight intensity={0.4} />
-            <pointLight position={[5, 3, 5]} intensity={2.5} color="#ffc030" />
-            <pointLight position={[-3, -3, 5]} intensity={1.5} color="#00e5ff" />
-            <pointLight position={[0, 5, -3]} intensity={1.0} color="#ffffff" />
+            <ambientLight intensity={0.6} />
+            <pointLight position={[5, 3, 5]} intensity={5.0} color="#ffd060" />
+            <pointLight position={[-3, -3, 5]} intensity={3.0} color="#00e5ff" />
+            <pointLight position={[0, 5, -3]} intensity={2.0} color="#ffffff" />
+            <pointLight position={[0, 0, 8]} intensity={3.0} color="#ffa500" />
             <NeuralNetwork nodeCount={nodeCount} maxDist={maxDist} />
 
 
