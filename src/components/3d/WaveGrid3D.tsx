@@ -153,7 +153,7 @@ export const WaveGrid3D = () => {
             <pointLight position={[5, 2, 5]} intensity={0.4} color="#ff6b35" />
             <WavePlane segments={segments} />
             
-            <fog attach="fog" args={['#0f0d0a', 10, 30]} />
+            
           </Suspense>
       </LazyCanvas>
       <div className="relative z-10 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-10 md:mt-16">

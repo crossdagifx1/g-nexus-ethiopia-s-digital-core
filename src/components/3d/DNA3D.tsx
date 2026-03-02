@@ -76,7 +76,7 @@ export const DNA3D = () => {
                 <pointLight position={[0, 0, 3]} intensity={0.3} color="#c9922a" />
                 <DNAHelix helixCount={helixCount} />
                 
-                <Environment preset="night" />
+                
               </Suspense>
           </LazyCanvas>
           <div className="order-1 lg:order-2">

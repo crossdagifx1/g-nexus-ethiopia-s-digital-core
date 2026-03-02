@@ -72,10 +72,6 @@ const CrystalCluster = () => {
       <pointLight position={[0, 0, 0]} intensity={3} color="#c9922a" distance={5} />
       <pointLight position={[0, 0, 0]} intensity={1.5} color="#00d4ff" distance={3} />
       
-      {/* Orbiting energy particles */}
-      <EnergyOrbit radius={2} speed={0.8} color="#c9922a" />
-      <EnergyOrbit radius={1.8} speed={-0.6} color="#00d4ff" />
-      <EnergyOrbit radius={2.3} speed={0.5} color="#ff6b35" />
     </group>
   );
 };
@@ -151,7 +147,7 @@ export const CrystalShowcase3D = () => {
             </div>
           </div>
           <div className="h-[550px] rounded-3xl overflow-hidden border border-border/20">
-            <Canvas camera={{ position: [0, 0, 5.5], fov: 50 }}>
+            <Canvas camera={{ position: [0, 0, 5.5], fov: 50 }} gl={{ alpha: true }} style={{ background: 'transparent' }}>
               <Suspense fallback={null}>
                 <ambientLight intensity={0.3} />
                 <directionalLight position={[5, 5, 5]} intensity={1.2} color="#c9922a" />
@@ -159,7 +155,7 @@ export const CrystalShowcase3D = () => {
                 <spotLight position={[0, 8, 0]} intensity={0.5} angle={0.6} penumbra={1} color="#c9922a" />
                 <CrystalCluster />
                 
-                <Environment preset="studio" />
+                
               </Suspense>
             </Canvas>
           </div>

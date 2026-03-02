@@ -37,7 +37,7 @@ export const LazyCanvas = ({ children, camera, dpr, className, style, fallback }
   return (
     <div ref={containerRef} className={className} style={{ ...style, position: 'relative' }}>
       {shouldRender ? (
-        <Canvas camera={camera} dpr={dpr} style={{ width: '100%', height: '100%' }}>
+        <Canvas camera={camera} dpr={dpr} gl={{ alpha: true }} style={{ width: '100%', height: '100%', background: 'transparent' }}>
           {children}
         </Canvas>
       ) : (
