@@ -35,3 +35,4 @@ jobs:
           local-dir: ./dist/
           protocol: ftp
           port: 21
+          passive: true
