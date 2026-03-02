@@ -35,10 +35,11 @@ jobs:
           lftp -c "
             set ftp:passive-mode true;
             set ftp:ssl-allow false;
-            set net:timeout 20;
-            set net:max-retries 3;
+            set net:timeout 30;
+            set net:max-retries 2;
             set net:reconnect-interval-base 5;
             open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" $FTP_SERVER;
-            mirror --reverse --delete --verbose ./dist/ public_html/;
+            ls public_html/;
+            mirror --reverse --delete --verbose --parallel=1 ./dist/ public_html/;
             quit
           "
