@@ -25,14 +25,13 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Deploy to FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Deploy to SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
-          server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
+          server: ${{ secrets.FTP_SERVER }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ./public_html/
-          local-dir: ./dist/
-          protocol: sftp
           port: 22
-          security: strict
+          local_path: ./dist/*
+          remote_path: ./public_html/
+          sftp_only: true
