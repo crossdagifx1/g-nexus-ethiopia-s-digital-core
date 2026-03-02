@@ -46,13 +46,13 @@ jobs:
         env:
           CPANEL_USER: ${{ secrets.CPANEL_USER }}
           CPANEL_TOKEN: ${{ secrets.CPANEL_TOKEN }}
-          CPANEL_DOMAIN: ${{ secrets.CPANEL_DOMAIN }}
           CPANEL_REPO_DIR: ${{ secrets.CPANEL_REPO_DIR }}
         run: |
           echo "Triggering cPanel Git pull..."
+          ENCODED_DIR=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$CPANEL_REPO_DIR', safe=''))")
           RESPONSE=$(curl -sS -w "\n%{http_code}" \
             -H "Authorization: cpanel $CPANEL_USER:$CPANEL_TOKEN" \
-            "https://${CPANEL_DOMAIN}:2083/execute/VersionControl/update?repository_root=${CPANEL_REPO_DIR}")
+            "https://gnexuset.com:2083/execute/VersionControl/update?repository_root=${ENCODED_DIR}")
           HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
           BODY=$(echo "$RESPONSE" | head -n -1)
           echo "Response: $BODY"
