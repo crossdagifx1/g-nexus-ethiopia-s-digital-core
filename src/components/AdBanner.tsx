@@ -13,7 +13,7 @@ interface Ad {
 }
 
 interface AdBannerProps {
-  placement?: 'hero_banner' | 'sidebar' | 'in_feed' | 'popup';
+  placement?: 'hero_banner' | 'sidebar' | 'in_feed' | 'popup' | 'large_leaderboard' | 'background_takeover' | 'interstitial' | 'floating_bottom';
   className?: string;
 }
 

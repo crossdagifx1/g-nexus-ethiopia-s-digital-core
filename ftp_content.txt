@@ -1,0 +1,10 @@
+drwxr-xr-x    3 gnexusqa   gnexusqa         4096 Mar  4 20:20 .
+drwxr-xr-x    3 gnexusqa   gnexusqa         4096 Mar  4 20:20 ..
+-rw-r--r--    1 gnexusqa   gnexusqa          112 Mar  4 20:20 .cpanel.yml
+-rw-r--r--    1 gnexusqa   gnexusqa          222 Mar  4 20:20 .htaccess
+drwxr-xr-x    2 gnexusqa   gnexusqa         4096 Mar  4 20:20 assets
+-rw-r--r--    1 gnexusqa   gnexusqa       716837 Mar  4 20:20 favicon.ico
+-rw-r--r--    1 gnexusqa   gnexusqa       716837 Mar  4 20:20 g-nexus-logo.png
+-rw-r--r--    1 gnexusqa   gnexusqa         2476 Mar  4 20:20 index.html
+-rw-r--r--    1 gnexusqa   gnexusqa         3253 Mar  4 20:20 placeholder.svg
+-rw-r--r--    1 gnexusqa   gnexusqa          174 Mar  4 20:20 robots.txt
