@@ -20,13 +20,6 @@ interface BlogPostItem {
   author_name: string | null; published_at: string | null; image_url: string | null;
 }
 
-const fallbackPosts = [
-  { id: '1', title: "How AI is Transforming Ethiopian Business", excerpt: "Exploring the latest AI applications helping Ethiopian SMEs compete globally.", category: "AI", author_name: "Dagmawi Amare", published_at: "2026-01-02", image_url: null },
-  { id: '2', title: "The Rise of Digital Payments in East Africa", excerpt: "How Telebirr, Chapa, and mobile money are revolutionizing commerce.", category: "Fintech", author_name: "Tsion Berihun", published_at: "2025-12-28", image_url: null },
-  { id: '3', title: "Building for Scale: Lessons from G-Nexus", excerpt: "Technical deep-dive into architecting systems for Ethiopian businesses.", category: "Engineering", author_name: "Dagmawi Amare", published_at: "2025-12-20", image_url: null },
-  { id: '4', title: "3D Visualization Trends for 2026", excerpt: "What's next in architectural visualization and product rendering.", category: "Design", author_name: "Tsion Berihun", published_at: "2025-12-15", image_url: null },
-];
-
 const stats = [
   { value: 50, suffix: "+", label: "Articles" },
   { value: 10, suffix: "k+", label: "Readers" },
@@ -34,7 +27,7 @@ const stats = [
 ];
 
 export default function Blog() {
-  const [posts, setPosts] = useState<BlogPostItem[]>(fallbackPosts);
+  const [posts, setPosts] = useState<BlogPostItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,9 +37,18 @@ export default function Blog() {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const { data } = await supabase.from('blog_posts').select('*').eq('status', 'published').order('published_at', { ascending: false });
-      if (data && data.length > 0) setPosts(data as any);
-      setLoading(false);
+      try {
+        const { data, error } = await supabase
+          .from('blog_posts')
+          .select('*')
+          .eq('status', 'published')
+          .order('published_at', { ascending: false });
+        if (!error && data) setPosts(data as any);
+      } catch (err) {
+        console.error('Error fetching posts:', err);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchPosts();
   }, []);
@@ -125,7 +127,11 @@ export default function Blog() {
             {loading ? <div className="flex justify-center p-8"><Loader2 className="w-6 h-6 animate-spin" /></div> : (
               <div className="space-y-6">
                 {filteredPosts.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">No articles found.</div>
+                  <div className="text-center py-16 text-muted-foreground">
+                    <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-20" />
+                    <p className="font-semibold text-foreground mb-1">No articles published yet</p>
+                    <p className="text-sm">Check back soon — our team is writing great content!</p>
+                  </div>
                 ) : (
                   filteredPosts.map((post, i) => (
                     <AnimatedSection key={post.id} delay={i * 75} animation="fadeUp">
