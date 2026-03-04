@@ -3,4 +3,5 @@ deployment:
   tasks:
     - export DEPLOYPATH=$HOME/public_html
     - /bin/cp -R * $DEPLOYPATH/
-    - /bin/cp -a .htaccess $DEPLOYPATH/ 2>/dev/null || true
+    - /bin/cp -p .htaccess $DEPLOYPATH/ 2>/dev/null || true
+    - /bin/cp -p index.html $DEPLOYPATH/ 2>/dev/null || true
