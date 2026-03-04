@@ -36,7 +36,11 @@ export const AdBanner = ({ placement = 'in_feed', className = "" }: AdBannerProp
         if (data && !error) {
           setAd(data as Ad);
           // Track impression
-          await (supabase.rpc('increment_ad_impressions' as any, { ad_id: data.id }) as any);
+          try {
+            await (supabase.rpc('increment_ad_impressions' as any, { ad_id: data.id }) as any);
+          } catch (e) {
+            console.warn('Ad tracking RPC failed (ignoring):', e);
+          }
         }
       } catch (err) {
         console.error('Error fetching ad:', err);

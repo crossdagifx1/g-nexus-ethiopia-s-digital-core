@@ -63,12 +63,14 @@ export default function Blog() {
       if (error) {
         if (error.code === '23505') { // Unique violation
           toast({ title: "Already subscribed!", description: "This email is already on our list." });
+        } else if (error.code === 'PGRST204' || error.message?.includes('does not exist')) {
+          toast({ title: "Service initializing", description: "The newsletter module is still setting up. Please try again in 5 minutes.", variant: "default" });
         } else throw error;
       } else {
         toast({ title: "Subscribed!", description: "Check your inbox for the latest updates." });
         setNewsletterEmail("");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Subscription error:', err);
       toast({ title: "Subscription failed", description: "Something went wrong. Please try again later.", variant: "destructive" });
     } finally {
