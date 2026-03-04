@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import heroPattern from "@/assets/hero-pattern.jpg";
 import { ParallaxLayer } from "./animations/ParallaxContainer";
+import { supabase } from "@/integrations/supabase/client";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,6 +34,30 @@ export const HeroSection = () => {
   const [currentPhrase, setCurrentPhrase] = useState("");
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [heroSettings, setHeroSettings] = useState({
+    agent_label: "AI Agent",
+    agent_link: "/chat",
+    nexus_label: "G-Nexus AI",
+    nexus_link: "/platform"
+  });
+
+  useEffect(() => {
+    const fetchHeroSettings = async () => {
+      try {
+        const { data } = await supabase
+          .from('admin_settings')
+          .select('value')
+          .eq('key', 'hero_settings')
+          .single();
+        if (data && data.value) {
+          setHeroSettings(data.value as any);
+        }
+      } catch (err) {
+        console.error("Error fetching hero settings:", err);
+      }
+    };
+    fetchHeroSettings();
+  }, []);
 
   // Typewriter effect
   useEffect(() => {
@@ -234,19 +259,29 @@ export const HeroSection = () => {
           ))}
         </div>
 
-        {/* CTAs */}
+        {/* CTAs - Now Dynamic */}
         <div ref={ctaRef} className="flex flex-col sm:flex-row gap-4 justify-center opacity-0">
-          <Button variant="hero" size="xl" className="group px-8 bg-gold hover:bg-gold/90 text-background font-bold border-none shadow-[0_0_20px_rgba(201,146,42,0.3)]">
+          <Button
+            variant="hero"
+            size="xl"
+            className="group px-8 bg-gold hover:bg-gold/90 text-background font-bold border-none shadow-[0_0_20px_rgba(201,146,42,0.3)]"
+            onClick={() => window.location.href = heroSettings.agent_link}
+          >
             <span className="flex items-center gap-2">
               <MessageSquare className="w-5 h-5" />
-              AI Agent
+              {heroSettings.agent_label}
             </span>
             <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
           </Button>
-          <Button variant="outline" size="xl" className="group px-8 border-gold/50 hover:border-gold hover:bg-gold/10 text-gold font-bold backdrop-blur-sm">
+          <Button
+            variant="outline"
+            size="xl"
+            className="group px-8 border-gold/50 hover:border-gold hover:bg-gold/10 text-gold font-bold backdrop-blur-sm"
+            onClick={() => window.location.href = heroSettings.nexus_link}
+          >
             <span className="flex items-center gap-2">
               <Bot className="w-5 h-5" />
-              G-Nexus AI
+              {heroSettings.nexus_label}
             </span>
           </Button>
         </div>

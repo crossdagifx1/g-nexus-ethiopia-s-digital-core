@@ -20,6 +20,7 @@ interface ChatSettings {
 interface NotificationSettings { email_notifications: boolean; sound_enabled: boolean; new_chat_alert: boolean; }
 interface CompanySettings { name: string; email: string; phone: string; social_links: { facebook: string; twitter: string; linkedin: string; instagram: string; }; }
 interface SEOSettings { site_title: string; site_description: string; og_image_url: string; }
+interface HeroSettings { agent_label: string; agent_link: string; nexus_label: string; nexus_link: string; }
 
 export const AdminSettings = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -28,6 +29,7 @@ export const AdminSettings = () => {
   const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({ email_notifications: true, sound_enabled: true, new_chat_alert: true });
   const [companySettings, setCompanySettings] = useState<CompanySettings>({ name: 'G-Nexus', email: '', phone: '', social_links: { facebook: '', twitter: '', linkedin: '', instagram: '' } });
   const [seoSettings, setSeoSettings] = useState<SEOSettings>({ site_title: '', site_description: '', og_image_url: '' });
+  const [heroSettings, setHeroSettings] = useState<HeroSettings>({ agent_label: 'AI Agent', agent_link: '/chat', nexus_label: 'G-Nexus AI', nexus_link: '/platform' });
   const [newQuickReply, setNewQuickReply] = useState('');
   const [aiTestPrompt, setAiTestPrompt] = useState('');
   const [aiTestResult, setAiTestResult] = useState('');
@@ -45,6 +47,7 @@ export const AdminSettings = () => {
           else if (s.key === 'notification_settings') setNotificationSettings(s.value as unknown as NotificationSettings);
           else if (s.key === 'company_settings') setCompanySettings(s.value as unknown as CompanySettings);
           else if (s.key === 'seo_settings') setSeoSettings(s.value as unknown as SEOSettings);
+          else if (s.key === 'hero_settings') setHeroSettings(s.value as unknown as HeroSettings);
         });
       }
     } catch (error) { console.error('Error fetching settings:', error); }
@@ -97,6 +100,7 @@ export const AdminSettings = () => {
           <TabsTrigger value="chat" className="gap-2"><Bot className="w-4 h-4" />Chat</TabsTrigger>
           <TabsTrigger value="notifications" className="gap-2"><Bell className="w-4 h-4" />Alerts</TabsTrigger>
           <TabsTrigger value="company" className="gap-2"><Building2 className="w-4 h-4" />Company</TabsTrigger>
+          <TabsTrigger value="hero" className="gap-2"><Sparkles className="w-4 h-4" />Hero</TabsTrigger>
           <TabsTrigger value="ai" className="gap-2"><Sparkles className="w-4 h-4" />AI</TabsTrigger>
           <TabsTrigger value="danger" className="gap-2"><AlertTriangle className="w-4 h-4" />Danger</TabsTrigger>
         </TabsList>
@@ -171,6 +175,35 @@ export const AdminSettings = () => {
                 <div className="space-y-2"><Label>Meta Description</Label><Textarea value={seoSettings.site_description} onChange={e => setSeoSettings({ ...seoSettings, site_description: e.target.value })} placeholder="Your site description for search engines..." rows={2} /></div>
                 <div className="space-y-2"><Label>OG Image URL</Label><Input value={seoSettings.og_image_url} onChange={e => setSeoSettings({ ...seoSettings, og_image_url: e.target.value })} placeholder="https://..." /></div>
                 <Button onClick={() => saveSettings('seo_settings', seoSettings)} disabled={isSaving}>{isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}Save SEO Settings</Button>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </TabsContent>
+
+        <TabsContent value="hero">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Sparkles className="w-5 h-5 text-gold" />Hero Buttons Configuration</CardTitle>
+                <CardDescription>Customize the labels and links for your primary call-to-action buttons</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-muted/30 rounded-2xl border border-border/50">
+                  <div className="space-y-4">
+                    <Badge variant="outline" className="text-gold border-gold/30">Primary: AI Agent</Badge>
+                    <div className="space-y-2"><Label>Button Label</Label><Input value={heroSettings.agent_label} onChange={e => setHeroSettings({ ...heroSettings, agent_label: e.target.value })} /></div>
+                    <div className="space-y-2"><Label>Button Link</Label><Input value={heroSettings.agent_link} onChange={e => setHeroSettings({ ...heroSettings, agent_link: e.target.value })} placeholder="/chat or https://..." /></div>
+                  </div>
+                  <div className="space-y-4">
+                    <Badge variant="outline" className="text-cyan border-cyan/30">Secondary: G-Nexus AI</Badge>
+                    <div className="space-y-2"><Label>Button Label</Label><Input value={heroSettings.nexus_label} onChange={e => setHeroSettings({ ...heroSettings, nexus_label: e.target.value })} /></div>
+                    <div className="space-y-2"><Label>Button Link</Label><Input value={heroSettings.nexus_link} onChange={e => setHeroSettings({ ...heroSettings, nexus_link: e.target.value })} placeholder="/platform or https://..." /></div>
+                  </div>
+                </div>
+                <Button onClick={() => saveSettings('hero_settings', heroSettings)} disabled={isSaving}>
+                  {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+                  Save Hero Settings
+                </Button>
               </CardContent>
             </Card>
           </motion.div>
