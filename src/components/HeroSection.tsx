@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Zap, Shield, Globe } from "lucide-react";
+import { ArrowRight, Sparkles, Zap, Shield, Globe, MessageSquare, Bot } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import heroPattern from "@/assets/hero-pattern.jpg";
@@ -16,7 +16,7 @@ const floatingFeatures = [
 
 const typewriterPhrases = [
   "Digital Excellence",
-  "AI Innovation", 
+  "AI Innovation",
   "Web Solutions",
   "3D Architecture",
   "Future Technology",
@@ -74,13 +74,13 @@ export const HeroSection = () => {
         tl.fromTo(
           words,
           { opacity: 0, y: 80, rotateX: 45 },
-          { 
-            opacity: 1, 
-            y: 0, 
-            rotateX: 0, 
-            duration: 1, 
+          {
+            opacity: 1,
+            y: 0,
+            rotateX: 0,
+            duration: 1,
             stagger: 0.1,
-            ease: "expo.out" 
+            ease: "expo.out"
           },
           "-=0.4"
         );
@@ -170,23 +170,23 @@ export const HeroSection = () => {
   return (
     <section ref={sectionRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Parallax */}
-      <div 
+      <div
         className="hero-bg absolute inset-0 bg-cover bg-center opacity-40 will-change-transform"
         style={{ backgroundImage: `url(${heroPattern})` }}
       />
-      
+
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-hero-gradient" />
-      
+
       {/* Animated Background Elements with Parallax */}
       <div className="glow-orb-1 absolute top-1/4 left-1/4 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-gold/10 rounded-full blur-3xl will-change-transform" />
       <div className="glow-orb-2 absolute bottom-1/4 right-1/4 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-cyan/10 rounded-full blur-3xl will-change-transform" />
-      
+
 
       {/* Content */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-6 text-center pt-16 md:pt-20">
         {/* Badge */}
-        <div 
+        <div
           ref={badgeRef}
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gold/10 border border-gold/30 text-gold text-sm font-medium mb-8 opacity-0 hover:bg-gold/20 hover:scale-105 transition-all duration-300 cursor-default"
         >
@@ -195,7 +195,7 @@ export const HeroSection = () => {
         </div>
 
         {/* Headline with word wrapping for animation */}
-        <h1 
+        <h1
           ref={headlineRef}
           className="text-4xl md:text-6xl lg:text-8xl font-display font-bold text-foreground mb-4 md:mb-6 leading-tight"
           style={{ perspective: "1000px" }}
@@ -208,11 +208,11 @@ export const HeroSection = () => {
         </h1>
 
         {/* Subheadline */}
-        <p 
+        <p
           ref={subheadlineRef}
           className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-4 opacity-0 leading-relaxed"
         >
-          We are <span className="text-gold font-semibold">G-Nexus</span> — Ethiopia's premier digital platform 
+          We are <span className="text-gold font-semibold">G-Nexus</span> — Ethiopia's premier digital platform
           building the future through web, 3D, and AI innovation.
         </p>
 
@@ -236,17 +236,23 @@ export const HeroSection = () => {
 
         {/* CTAs */}
         <div ref={ctaRef} className="flex flex-col sm:flex-row gap-4 justify-center opacity-0">
-          <Button variant="hero" size="xl" className="group">
-            Start Your Project
+          <Button variant="hero" size="xl" className="group px-8 bg-gold hover:bg-gold/90 text-background font-bold border-none shadow-[0_0_20px_rgba(201,146,42,0.3)]">
+            <span className="flex items-center gap-2">
+              <MessageSquare className="w-5 h-5" />
+              AI Agent
+            </span>
             <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
           </Button>
-          <Button variant="heroOutline" size="xl" className="group">
-            <span className="group-hover:text-gold transition-colors duration-300">Explore Platform</span>
+          <Button variant="outline" size="xl" className="group px-8 border-gold/50 hover:border-gold hover:bg-gold/10 text-gold font-bold backdrop-blur-sm">
+            <span className="flex items-center gap-2">
+              <Bot className="w-5 h-5" />
+              G-Nexus AI
+            </span>
           </Button>
         </div>
 
         {/* Stats */}
-        <div 
+        <div
           ref={statsRef}
           className="grid grid-cols-3 gap-4 md:gap-8 mt-16 md:mt-24 pt-8 md:pt-10 border-t border-border/30 max-w-3xl mx-auto opacity-0"
         >

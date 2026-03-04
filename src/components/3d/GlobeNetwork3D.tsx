@@ -140,8 +140,8 @@ const NeuralNetwork = ({ nodeCount = 80, maxDist = 1.2 }: { nodeCount?: number; 
     const color = new THREE.Color();
     for (let i = 0; i < nodeCount; i++) {
       const pulse = Math.sin(t * 1.5 + phases[i]) * 0.5 + 0.5;
-      // Much bigger nodes - 3x larger than before
-      const s = 0.10 + pulse * 0.12;
+      // Small delicate nodes as requested
+      const s = 0.02 + pulse * 0.03;
       dummy.position.set(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]);
       dummy.scale.setScalar(s);
       dummy.updateMatrix();
