@@ -27,54 +27,38 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Deploy dist contents to cpanel-deploy branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Deployment Zip
         run: |
           cd dist
-          git init
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          
-          # Add all files in dist
-          git add .
-          
-          # Create a fresh commit
-          git commit -m "deploy: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
-          
-          # Force push to the cpanel-deploy branch
-          # This replaces the entire branch content with the new build
-          # cPanel Git version control works best when the branch is clean
-          REPO_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git"
-          git push --force "$REPO_URL" HEAD:cpanel-deploy
+          zip -r ../deploy.zip .
+          cd ..
 
-      - name: Trigger cPanel Git Pull via API
-        env:
-          CPANEL_USER: ${{ secrets.CPANEL_USER }}
-          CPANEL_TOKEN: ${{ secrets.CPANEL_TOKEN }}
-          CPANEL_REPO_DIR: ${{ secrets.CPANEL_REPO_DIR }}
+      - name: Upload Files via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: ${{ secrets.CPANEL_REPO_DIR }}/
+          exclude: |
+            **/.git*
+            **/.git*/**
+            node_modules/**
+            src/**
+            public/**
+            supabase/**
+            *.json
+            *.ts
+            *.js
+            *.config.*
+            README.md
+            bun.lockb
+            .lovable/**
+            *.log
+            *.txt
+
+      - name: Trigger Extraction
         run: |
-          echo "Triggering cPanel Git pull..."
-          ENCODED_DIR=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$CPANEL_REPO_DIR', safe=''))")
-
-          # Step 1: Update the branch tracked by cPanel to cpanel-deploy
-          echo "Setting cPanel repo branch to cpanel-deploy..."
-          curl -sS -k \
-            -H "Authorization: cpanel $CPANEL_USER:$CPANEL_TOKEN" \
-            -H "Host: gnexuset.com" \
-            "https://91.204.209.29:2083/execute/VersionControl/update?repository_root=${ENCODED_DIR}&branch=cpanel-deploy" || true
-
-          # Step 2: Trigger deployment pull
-          RESPONSE=$(curl -sS -k -w "\n%{http_code}" \
-            -H "Authorization: cpanel $CPANEL_USER:$CPANEL_TOKEN" \
-            -H "Host: gnexuset.com" \
-            "https://91.204.209.29:2083/execute/VersionControl/deploy?repository_root=${ENCODED_DIR}")
-          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
-          BODY=$(echo "$RESPONSE" | head -n -1)
-          echo "Response: $BODY"
-          echo "HTTP Status: $HTTP_CODE"
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "::error::cPanel deploy failed with HTTP $HTTP_CODE"
-            exit 1
-          fi
-          echo "✅ Deployment triggered successfully!"
+          curl -sS "https://gnexuset.com/extract.php?token=gnexus-deploy-2026"
+          echo "✅ Deployment extraction triggered!"
