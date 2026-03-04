@@ -191,13 +191,13 @@ export const AdminSettings = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-muted/30 rounded-2xl border border-border/50">
                   <div className="space-y-4">
                     <Badge variant="outline" className="text-gold border-gold/30">Primary: AI Agent</Badge>
-                    <div className="space-y-2"><Label>Button Label</Label><Input value={heroSettings.agent_label} onChange={e => setHeroSettings({ ...heroSettings, agent_label: e.target.value })} /></div>
-                    <div className="space-y-2"><Label>Button Link</Label><Input value={heroSettings.agent_link} onChange={e => setHeroSettings({ ...heroSettings, agent_link: e.target.value })} placeholder="/chat or https://..." /></div>
+                    <div className="space-y-2"><Label>Button Label</Label><Input value={heroSettings.agent_label} onChange={e => setHeroSettings({ ...heroSettings, agent_label: e.target.value })} placeholder="e.g. AI Agent" /></div>
+                    <div className="space-y-2"><Label>Button Link</Label><Input value={heroSettings.agent_link} onChange={e => setHeroSettings({ ...heroSettings, agent_link: e.target.value })} placeholder="e.g. /chat or https://..." /></div>
                   </div>
                   <div className="space-y-4">
                     <Badge variant="outline" className="text-cyan border-cyan/30">Secondary: G-Nexus AI</Badge>
-                    <div className="space-y-2"><Label>Button Label</Label><Input value={heroSettings.nexus_label} onChange={e => setHeroSettings({ ...heroSettings, nexus_label: e.target.value })} /></div>
-                    <div className="space-y-2"><Label>Button Link</Label><Input value={heroSettings.nexus_link} onChange={e => setHeroSettings({ ...heroSettings, nexus_link: e.target.value })} placeholder="/platform or https://..." /></div>
+                    <div className="space-y-2"><Label>Button Label</Label><Input value={heroSettings.nexus_label} onChange={e => setHeroSettings({ ...heroSettings, nexus_label: e.target.value })} placeholder="e.g. G-Nexus AI" /></div>
+                    <div className="space-y-2"><Label>Button Link</Label><Input value={heroSettings.nexus_link} onChange={e => setHeroSettings({ ...heroSettings, nexus_link: e.target.value })} placeholder="e.g. /platform or https://..." /></div>
                   </div>
                 </div>
                 <Button onClick={() => saveSettings('hero_settings', heroSettings)} disabled={isSaving}>

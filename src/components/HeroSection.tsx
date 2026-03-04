@@ -59,6 +59,14 @@ export const HeroSection = () => {
     fetchHeroSettings();
   }, []);
 
+  const handleLinkClick = (url: string) => {
+    if (url.startsWith('http')) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } else {
+      window.location.href = url;
+    }
+  };
+
   // Typewriter effect
   useEffect(() => {
     const phrase = typewriterPhrases[phraseIndex];
@@ -265,7 +273,7 @@ export const HeroSection = () => {
             variant="hero"
             size="xl"
             className="group px-8 bg-gold hover:bg-gold/90 text-background font-bold border-none shadow-[0_0_20px_rgba(201,146,42,0.3)]"
-            onClick={() => window.location.href = heroSettings.agent_link}
+            onClick={() => handleLinkClick(heroSettings.agent_link)}
           >
             <span className="flex items-center gap-2">
               <MessageSquare className="w-5 h-5" />
@@ -277,7 +285,7 @@ export const HeroSection = () => {
             variant="outline"
             size="xl"
             className="group px-8 border-gold/50 hover:border-gold hover:bg-gold/10 text-gold font-bold backdrop-blur-sm"
-            onClick={() => window.location.href = heroSettings.nexus_link}
+            onClick={() => handleLinkClick(heroSettings.nexus_link)}
           >
             <span className="flex items-center gap-2">
               <Bot className="w-5 h-5" />
